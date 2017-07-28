@@ -21,6 +21,8 @@ mysql.init_app(app)
 conn = mysql.connect()
 
 
+
+
 def sigterm_handler(_signo, _stack_frame):
     # When sysvinit sends the TERM signal, cleanup before exiting.
     print("received signal {}, exiting...".format(_signo))
@@ -46,7 +48,7 @@ def index():
     humidity = list()
     light1 = list()
 
-
+    conn = mysql.connect()
     cursor = conn.cursor()
     cursor.execute("SELECT timestamp, temperature1, humidity, light1 from sensors where source='pimat_server'")
 
@@ -75,6 +77,12 @@ def add_new_schedule():
         relay = request.form.get("relay")
         start_time = request.form.get("start_time")
         stop_time = request.form.get("stop_time")
+
+        print(relay)
+        print(start_time)
+        print(stop_time)
+
+        return url_for('index')
 
     else:
         return render_template('schedules.html')
