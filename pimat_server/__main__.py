@@ -56,7 +56,7 @@ def main():
     relay_config = configparser.ConfigParser()
     relay_config.read('/opt/pimat/relays.ini')
     log = logging.getLogger()
-    handler = logging.FileHandler('/opt/pimat/sensors.log')
+    handler = logging.FileHandler('/var/log/pimat/sensors.log')
     formatter = logging.Formatter('[%(levelname)s] [%(asctime)-15s] [PID: %(process)d] [%(name)s] %(message)s')
     handler.setFormatter(formatter)
     log.addHandler(handler)

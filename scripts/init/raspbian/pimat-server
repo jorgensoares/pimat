@@ -15,10 +15,10 @@
 
 PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 NAME=pimat-server
-DAEMON=/opt/pimat/pimat-server/__main__.py
+DAEMON=/opt/pimat/pimat_server/__main__.py
 DAEMONARGS=""
 PIDFILE=/var/run/$NAME.pid
-LOGFILE=/var/log/$NAME.log
+LOGFILE=/var/log/pimat/$NAME.log
 
 . /lib/lsb/init-functions
 
