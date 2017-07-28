@@ -82,7 +82,7 @@ def camera():
 
 @app.route("/logs", methods=['GET'])
 def logs():
-    with open("/opt/pimat/sensors.log", "r") as f:
+    with open("/var/log/pimat/sensors.log", "r") as f:
         content = f.read()
     return render_template('logs.html', content=content)
 
