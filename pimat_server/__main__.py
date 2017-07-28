@@ -84,7 +84,7 @@ def main():
 
     for relay in relay_config['schedules']:
         schedule = relay_config['schedules'][relay]
-        start_time, stop_time = schedule.slipt('-')
+        start_time, stop_time = schedule.split('-')
         add_schedule(relay, start_time, stop_time)
 
     try:
