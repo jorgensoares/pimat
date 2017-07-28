@@ -20,7 +20,7 @@ app.config['MYSQL_DATABASE_HOST'] = 'localhost'
 mysql.init_app(app)
 
 conn = mysql.connect()
-cursor =conn.cursor()
+
 
 
 def sigterm_handler(_signo, _stack_frame):
@@ -43,9 +43,11 @@ def index():
     relay_status['relay3'] = get_pin_status(relay_pins['relay3'])
     relay_status['relay4'] = get_pin_status(relay_pins['relay4'])
 
+    cursor = conn.cursor()
     cursor.execute("SELECT timestamp, temperature1, humidity, light1 from sensors where source='pimat_server'")
     data = cursor.fetchall()
-    print(data)
+    cursor.close()
+
     timestamp = list()
     temperature1 = list()
     humidity = list()
@@ -56,12 +58,6 @@ def index():
         temperature1.append(str(row[1]))
         humidity.append(str(row[2]))
         light1.append(str(row[3]))
-
-    print('lists:')
-    print(timestamp)
-    print(temperature1)
-    print(humidity)
-    print(light1)
 
     return render_template('index.html',
                            pins=relay_pins,
