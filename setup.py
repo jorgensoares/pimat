@@ -10,10 +10,10 @@ setup(
     packages=find_packages(exclude=['tests']),
     entry_points={
         'console_scripts': [
-            'pimat-server = pimat-server.__main__:main',
-            'pimat-web = pimat-web.app:main'
+            'pimat_server = pimat-server.__main__:main',
+            'pimat_web = pimat-web.app:main'
         ]
     },
     install_requires=['flask', 'configparser', 'python-crontab', 'RPi.GPIO', 'adafruit_python_dht'],
-    package_data={'pimat-web': ['templates/*']}
+    package_data={'pimat_web': ['templates/*']}
 )

@@ -1,9 +1,10 @@
+#!/usr/bin/python
 import configparser
 from flask import Flask, request, redirect
 from flask import render_template
 from flask import url_for
 
-from core.relays import Relays, get_pin_status
+from pimat_server.relays import Relays, get_pin_status
 #from core.scheduler import add_schedule
 
 relay_config = configparser.ConfigParser()

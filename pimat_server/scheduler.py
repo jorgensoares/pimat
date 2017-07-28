@@ -6,13 +6,13 @@ cron = CronTab()
 
 def add_schedule(relay, start_time, stop_time):
     start_hour, start_minute = start_time.split(':')
-    start_job = cron.new(command='/usr/bin/python /opt/pimat/pimat-server/relays.py start %s' % relay,
+    start_job = cron.new(command='/usr/bin/python /opt/pimat/pimat_server/relays.py start %s' % relay,
                          comment='%s start' % relay)
     start_job.minute.on(start_minute)
     start_job.hour.on(start_hour)
     start_job.enable()
 
-    stop_job = cron.new(command='/usr/bin/python /opt/pimat/pimat-server/relays.py stop %s' % relay,
+    stop_job = cron.new(command='/usr/bin/python /opt/pimat/pimat_server/relays.py stop %s' % relay,
                         comment='%s stop' % relay)
     stop_hour, stop_minute = stop_time.split(':')
     stop_job.minute.on(stop_minute)
