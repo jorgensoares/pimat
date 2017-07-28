@@ -569,28 +569,36 @@
     Chart.defaults.global.elements.line.fill = false;
 
     var barChartData = {
-      labels: {{ timestamp }},
+      labels: [{% for item in timestamp %}
+                  {{item}},
+              {% endfor %}],
       datasets: [{
         type: 'line',
         label: 'Temperature',
         yAxisID: "y-axis-0",
         borderColor: "rgba(217,83,79,0.75)",
         backgroundColor: "rgba(217,83,79,0.75)",
-        data: {{ temperature1 }}
+        data: [{% for item in temperature1 %}
+                      {{item}},
+                    {% endfor %}]
       }, {
         type: 'line',
         label: 'Humidity',
         yAxisID: "y-axis-0",
         borderColor: "rgba(92,184,92,0.75)",
         backgroundColor: "rgba(92,184,92,0.75)",
-        data: {{ humidity }}
+        data: [{% for item in humidity %}
+                      {{item}},
+                    {% endfor %}]
       }, {
         type: 'line',
-        label: 'Light level',
+        label: 'Ligh level',
         yAxisID: "y-axis-1",
         borderColor: "rgba(51,51,51,0.5)",
         backgroundColor: "rgba(51,51,51,0.5)",
-        data: {{ light1 }}
+        data: [{% for item in light1 %}
+                      {{item}},
+                    {% endfor %}]
       }, {
         type: 'line',
         label: 'Pressure',
@@ -653,5 +661,6 @@
       }
     });
 </script>
+
 </body>
 </html>
