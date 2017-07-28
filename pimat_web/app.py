@@ -4,8 +4,9 @@ from flask import Flask, request, redirect
 from flask import render_template
 from flask import url_for
 
-from pimat_server.relays import Relays, get_pin_status
+
 #from core.scheduler import add_schedule
+from pimat_server.relays import get_pin_status, Relays
 
 relay_config = configparser.ConfigParser()
 relay_config.read('/opt/pimat/relays.ini')
@@ -87,4 +88,6 @@ def logs():
 
 
 if __name__ == "__main__":
-    app.run()
+    app.run(host='0.0.0.0',
+            port=80,
+            debug=True)
