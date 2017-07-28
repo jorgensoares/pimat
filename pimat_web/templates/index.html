@@ -570,7 +570,7 @@
 
     var barChartData = {
       labels: [{% for item in timestamp %}
-                  {{item}},
+                  "{{item}}",
               {% endfor %}],
       datasets: [{
         type: 'line',
@@ -579,7 +579,7 @@
         borderColor: "rgba(217,83,79,0.75)",
         backgroundColor: "rgba(217,83,79,0.75)",
         data: [{% for item in temperature1 %}
-                      {{item}},
+                      "{{item}}",
                     {% endfor %}]
       }, {
         type: 'line',
@@ -588,7 +588,7 @@
         borderColor: "rgba(92,184,92,0.75)",
         backgroundColor: "rgba(92,184,92,0.75)",
         data: [{% for item in humidity %}
-                      {{item}},
+                      "{{item}}",
                     {% endfor %}]
       }, {
         type: 'line',
@@ -597,7 +597,7 @@
         borderColor: "rgba(51,51,51,0.5)",
         backgroundColor: "rgba(51,51,51,0.5)",
         data: [{% for item in light1 %}
-                      {{item}},
+                      "{{item}}",
                     {% endfor %}]
       }, {
         type: 'line',
