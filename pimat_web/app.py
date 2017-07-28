@@ -46,7 +46,7 @@ def index():
     cursor.execute("SELECT timestamp, temperature1, humidity, light1 from sensors where source='pimat_server'")
     data = cursor.fetchall()
     print(data)
-    timestamp= list()
+    timestamp = list()
     temperature1 = list()
     humidity = list()
     light1 = list()
