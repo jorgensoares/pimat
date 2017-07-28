@@ -346,8 +346,8 @@
                   </tr>
                   </thead>
                   <tbody>
+                  {% for item in schedules %}
                   <tr>
-                    {% for item in schedules %}
                     <td>{{ item[0] }}</td>
                     <td>{{ item[2] }}</td>
                     <td>{{ item[3] }}</td>
@@ -355,8 +355,8 @@
                     <td><span class="label label-success">{{ item[5] }}</span></td>
                     <td><a href="#">Edit</a></td>
                     <td><a href="#" data-record-id="23" data-record-title="Schedule Relay_1_12" data-toggle="modal" data-target="#confirm-delete">Delete</a></td>
-                    {% endfor %}
                   </tr>
+                  {% endfor %}
                   </tbody>
                 </table>
               </div>
