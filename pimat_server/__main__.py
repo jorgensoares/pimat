@@ -77,7 +77,7 @@ def main():
 
             relay_object = Relays(relay, pin)
             relay_object.set_mode()
-            time.sleep(1)
+            time.sleep(0.5)
 
             if relay_config['status'][relay] == '1':
                 relay_object.start()
