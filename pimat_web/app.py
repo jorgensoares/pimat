@@ -5,19 +5,28 @@ from flask import render_template
 from flask import url_for
 import signal
 import sys
-#from core.scheduler import add_schedule
 from pimat_server.relays import get_pin_status, Relays
+from flaskext.mysql import MySQL
 
 relay_config = configparser.ConfigParser()
 relay_config.read('/opt/pimat/relays.ini')
+
+app = Flask(__name__)
+mysql = MySQL()
+app.config['MYSQL_DATABASE_USER'] = 'root'
+app.config['MYSQL_DATABASE_PASSWORD'] = 'zaq12wsx'
+app.config['MYSQL_DATABASE_DB'] = 'pimat'
+app.config['MYSQL_DATABASE_HOST'] = 'localhost'
+mysql.init_app(app)
+
+conn = mysql.connect()
+cursor =conn.cursor()
 
 
 def sigterm_handler(_signo, _stack_frame):
     # When sysvinit sends the TERM signal, cleanup before exiting.
     print("received signal {}, exiting...".format(_signo))
     sys.exit(0)
-
-app = Flask(__name__)
 
 
 @app.route("/")
@@ -33,6 +42,10 @@ def index():
     relay_status['relay2'] = get_pin_status(relay_pins['relay2'])
     relay_status['relay3'] = get_pin_status(relay_pins['relay3'])
     relay_status['relay4'] = get_pin_status(relay_pins['relay4'])
+
+    cursor.execute("SELECT timestamp, temperature1, humidity, light1 from sensors where source='pimat_server'")
+    data = cursor.fetchall()
+    print(data)
 
     return render_template('index.html', pins=relay_pins, status=relay_status)
 
