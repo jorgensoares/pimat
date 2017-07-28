@@ -27,6 +27,7 @@ class Relays(object):
 
     def start(self):
         call(['gpio', 'write', self.pin, '0'])
+        call(['gpio', 'mode', self.pin, 'out'])
         print(self.relay)
         relay_config.set('status', self.relay, '1')
 
@@ -35,6 +36,7 @@ class Relays(object):
 
     def stop(self):
         call(['gpio', 'write', self.pin, '1'])
+        call(['gpio', 'mode', self.pin, 'out'])
         print(self.relay)
         relay_config.set('status', self.relay, '0')
 
