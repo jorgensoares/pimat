@@ -8,14 +8,30 @@ import time
 import Adafruit_DHT
 import RPi.GPIO as GPIO
 import configparser
+import pymysql as pymysql
+
 from scheduler import add_schedule, remove_all
 from relays import Relays
-
-GPIO.setmode(GPIO.BCM)
 
 # define the pin that goes to the circuit
 pin_to_circuit = 27
 dht_pin = 17
+
+
+def sigterm_handler(_signo, _stack_frame):
+    # When sysvinit sends the TERM signal, cleanup before exiting.
+    print("[" + get_now() + "] received signal {}, exiting...".format(_signo))
+    GPIO.cleanup()
+    remove_all()
+    sys.exit(0)
+
+
+def get_now():
+    # get the current date and time as a string
+    return datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+
+signal.signal(signal.SIGTERM, sigterm_handler)
+GPIO.setmode(GPIO.BCM)
 
 
 def rc_time(pin_to_circuit):
@@ -36,22 +52,6 @@ def rc_time(pin_to_circuit):
     return count
 
 
-def get_now():
-    # get the current date and time as a string
-    return datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-
-
-def sigterm_handler(_signo, _stack_frame):
-    # When sysvinit sends the TERM signal, cleanup before exiting.
-    print("[" + get_now() + "] received signal {}, exiting...".format(_signo))
-    GPIO.cleanup()
-    remove_all()
-    sys.exit(0)
-
-
-signal.signal(signal.SIGTERM, sigterm_handler)
-
-
 def main():
     relay_config = configparser.ConfigParser()
     relay_config.read('/opt/pimat/relays.ini')
@@ -61,6 +61,13 @@ def main():
     handler.setFormatter(formatter)
     log.addHandler(handler)
     log.setLevel(logging.DEBUG)
+
+    db = pymysql.connect(host='localhost',
+                         user='root',
+                         password='zaq12wsx',
+                         db='pimat',
+                         charset='utf8mb4',
+                         cursorclass=pymysql.cursors.DictCursor)
 
     # Clean cron
     remove_all()
@@ -90,22 +97,34 @@ def main():
     try:
         while True:
             total = 0
+
             for x in range(0, 9):
                 total += rc_time(pin_to_circuit)
 
-            average = total/10
+            average = total / 10
 
-            light = (1/float(average)) * 10000
+            light = (1 / float(average)) * 10000
 
             humidity, temperature = Adafruit_DHT.read_retry(Adafruit_DHT.AM2302, dht_pin)
 
             if humidity is not None and temperature is not None and light is not None:
                 log.info('Temp={0:0.1f}* Humidity={1:0.1f}% Light={2:0.2f}'.format(temperature, humidity, light))
 
+                with db.cursor() as cursor:
+                    source = 'pimat_server'
+                    sql = """INSERT INTO `sensors` (`timestamp`, `temperature1`, `humidity`, `light1`, `source`)
+                    VALUES (NOW(), %s, %s, %s, %s)"""
+
+                    cursor.execute(sql, (temperature, humidity, light, source))
+
+                db.commit()
+
             else:
                 log.error('Failed to get reading. Try again!')
                 GPIO.cleanup()
                 remove_all()
+                db.close()
+
                 raise Exception('Failed to get reading')
 
             time.sleep(120)
@@ -115,6 +134,7 @@ def main():
     finally:
         GPIO.cleanup()
         remove_all()
+        db.close()
 
 
 if __name__ == '__main__':

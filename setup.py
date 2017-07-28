@@ -14,6 +14,6 @@ setup(
             'pimat-web = pimat_web.app:main'
         ]
     },
-    install_requires=['flask', 'configparser', 'python-crontab', 'RPi.GPIO', 'adafruit_python_dht'],
+    install_requires=['flask', 'flask-mysql','configparser', 'python-crontab', 'RPi.GPIO', 'adafruit_python_dht'],
     package_data={'pimat_web': ['templates/*']}
 )
