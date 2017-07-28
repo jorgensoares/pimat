@@ -100,10 +100,11 @@ def add_new_schedule():
 
         conn = mysql.connect()
         cursor = conn.cursor()
-        cursor.execute("""INSERT INTO `schedules` (`relay`, `switch`, `start_time`, `stop_time`)
-                    VALUES (%s, %s, %s, %s)""", (relay, switch, start_time, stop_time))
-        cursor.commit()
+        cursor.execute("""INSERT INTO `schedules` (`relay`, `switch`, `start_time`, `stop_time`, `enabled`)
+                    VALUES (%s, %s, %s, %s, 1)""", (relay, switch, start_time, stop_time,))
+
         cursor.close()
+        conn.commit()
         conn.close()
 
         add_schedule(relay, start_time, stop_time)

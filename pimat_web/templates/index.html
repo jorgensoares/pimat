@@ -347,13 +347,15 @@
                   </thead>
                   <tbody>
                   <tr>
-                    <td>relay1</td>
-                    <td>Lights Switch</td>
-                    <td>18:00</td>
-                    <td>06:00</td>
-                    <td><span class="label label-success">Running</span></td>
-                    <td><a href="pages/examples/invoice.html">Edit</a></td>
+                    {% for item in schedules %}
+                    <td>{{ item[0] }}</td>
+                    <td>{{ item[2] }}</td>
+                    <td>{{ item[3] }}</td>
+                    <td>{{ item[4] }}</td>
+                    <td><span class="label label-success">{{ item[5] }}</span></td>
+                    <td><a href="#">Edit</a></td>
                     <td><a href="#" data-record-id="23" data-record-title="Schedule Relay_1_12" data-toggle="modal" data-target="#confirm-delete">Delete</a></td>
+                    {% endfor %}
                   </tr>
                   </tbody>
                 </table>
