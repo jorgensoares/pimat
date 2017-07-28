@@ -8,6 +8,8 @@ import sys
 from pimat_server.relays import get_pin_status, Relays
 from flaskext.mysql import MySQL
 
+from pimat_server.scheduler import add_schedule
+
 relay_config = configparser.ConfigParser()
 relay_config.read('/opt/pimat/relays.ini')
 
@@ -18,9 +20,6 @@ app.config['MYSQL_DATABASE_PASSWORD'] = 'zaq12wsx'
 app.config['MYSQL_DATABASE_DB'] = 'pimat'
 app.config['MYSQL_DATABASE_HOST'] = 'localhost'
 mysql.init_app(app)
-conn = mysql.connect()
-
-
 
 
 def sigterm_handler(_signo, _stack_frame):
@@ -59,6 +58,11 @@ def index():
         light1.append(str(row[3]))
 
     cursor.close()
+
+    cursor = conn.cursor()
+    cursor.execute("SELECT * from schedules")
+    schedules = cursor.fetchall()
+    cursor.close()
     conn.close()
 
     return render_template('index.html',
@@ -67,7 +71,8 @@ def index():
                            timestamp=timestamp,
                            temperature1=temperature1,
                            humidity=humidity,
-                           light1=light1
+                           light1=light1,
+                           schedules=schedules
                            )
 
 
@@ -82,7 +87,28 @@ def add_new_schedule():
         print(start_time)
         print(stop_time)
 
-        return url_for('index')
+        if relay == 'relay1':
+            switch = 'Lights Switch'
+        elif relay == 'relay2':
+            switch = 'Exhaust Switch'
+        elif relay == 'relay3':
+            switch = 'Fan Switch'
+        elif relay == 'relay4':
+            switch = 'Pump Switch'
+        else:
+            switch = None
+
+        conn = mysql.connect()
+        cursor = conn.cursor()
+        cursor.execute("""INSERT INTO `schedules` (`relay`, `switch`, `start_time`, `stop_time`)
+                    VALUES (%s, %s, %s, %s)""", (relay, switch, start_time, stop_time))
+        cursor.commit()
+        cursor.close()
+        conn.close()
+
+        add_schedule(relay, start_time, stop_time)
+
+        return redirect('/')
 
     else:
         return render_template('schedules.html')

@@ -111,11 +111,10 @@ def main():
                 log.info('Temp={0:0.1f}* Humidity={1:0.1f}% Light={2:0.2f}'.format(temperature, humidity, light))
 
                 with db.cursor() as cursor:
-                    source = 'pimat_server'
                     sql = """INSERT INTO `sensors` (`timestamp`, `temperature1`, `humidity`, `light1`, `source`)
                     VALUES (NOW(), %s, %s, %s, %s)"""
 
-                    cursor.execute(sql, (temperature, humidity, light, source))
+                    cursor.execute(sql, (temperature, humidity, light, 'pimat_server'))
 
                 db.commit()
 
