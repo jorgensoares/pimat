@@ -52,10 +52,10 @@ def index():
     light1 = list()
 
     for row in data:
-        timestamp.append(row[0])
-        temperature1.append(row[1])
-        humidity.append(row[2])
-        light1.append(row[3])
+        timestamp.append(str(row[0]))
+        temperature1.append(str(row[1]))
+        humidity.append(str(row[2]))
+        light1.append(str(row[3]))
 
     print('lists:')
     print(timestamp)
