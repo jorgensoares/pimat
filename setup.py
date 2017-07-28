@@ -11,7 +11,7 @@ setup(
     entry_points={
         'console_scripts': [
             'pimat-server = pimat_server.__main__:main',
-            'pimat-web = pimat_web.app:main'
+            'pimat-web = pimat_web.app:run'
         ]
     },
     install_requires=['flask', 'configparser', 'python-crontab', 'RPi.GPIO', 'adafruit_python_dht'],
