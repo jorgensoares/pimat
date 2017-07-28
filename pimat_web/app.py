@@ -3,14 +3,22 @@ import configparser
 from flask import Flask, request, redirect
 from flask import render_template
 from flask import url_for
-
-
+import signal
+import sys
 #from core.scheduler import add_schedule
 from pimat_server.relays import get_pin_status, Relays
 
 relay_config = configparser.ConfigParser()
 relay_config.read('/opt/pimat/relays.ini')
 
+
+def sigterm_handler(_signo, _stack_frame):
+    # When sysvinit sends the TERM signal, cleanup before exiting.
+    print("received signal {}, exiting...".format(_signo))
+    sys.exit(0)
+
+
+signal.signal(signal.SIGTERM, sigterm_handler)
 app = Flask(__name__)
 
 
@@ -83,8 +91,12 @@ def camera():
 @app.route("/logs", methods=['GET'])
 def logs():
     with open("/var/log/pimat/sensors.log", "r") as f:
-        content = f.read()
-    return render_template('logs.html', content=content)
+        sensors_log = f.read()
+
+    with open("/var/log/pimat/pimat-web.log", "r") as f:
+        pimat_web_log = f.read()
+
+    return render_template('logs.html', sensors_log=sensors_log, pimat_web_log=pimat_web_log)
 
 
 if __name__ == "__main__":
