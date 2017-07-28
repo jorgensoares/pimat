@@ -46,6 +46,22 @@ def index():
     cursor.execute("SELECT timestamp, temperature1, humidity, light1 from sensors where source='pimat_server'")
     data = cursor.fetchall()
     print(data)
+    timestamp= list()
+    temperature1 = list()
+    humidity = list()
+    light1 = list()
+
+    for row in data:
+        timestamp.append(row[0])
+        temperature1.append(row[1])
+        humidity.append(row[2])
+        light1.append(row[3])
+
+    print('lists:')
+    print(timestamp)
+    print(temperature1)
+    print(humidity)
+    print(light1)
 
     return render_template('index.html', pins=relay_pins, status=relay_status)
 
