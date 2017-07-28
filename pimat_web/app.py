@@ -17,13 +17,11 @@ def sigterm_handler(_signo, _stack_frame):
     print("received signal {}, exiting...".format(_signo))
     sys.exit(0)
 
-
-signal.signal(signal.SIGTERM, sigterm_handler)
 app = Flask(__name__)
 
 
 @app.route("/")
-def main():
+def index():
     relay_pins = dict()
     relay_status = dict()
 
@@ -59,12 +57,12 @@ def switch_relay(action, relay):
         if action == 'on':
             relay_object = Relays(relay, pin)
             relay_object.start()
-            return url_for('main')
+            return url_for('index')
 
         elif action == 'off':
             relay_object = Relays(relay, pin)
             relay_object.stop()
-            return url_for('main')
+            return url_for('index')
 
         else:
             return render_template('error.html', error="Relay must be ON or OFF")
@@ -99,7 +97,14 @@ def logs():
     return render_template('logs.html', sensors_log=sensors_log, pimat_web_log=pimat_web_log)
 
 
-if __name__ == "__main__":
+def main():
+    signal.signal(signal.SIGTERM, sigterm_handler)
+
     app.run(host='0.0.0.0',
             port=80,
             debug=True)
+
+
+if __name__ == "__main__":
+    main()
+
