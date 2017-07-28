@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>piMAT | Dashboard</title>
+  <!-- Tell the browser to be responsive to screen width -->
+  <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+  <!-- Bootstrap 3.3.7 -->
+  <link rel="stylesheet" href="/static/bower_components/bootstrap/dist/css/bootstrap.min.css">
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="/static/bower_components/font-awesome/css/font-awesome.min.css">
+  <!-- Theme style -->
+  <link rel="stylesheet" href="/static/dist/css/AdminLTE.min.css">
+  <link rel="stylesheet" href="/static/dist/css/skins/skin-blue.css">
+
+  <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+  <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+  <!--[if lt IE 9]>
+  <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+  <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+  <![endif]-->
+
+  <!-- Google Font -->
+  <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
+</head>
+<body class="hold-transition skin-blue sidebar-mini">
+<div class="wrapper">
+
+  <header class="main-header">
+
+    <!-- Logo -->
+    <a href="index2.html" class="logo">
+      <!-- mini logo for sidebar mini 50x50 pixels -->
+      <span class="logo-mini"><b>pi</b>M</span>
+      <!-- logo for regular state and mobile devices -->
+      <span class="logo-lg"><b>pi</b>MAT</span>
+    </a>
+
+    <!-- Header Navbar: style can be found in header.less -->
+    <nav class="navbar navbar-static-top">
+      <!-- Sidebar toggle button-->
+      <a href="#" class="sidebar-toggle" data-toggle="push-menu" role="button">
+        <span class="sr-only">Toggle navigation</span>
+      </a>
+      <!-- Navbar Right Menu -->
+      <div class="navbar-custom-menu">
+        <ul class="nav navbar-nav">
+
+          <!-- User Account: style can be found in dropdown.less -->
+          <li class="dropdown user user-menu">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+              <img src="/static/images/jorge.png" class="user-image" alt="User Image">
+              <span class="hidden-xs">Jorge Soares</span>
+            </a>
+            <ul class="dropdown-menu">
+              <!-- User image -->
+              <li class="user-header">
+                <img src="/static/images/jorge.png" class="img-circle" alt="User Image">
+                <p>
+                  Jorge Soares
+                  <small>Admin</small>
+                </p>
+              </li>
+              <!-- Menu Body -->
+              <li class="user-body">
+                <div class="row">
+                  <div class="col-xs-4 text-center">
+                    <a href="#">Settings</a>
+                  </div>
+                  <div class="col-xs-4 text-center">
+                    <a href="#">Add user</a>
+                  </div>
+                  <div class="col-xs-4 text-center">
+                    <a href="#">Users</a>
+                  </div>
+                </div>
+                <!-- /.row -->
+              </li>
+              <!-- Menu Footer-->
+              <li class="user-footer">
+                <div class="pull-left">
+                  <a href="#" class="btn btn-default btn-flat">Change Password</a>
+                </div>
+                <div class="pull-right">
+                  <a href="#" class="btn btn-default btn-flat">Sign out</a>
+                </div>
+              </li>
+            </ul>
+          </li>
+          <!-- Control Sidebar Toggle Button -->
+        </ul>
+      </div>
+
+    </nav>
+  </header>
+  <!-- Left side column. contains the logo and sidebar -->
+  <aside class="main-sidebar">
+    <!-- sidebar: style can be found in sidebar.less -->
+    <section class="sidebar">
+      <!-- sidebar menu: : style can be found in sidebar.less -->
+      <ul class="sidebar-menu" data-widget="tree">
+        <li class="header">MAIN MENU</li>
+        <li class="active"><a href="/"><i class="fa fa fa-cogs"></i> <span>Dashboard</span></a></li>
+        <li><a href="/sensors"><i class="fa fa-line-chart"></i> <span>Sensors</span></a></li>
+        <li><a href="/camera"><i class="fa fa-cc"></i> <span>Cameras</span></a></li>
+        <li><a href="/logs"><i class="fa fa-file-text-o"></i> <span>Logs</span></a></li>
+        <li><a href="https://wiki.ocloud.cz/doku.php" target="_blank"><i class="fa fa-book"></i> <span>Documentation</span></a></li>
+      </ul>
+    </section>
+    <!-- /.sidebar -->
+  </aside>
+
+  <!-- Content Wrapper. Contains page content -->
+  <div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <h1>
+        Dashboard
+        <small>Version 0.0.1</small>
+      </h1>
+      <ol class="breadcrumb">
+        <li><a href="index.html"><i class="fa fa fa-cogs active"></i> Home</a></li>
+      </ol>
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+      <!-- Info boxes -->
+      <div class="row">
+        <div class="col-md-3 col-sm-6 col-xs-12">
+          <div class="info-box">
+            <span class="info-box-icon bg-yellow"><i class="fa fa-lightbulb-o"></i></span>
+
+            <div class="info-box-content">
+              <span class="info-box-text">Lights</span>
+              <span class="info-box-number">{{ status.relay1 }}</span>
+            </div>
+            <!-- /.info-box-content -->
+          </div>
+          <!-- /.info-box -->
+        </div>
+        <!-- /.col -->
+        <div class="col-md-3 col-sm-6 col-xs-12">
+          <div class="info-box">
+              <span class="info-box-icon bg-navy"><i class="fa fa-snowflake-o"></i></span>
+
+            <div class="info-box-content">
+              <span class="info-box-text">Exhaust</span>
+              <span class="info-box-number">{{ status.relay2 }}</span>
+            </div>
+            <!-- /.info-box-content -->
+          </div>
+          <!-- /.info-box -->
+        </div>
+        <!-- /.col -->
+
+        <!-- fix for small devices only -->
+        <div class="clearfix visible-sm-block"></div>
+
+        <div class="col-md-3 col-sm-6 col-xs-12">
+          <div class="info-box">
+            <span class="info-box-icon bg-green"><i class="fa fa-refresh"></i></span>
+
+            <div class="info-box-content">
+              <span class="info-box-text">Fan</span>
+              <span class="info-box-number">{{ status.relay3 }}</span>
+            </div>
+            <!-- /.info-box-content -->
+          </div>
+          <!-- /.info-box -->
+        </div>
+        <!-- /.col -->
+        <div class="col-md-3 col-sm-6 col-xs-12">
+          <div class="info-box">
+            <span class="info-box-icon bg-aqua"><i class="fa fa-shower"></i></span>
+
+            <div class="info-box-content">
+              <span class="info-box-text">Water Pump</span>
+              <span class="info-box-number">{{ status.relay3 }}</span>
+            </div>
+            <!-- /.info-box-content -->
+          </div>
+          <!-- /.info-box -->
+        </div>
+        <!-- /.col -->
+      </div>
+      <!-- /.row -->
+
+      <div class="row">
+        <div class="col-md-12">
+          <div class="box">
+            <div class="box-header with-border">
+              <h3 class="box-title">Sensors Data</h3>
+
+              <div class="box-tools pull-right">
+                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
+                </button>
+                <div class="btn-group">
+                  <button type="button" class="btn btn-box-tool dropdown-toggle" data-toggle="dropdown">
+                    <i class="fa fa-wrench"></i></button>
+                  <ul class="dropdown-menu" role="menu">
+                    <li><a href="#">Last Hour</a></li>
+                    <li><a href="#">Last Day</a></li>
+                    <li><a href="#">Last Month</a></li>
+                    <li><a href="#">Last Year</a></li>
+                  </ul>
+                </div>
+                <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
+              </div>
+            </div>
+            <!-- /.box-header -->
+            <div class="box-body">
+              <div class="row">
+                <div class="col-md-12">
+                  <p class="text-center">
+                    <strong>Values: 1 Jan, 2014 - 30 Jul, 2014</strong>
+                  </p>
+                  <div class="chart">
+                    <!-- Sales Chart Canvas -->
+                    <canvas id="chart" style="height: 400px;"></canvas>
+                  </div>
+                  <!-- /.chart-responsive -->
+                </div>
+                <!-- /.col -->
+              </div>
+              <!-- /.row -->
+            </div>
+            <!-- ./box-body -->
+            <div class="box-footer">
+              <div class="row">
+                <div class="col-sm-3 col-xs-6">
+                  <div class="description-block border-right">
+                    <span class="description-percentage text-red"><i></i>Temperature</span>
+                    <h5 class="description-header">23 C </h5>
+                  </div>
+                  <!-- /.description-block -->
+                </div>
+                <!-- /.col -->
+                <div class="col-sm-3 col-xs-6">
+                  <div class="description-block border-right">
+                    <span class="description-percentage text-green"><i></i>Humidity</span>
+                    <h5 class="description-header">46 %</h5>
+                  </div>
+                  <!-- /.description-block -->
+                </div>
+                <!-- /.col -->
+                <div class="col-sm-3 col-xs-6">
+                  <div class="description-block border-right">
+                    <span class="description-percentage text-grey"><i></i>Light</span>
+                    <h5 class="description-header">15643</h5>
+                  </div>
+                  <!-- /.description-block -->
+                </div>
+                <!-- /.col -->
+                <div class="col-sm-3 col-xs-6">
+                  <div class="description-block">
+                    <span class="description-percentage text-aqua"><i></i>Pressure</span>
+                    <h5 class="description-header">1200 hPa</h5>
+                  </div>
+                  <!-- /.description-block -->
+                </div>
+              </div>
+              <!-- /.row -->
+            </div>
+            <!-- /.box-footer -->
+          </div>
+          <!-- /.box -->
+        </div>
+        <!-- /.col -->
+      </div>
+      <!-- /.row -->
+      <!-- Main row -->
+      <div class="row">
+        <!-- Left col -->
+        <div class="col-md-10">
+          <div class="box">
+            <div class="box-header with-border">
+              <h3 class="box-title">Sensors and Pins</h3>
+              <div class="box-tools pull-right">
+                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
+                </button>
+                <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
+              </div>
+            </div>
+            <!-- /.box-header -->
+            <div class="box-body">
+              <div class="table-responsive">
+                <table class="table no-margin">
+                  <thead>
+                  <tr>
+                    <th>Light Switch</th>
+                    <th>Exhaust Switch</th>
+                    <th>Fan Switch</th>
+                    <th>Pump Switch</th>
+                    <th>Min. Water Level</th>
+                    <th>Temp. Sensor</th>
+                    <th>Bar. Sensor</th>
+                    <th>Soil Sensor</th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                  <tr>
+
+                    <td>relay1 - pin{{ pins.relay1 }}</td>
+                    <td>relay2 - pin{{ pins.relay2 }}</td>
+                    <td>relay3 - pin{{ pins.relay3 }}</td>
+                    <td>relay4 - pin{{ pins.relay4 }}</td>
+                    <td>50</td>
+                    <td>AM2302</td>
+                    <td>BMP180</td>
+                    <td>MI FLORA</td>
+                  </tr>
+                  </tbody>
+                </table>
+              </div>
+              <!-- /.table-responsive -->
+            </div>
+            <!-- /.box-body -->
+          </div>
+        <!-- TABLE: Schedules -->
+          <div class="box">
+            <div class="box-header with-border">
+              <h3 class="box-title">Schdules</h3>
+
+              <div class="box-tools pull-right">
+                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
+                </button>
+                <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
+              </div>
+            </div>
+            <!-- /.box-header -->
+            <div class="box-body">
+              <div class="table-responsive">
+                <table class="table no-margin">
+                  <thead>
+                  <tr>
+                    <th>ID</th>
+                    <th>Switch</th>
+                    <th>Start time</th>
+                    <th>Stop time</th>
+                    <th>Status</th>
+                    <th></th>
+                    <th></th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                  <tr>
+                    <td>relay1</td>
+                    <td>Lights Switch</td>
+                    <td>18:00</td>
+                    <td>06:00</td>
+                    <td><span class="label label-success">Running</span></td>
+                    <td><a href="pages/examples/invoice.html">Edit</a></td>
+                    <td><a href="#" data-record-id="23" data-record-title="Schedule Relay_1_12" data-toggle="modal" data-target="#confirm-delete">Delete</a></td>
+                  </tr>
+                  </tbody>
+                </table>
+              </div>
+              <!-- /.table-responsive -->
+            </div>
+            <!-- /.box-body -->
+            <div class="box-footer clearfix">
+              <a href="/schedule/add" class="btn btn-sm btn-info btn-flat pull-left">Create new schedule</a>
+            </div>
+            <!-- /.box-footer -->
+          </div>
+          <!-- /.box -->
+        </div>
+        <!-- /.col -->
+
+        <div class="col-md-2">
+          <div class="box">
+            <div class="box-header">
+              <h3 class="box-title">Controls</h3>
+            </div>
+            <div class="box-body">
+              <!-- Split button -->
+              <p><b>Lights</b> Switch:</p>
+              <div class="margin">
+                <button class="btn btn-success form-control" data-record-id="relay1" data-record-title="Lights" data-toggle="modal" data-target="#confirm-switch-on">
+                  Lights ON
+                </button>
+                <button class="btn btn-danger form-control" data-record-id="relay1" data-record-title="Lights" data-toggle="modal" data-target="#confirm-switch-off">
+                  Lights OFF
+                </button>
+              </div>
+
+              <p><b>Exhaust</b> Switch:</p>
+              <div class="margin">
+               <button class="btn btn-success form-control" data-record-id="relay2" data-record-title="Exhaust" data-toggle="modal" data-target="#confirm-switch-on">
+                  Exhaust ON
+                </button>
+                <button class="btn btn-danger form-control" data-record-id="relay2" data-record-title="Exhaust" data-toggle="modal" data-target="#confirm-switch-off">
+                  Exhaust OFF
+                </button>
+              </div>
+
+              <p><b>Fan</b> Switch:</p>
+              <div class="margin">
+               <button class="btn btn-success form-control" data-record-id="relay3" data-record-title="Fan" data-toggle="modal" data-target="#confirm-switch-on">
+                  Fan ON
+                </button>
+                <button class="btn btn-danger form-control" data-record-id="relay3" data-record-title="Fan" data-toggle="modal" data-target="#confirm-switch-off">
+                  Fan OFF
+                </button>
+              </div>
+
+              <p><b>Water Pump</b> Switch:</p>
+              <div class="margin">
+               <button class="btn btn-success form-control" data-record-id="relay4" data-record-title="Water Pump" data-toggle="modal" data-target="#confirm-switch-on">
+                  Pump ON
+                </button>
+                <button class="btn btn-danger form-control" data-record-id="relay4" data-record-title="Water Pump" data-toggle="modal" data-target="#confirm-switch-off">
+                  Pump OFF
+                </button>
+              </div>
+            </div>
+            <!-- /.box-body -->
+          </div>
+        </div>
+        <!-- /.col -->
+      </div>
+      <!-- /.row -->
+    </section>
+    <!-- /.content -->
+  </div>
+  <!-- /.content-wrapper -->
+  <footer class="main-footer">
+    <div class="pull-right hidden-xs">
+      <b>Version</b> 0.0.1
+    </div>
+    <strong>Copyright &copy; piMAT - </strong> All rights
+    reserved.
+  </footer>
+
+  <!-- Control Sidebar -->
+
+    <div class="modal fade" id="confirm-switch-on" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                    <h4 class="modal-title" id="myModalLabel1">Confirm Turn ON </h4>
+                </div>
+                <div class="modal-body">
+                    <p>You are about to turn ON the <b><i class="title"></i></b> switch.</p>
+                    <p>Do you want to proceed?</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-success btn-ok">Turn ON</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+      <div class="modal fade" id="confirm-switch-off" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                    <h4 class="modal-title" id="myModalLabel2">Confirm Turn OFF</h4>
+                </div>
+                <div class="modal-body">
+                    <p>You are about to turn OFF the <b><i class="title"></i></b> switch.</p>
+                    <p>Do you want to proceed?</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-danger btn-ok">Turn OFF</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="confirm-delete" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                    <h4 class="modal-title" id="myModalLabel">Confirm Delete</h4>
+                </div>
+                <div class="modal-body">
+                    <p>You are about to delete <b><i class="title"></i></b> record, this procedure is irreversible.</p>
+                    <p>Do you want to proceed?</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-danger btn-ok">Delete</button>
+                </div>
+            </div>
+        </div>
+    </div>
+  <!-- /.control-sidebar -->
+  <!-- Add the sidebar's background. This div must be placed
+       immediately after the control sidebar -->
+  <div class="control-sidebar-bg"></div>
+</div>
+<!-- ./wrapper -->
+
+<!-- jQuery 3 -->
+<script src="/static/bower_components/jquery/dist/jquery.min.js"></script>
+<!-- Bootstrap 3.3.7 -->
+<script src="/static/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+<!-- FastClick -->
+<script src="/static/bower_components/fastclick/lib/fastclick.js"></script>
+<!-- AdminLTE App -->
+<script src="/static/dist/js/adminlte.min.js"></script>
+<!-- SlimScroll -->
+<script src="/static/bower_components/jquery-slimscroll/jquery.slimscroll.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.6.0/Chart.js"></script>
+
+<script>
+    $('#confirm-switch-on').on('click', '.btn-ok', function(e) {
+        var $modalDiv = $(e.delegateTarget);
+        var id = $(this).data('recordId');
+        // $.ajax({url: '/relays/on/' + id, type: 'DELETE'})
+        $.post({url: '/relays/on/' + id, success: function(){window.location.href = "/"}}).then()
+        $modalDiv.addClass('loading');
+        setTimeout(function() {
+            $modalDiv.modal('hide').removeClass('loading');
+        }, 1000)
+    });
+    $('#confirm-switch-on').on('show.bs.modal', function(e) {
+        var data = $(e.relatedTarget).data();
+        $('.title', this).text(data.recordTitle);
+        $('.btn-ok', this).data('recordId', data.recordId);
+    });
+
+    $('#confirm-switch-off').on('click', '.btn-ok', function(e) {
+        var $modalDiv = $(e.delegateTarget);
+        var id = $(this).data('recordId');
+        // $.ajax({url: '/api/record/' + id, type: 'DELETE'})
+        $.post({url: '/relays/off/' + id, success: function(){window.location.href = "/"}}).then()
+        $modalDiv.addClass('loading');
+        setTimeout(function() {
+            $modalDiv.modal('hide').removeClass('loading');
+        }, 1000)
+    });
+    $('#confirm-switch-off').on('show.bs.modal', function(e) {
+        var data = $(e.relatedTarget).data();
+        $('.title', this).text(data.recordTitle);
+        $('.btn-ok', this).data('recordId', data.recordId);
+    });
+
+    $('#confirm-delete').on('click', '.btn-ok', function(e) {
+        var $modalDiv = $(e.delegateTarget);
+        var id = $(this).data('recordId');
+        // $.ajax({url: '/schedules/delete/' + id, type: 'DELETE'})
+        $.post('/schedules/delete/' + id).then()
+        $modalDiv.addClass('loading');
+        setTimeout(function() {
+            $modalDiv.modal('hide').removeClass('loading');
+        }, 1000)
+    });
+    $('#confirm-delete').on('show.bs.modal', function(e) {
+        var data = $(e.relatedTarget).data();
+        $('.title', this).text(data.recordTitle);
+        $('.btn-ok', this).data('recordId', data.recordId);
+    });
+</script>
+
+<script>
+    // set default to straight lines - no curves
+    // Chart.defaults.global.elements.line.tension = 0;
+    // set default no fill beneath the line
+    Chart.defaults.global.elements.line.fill = false;
+
+    var barChartData = {
+      labels: [2016, 2017, 2018, 2019, 2020, 2021, 2022],
+      datasets: [{
+        type: 'line',
+        label: 'Temperature',
+        yAxisID: "y-axis-0",
+        borderColor: "rgba(217,83,79,0.75)",
+        backgroundColor: "rgba(217,83,79,0.75)",
+        data: [23.5, 24, 25.5, 24, 28, 29, 24]
+      }, {
+        type: 'line',
+        label: 'Humidity',
+        yAxisID: "y-axis-0",
+        borderColor: "rgba(92,184,92,0.75)",
+        backgroundColor: "rgba(92,184,92,0.75)",
+        data: [60.5, 56.2, 49.9, 54, 45, 46, 50]
+      }, {
+        type: 'line',
+        label: 'Ligh level',
+        yAxisID: "y-axis-1",
+        borderColor: "rgba(51,51,51,0.5)",
+        backgroundColor: "rgba(51,51,51,0.5)",
+        data: [150450, 260230, 473400, 327, 347, 345, 399]
+      }, {
+        type: 'line',
+        label: 'Pressure',
+        yAxisID: "y-axis-1",
+        borderColor: "rgba(151,187,205,0.5)",
+        backgroundColor: "rgba(151,187,205,0.5)",
+        data: [1000, 3000, 1000, 1222, 1433, 1328, 1457]
+      }]
+    };
+
+    var ctx = document.getElementById("chart");
+    // allocate and initialize a chart
+    var ch = new Chart(ctx, {
+      type: 'line',
+      data: barChartData,
+      options: {
+        title: {
+          display: false,
+          text: "Chart.js Bar Chart - Stacked"
+        },
+        tooltips: {
+          mode: 'label'
+        },
+        responsive: false,
+        scales: {
+          xAxes: [{
+            stacked: true,
+            scaleLabel: {
+                display: true,
+                labelString: 'Datetime'
+            },
+            gridLines : {
+                display : true
+            }
+          }],
+          yAxes: [{
+            stacked: false,
+            position: "left",
+            id: "y-axis-0",
+            scaleLabel: {
+                display: true,
+                labelString: 'Temperature/Humidity'
+            },
+            gridLines : {
+                display : true
+            }
+          }, {
+            stacked: false,
+            position: "right",
+            id: "y-axis-1",
+            scaleLabel: {
+                display: true,
+                labelString: 'Light Intensity'
+            },
+            gridLines : {
+                display : true
+            }
+          }]
+        }
+      }
+    });
+</script>
+
+</body>
+</html>
