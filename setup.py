@@ -4,14 +4,14 @@ from setuptools import setup, find_packages
 setup(
     name='pimat',
     description='Raspberry Pi Multi Automation tool',
-    version='0.0.4',
+    version='0.0.5',
     url='https://github.com/jorgensoares/pimat',
     author='Jorge Soares',
     packages=find_packages(exclude=['tests']),
     entry_points={
         'console_scripts': [
             'pimat-server = pimat_server.__main__:main',
-            'pimat-web = pimat_web.app:app.run'
+            'pimat-web = pimat_web.app:app.run(host="0.0.0.0", port=80, debug=True)'
         ]
     },
     install_requires=['flask', 'configparser', 'python-crontab', 'RPi.GPIO', 'adafruit_python_dht'],

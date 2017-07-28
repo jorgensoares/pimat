@@ -1,7 +1,7 @@
 #!/usr/bin/python
 from crontab import CronTab
 
-cron = CronTab()
+cron = CronTab(user='root')
 
 
 def add_schedule(relay, start_time, stop_time):
