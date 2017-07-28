@@ -63,7 +63,14 @@ def index():
     print(humidity)
     print(light1)
 
-    return render_template('index.html', pins=relay_pins, status=relay_status)
+    return render_template('index.html',
+                           pins=relay_pins,
+                           status=relay_status,
+                           timestamp=timestamp,
+                           temperature1=temperature1,
+                           humidity=humidity,
+                           light1=light1
+                           )
 
 
 @app.route("/schedule/add", methods=['POST', 'GET'])

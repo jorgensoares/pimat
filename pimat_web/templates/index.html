@@ -569,28 +569,28 @@
     Chart.defaults.global.elements.line.fill = false;
 
     var barChartData = {
-      labels: [2016, 2017, 2018, 2019, 2020, 2021, 2022],
+      labels: {{ timestamp }},
       datasets: [{
         type: 'line',
         label: 'Temperature',
         yAxisID: "y-axis-0",
         borderColor: "rgba(217,83,79,0.75)",
         backgroundColor: "rgba(217,83,79,0.75)",
-        data: [23.5, 24, 25.5, 24, 28, 29, 24]
+        data: {{ temperature1 }}
       }, {
         type: 'line',
         label: 'Humidity',
         yAxisID: "y-axis-0",
         borderColor: "rgba(92,184,92,0.75)",
         backgroundColor: "rgba(92,184,92,0.75)",
-        data: [60.5, 56.2, 49.9, 54, 45, 46, 50]
+        data: {{ humidity }}
       }, {
         type: 'line',
         label: 'Ligh level',
         yAxisID: "y-axis-1",
         borderColor: "rgba(51,51,51,0.5)",
         backgroundColor: "rgba(51,51,51,0.5)",
-        data: [150450, 260230, 473400, 327, 347, 345, 399]
+        data: {{ light1 }}
       }, {
         type: 'line',
         label: 'Pressure',
