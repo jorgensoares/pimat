@@ -26,7 +26,6 @@ mysql.init_app(app)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:zaq12wsx@localhost/pimat'
 app.config['SQLALCHEMY_ECHO'] = False
 
-app.config.from_pyfile('hello.cfg')
 db = SQLAlchemy(app)
 
 
