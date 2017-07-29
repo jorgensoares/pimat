@@ -256,69 +256,72 @@ $(function() {
     });
 });
 </script>
-<script>
-    // set default to straight lines - no curves
-    // Chart.defaults.global.elements.line.tension = 0;
-    // set default no fill beneath the line
-    Chart.defaults.global.elements.line.fill = false;
 
-    var barChartData = {
-      labels: [{% for item in result %}
-                  "{{ item.timestamp.strftime('%Y-%m-%d %H:%M') }}",
-              {% endfor %}],
-      datasets: [{
+{% if result %}
+  <script>
+      // set default to straight lines - no curves
+      // Chart.defaults.global.elements.line.tension = 0;
+      // set default no fill beneath the line
+      Chart.defaults.global.elements.line.fill = false;
+
+      var barChartData = {
+        labels: [{% for item in result %}
+                    "{{ item.timestamp.strftime('%Y-%m-%d %H:%M') }}",
+                {% endfor %}],
+        datasets: [{
+          type: 'line',
+          label: "{{ sensor }}",
+          yAxisID: "y-axis-0",
+          borderColor: "rgba(217,83,79,0.75)",
+          backgroundColor: "rgba(217,83,79,0.75)",
+          data: [{% for item in result %}
+                        "{{ item.1 }}",
+                      {% endfor %}]
+        }]
+      };
+
+      var ctx = document.getElementById("chart");
+      // allocate and initialize a chart
+      var ch = new Chart(ctx, {
         type: 'line',
-        label: "{{ sensor }}",
-        yAxisID: "y-axis-0",
-        borderColor: "rgba(217,83,79,0.75)",
-        backgroundColor: "rgba(217,83,79,0.75)",
-        data: [{% for item in result %}
-                      "{{ item.1 }}",
-                    {% endfor %}]
-      }]
-    };
-
-    var ctx = document.getElementById("chart");
-    // allocate and initialize a chart
-    var ch = new Chart(ctx, {
-      type: 'line',
-      data: barChartData,
-      options: {
-        title: {
-          display: false,
-          text: "Chart.js Bar Chart - Stacked"
-        },
-        tooltips: {
-          mode: 'label'
-        },
-        responsive: false,
-        scales: {
-          xAxes: [{
-            stacked: true,
-            scaleLabel: {
-                display: true,
-                labelString: 'Datetime'
-            },
-            gridLines : {
-                display : true
-            }
-          }],
-          yAxes: [{
-            stacked: false,
-            position: "left",
-            id: "y-axis-0",
-            scaleLabel: {
-                display: true,
-                labelString: "{{ sensor }}"
-            },
-            gridLines : {
-                display : true
-            }
-          }]
+        data: barChartData,
+        options: {
+          title: {
+            display: false,
+            text: "Chart.js Bar Chart - Stacked"
+          },
+          tooltips: {
+            mode: 'label'
+          },
+          responsive: false,
+          scales: {
+            xAxes: [{
+              stacked: true,
+              scaleLabel: {
+                  display: true,
+                  labelString: 'Datetime'
+              },
+              gridLines : {
+                  display : true
+              }
+            }],
+            yAxes: [{
+              stacked: false,
+              position: "left",
+              id: "y-axis-0",
+              scaleLabel: {
+                  display: true,
+                  labelString: "{{ sensor }}"
+              },
+              gridLines : {
+                  display : true
+              }
+            }]
+          }
         }
-      }
-    });
-</script>
+      });
+  </script>
+{% endif %}
 
 </body>
 </html>

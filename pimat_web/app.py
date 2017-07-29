@@ -126,8 +126,7 @@ def add_new_schedule(action, schedule_id):
 
     elif request.method == 'POST' and action == 'delete':
         details = Schedules.query.filter(Schedules.id == schedule_id).all()
-        relay = details.relay
-        print relay
+        relay = details[0].relay
         remove_schedule(relay)
         Schedules.query.filter(Schedules.id == schedule_id).delete()
         db.session.commit()
