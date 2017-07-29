@@ -1,6 +1,7 @@
 #!/usr/bin/python
 import configparser
 from flask import Flask, request, redirect
+from flask import flash
 from flask import render_template
 from flask import session
 from flask import url_for
@@ -133,6 +134,7 @@ def login():
                 session['first_name'] = user.first_name
                 session['last_name'] = user.last_name
                 session['email'] = user.email
+                flash('Logged in successfully.')
 
                 return redirect(url_for("index"))
     else:
