@@ -597,7 +597,7 @@
       }, {
         type: 'line',
         label: 'Ligh level',
-        yAxisID: "y-axis-0",
+        yAxisID: "y-axis-1",
         borderColor: "rgba(51,51,51,0.5)",
         backgroundColor: "rgba(51,51,51,0.5)",
         data: [{% for item in light1 %}
@@ -609,7 +609,7 @@
         yAxisID: "y-axis-1",
         borderColor: "rgba(151,187,205,0.5)",
         backgroundColor: "rgba(151,187,205,0.5)",
-        data: [1000, 3000, 1000, 1222, 1433, 1328, 1457]
+        data: [1000, 1500, 1000, 1222, 1033, 978, 1457]
       }]
     };
 
@@ -644,7 +644,7 @@
             id: "y-axis-0",
             scaleLabel: {
                 display: true,
-                labelString: 'Temperature / Humidity / Light Intensity'
+                labelString: 'Temperature / Humidity'
             },
             gridLines : {
                 display : true
@@ -655,7 +655,7 @@
             id: "y-axis-1",
             scaleLabel: {
                 display: true,
-                labelString: 'Pressure'
+                labelString: 'Pressure / Light Intensity'
             },
             gridLines : {
                 display : true
