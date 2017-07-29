@@ -40,6 +40,7 @@ def sigterm_handler(_signo, _stack_frame):
 
 # Create user model.
 class User(db.Model):
+
     __tablename__ = 'user'
 
     id = db.Column(db.Integer, primary_key=True)
@@ -65,7 +66,9 @@ class User(db.Model):
 
 
 class Sensors(db.Model):
+
     __tablename__ = 'sensors'
+
     id = db.Column('id', db.Integer, primary_key=True)
     timestamp = db.Column(db.DateTime)
     temperature1 = db.Column(db.Float)
@@ -85,7 +88,9 @@ class Sensors(db.Model):
 
 
 class Schedules(db.Model):
+
     __tablename__ = 'schedules'
+
     id = db.Column('id', db.Integer, primary_key=True)
     relay = db.Column(db.String(10))
     switch = db.Column(db.String(50))
@@ -113,9 +118,8 @@ def user_loader(user_id):
 @app.route("/login", methods=["GET", "POST"])
 def login():
     if request.method == 'POST':
-        print request.form.get("username")
+        user = User.query.filter_by(username=request.form.get("username")).first()
 
-        user = User.query.get(request.form.get("username"))
         if user:
             if user.password == request.form.get("password"):
                 login_user(user, remember=True)
@@ -129,37 +133,41 @@ def login():
 def logout():
     """Logout the current user."""
     logout_user()
-    return render_template("logout.html")
+    return render_template("login.html")
 
 
 @app.route("/")
+@login_required
 def index():
-    relay_pins = dict()
-    relay_status = dict()
-    relay_pins['relay1'] = relay_config['pins']['relay1']
-    relay_pins['relay2'] = relay_config['pins']['relay2']
-    relay_pins['relay3'] = relay_config['pins']['relay3']
-    relay_pins['relay4'] = relay_config['pins']['relay4']
-    relay_status['relay1'] = get_pin_status(relay_pins['relay1'])
-    relay_status['relay2'] = get_pin_status(relay_pins['relay2'])
-    relay_status['relay3'] = get_pin_status(relay_pins['relay3'])
-    relay_status['relay4'] = get_pin_status(relay_pins['relay4'])
+    if current_user.is_authenticated:
+        relay_pins = dict()
+        relay_status = dict()
+        relay_pins['relay1'] = relay_config['pins']['relay1']
+        relay_pins['relay2'] = relay_config['pins']['relay2']
+        relay_pins['relay3'] = relay_config['pins']['relay3']
+        relay_pins['relay4'] = relay_config['pins']['relay4']
+        relay_status['relay1'] = get_pin_status(relay_pins['relay1'])
+        relay_status['relay2'] = get_pin_status(relay_pins['relay2'])
+        relay_status['relay3'] = get_pin_status(relay_pins['relay3'])
+        relay_status['relay4'] = get_pin_status(relay_pins['relay4'])
 
-    sensors_data = Sensors.query.filter(Sensors.timestamp.between(get_previous_date(1), get_now())).\
-        order_by(Sensors.timestamp.asc()).all()
+        sensors_data = Sensors.query.filter(Sensors.timestamp.between(get_previous_date(1), get_now())).\
+            order_by(Sensors.timestamp.asc()).all()
 
-    last_reading = Sensors.query.order_by(Sensors.timestamp.desc()).first()
+        last_reading = Sensors.query.order_by(Sensors.timestamp.desc()).first()
 
-    return render_template('index.html',
-                           pins=relay_pins,
-                           status=relay_status,
-                           sensors_data=sensors_data,
-                           schedules=Schedules.query.order_by(Schedules.relay.asc()).all(),
-                           last_reading=last_reading
-                           )
-
+        return render_template('index.html',
+                               pins=relay_pins,
+                               status=relay_status,
+                               sensors_data=sensors_data,
+                               schedules=Schedules.query.order_by(Schedules.relay.asc()).all(),
+                               last_reading=last_reading
+                               )
+    else:
+        return redirect(url_for("login"))
 
 @app.route("/schedule/<action>/<schedule_id>", methods=['POST', 'GET'])
+@login_required
 def add_new_schedule(action, schedule_id):
     if request.method == 'POST' and action == 'add':
         relay = request.form.get("relay")
@@ -198,6 +206,7 @@ def add_new_schedule(action, schedule_id):
 
 
 @app.route("/relays/<action>/<relay>", methods=['POST'])
+@login_required
 def switch_relay(action, relay):
     if action and relay:
 
@@ -239,11 +248,13 @@ def sensors():
 
 
 @app.route("/camera", methods=['GET'])
+@login_required
 def camera():
     return render_template('camera.html')
 
 
 @app.route("/logs", methods=['GET'])
+@login_required
 def logs():
     with open("/var/log/pimat/sensors.log", "r") as f:
         sensors_log = f.read()
