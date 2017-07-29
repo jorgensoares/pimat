@@ -196,7 +196,7 @@
           <div class="row">
             <div class="col-md-12">
               <p class="text-center">
-                <strong>Values: 1 Jan, 2014 - 30 Jul, 2014</strong>
+                <strong>{{ dates }}</strong>
               </p>
               <div class="chart">
                 <!-- Sales Chart Canvas -->
@@ -249,7 +249,7 @@
 <script src="/static/plugins/timepicker/bootstrap-timepicker.min.js"></script>
 <script type="text/javascript">
 $(function() {
-    $('input[name="dates"]').daterangepicker(
+    $('input[name="dates"]').daterangepicker({
             locale: {
             format: 'YYYY/MM/DD'
             }

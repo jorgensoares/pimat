@@ -6,27 +6,26 @@ from flask import url_for
 import signal
 import sys
 from pimat_server.relays import get_pin_status, Relays
-from flaskext.mysql import MySQL
 from flask_sqlalchemy import SQLAlchemy
-from datetime import datetime
 from pimat_server.scheduler import add_schedule
+from datetime import datetime, timedelta
 
 relay_config = configparser.ConfigParser()
 relay_config.read('/opt/pimat/relays.ini')
 
-
 app = Flask(__name__)
-mysql = MySQL()
-app.config['MYSQL_DATABASE_USER'] = 'root'
-app.config['MYSQL_DATABASE_PASSWORD'] = 'zaq12wsx'
-app.config['MYSQL_DATABASE_DB'] = 'pimat'
-app.config['MYSQL_DATABASE_HOST'] = 'localhost'
-mysql.init_app(app)
-
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:zaq12wsx@localhost/pimat'
 app.config['SQLALCHEMY_ECHO'] = False
-
 db = SQLAlchemy(app)
+
+
+def get_date(days):
+    return datetime.today() - timedelta(days=days)
+
+
+def get_now():
+    # get the current date and time as a string
+    return datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
 
 
 def sigterm_handler(_signo, _stack_frame):
@@ -86,10 +85,16 @@ def index():
     relay_status['relay3'] = get_pin_status(relay_pins['relay3'])
     relay_status['relay4'] = get_pin_status(relay_pins['relay4'])
 
+    start_date = None
+    end_date = None
+
+    sensors_data = Sensors.query.filter(Sensors.timestamp.between(get_date(1), get_now())).\
+        order_by(Sensors.timestamp.asc()).all()
+
     return render_template('index.html',
                            pins=relay_pins,
                            status=relay_status,
-                           sensors_data=Sensors.query.order_by(Sensors.timestamp.asc()).all(),
+                           sensors_data=sensors_data,
                            schedules=Schedules.query.order_by(Schedules.relay.asc()).all()
                            )
 
@@ -158,16 +163,13 @@ def switch_relay(action, relay):
 @app.route("/sensors", methods=['POST', 'GET'])
 def sensors():
     if request.args.get('sensor') and request.args.get('dates'):
+
         sensor = request.args.get("sensor")
-
         start_date, end_date = request.args.get("dates").split(' - ')
-        start_month, start_day, start_year = start_date.split('/')
-        end_month, end_day, end_year = end_date.split('/')
-        start_date = '{0}/{1}/{2}'.format(start_year, start_month, start_day)
-        end_date = '{0}/{1}/{2} 23:59:59'.format(end_year, end_month, end_day)
-        column = 'sensors.%s' % sensor
+        end_date = '{0} 23:59:59'.format(end_date)
+        sensor_column = 'sensors.%s' % sensor
 
-        result = Sensors.query.with_entities(Sensors.timestamp, column).\
+        result = Sensors.query.with_entities(Sensors.timestamp, sensor_column).\
             filter(Sensors.timestamp.between(start_date, end_date)).all()
 
         return render_template('sensors.html', result=result, sensor=sensor, dates=request.args.get("dates"))
