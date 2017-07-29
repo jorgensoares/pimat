@@ -141,8 +141,10 @@ def switch_relay(action, relay):
 def sensors():
     if request.args.get('sensor') and request.args.get('start_date') and request.args.get('stop_date'):
         sensor = request.form.get("sensor")
-        start_time = request.form.get("start_date")
-        stop_time = request.form.get("stop_date")
+        dates = request.form.get("start_date")
+
+        print (dates)
+        print (sensor)
 
     else:
         return render_template('sensors.html')

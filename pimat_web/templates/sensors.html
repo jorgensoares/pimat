@@ -145,13 +145,13 @@
             <div class="col-md-3">
               <div class="form-group">
                 <label>Sensor:</label>
-                <select class="form-control select2" style="width: 100%;">
-                  <option selected="selected">Temperature 1</option>
-                  <option>Temperature 2</option>
-                  <option>Humidity</option>
-                  <option>Light</option>
-                  <option>Presure</option>
-                  <option>Altitude</option>
+                <select name="sensor" class="form-control select2" style="width: 100%;">
+                  <option value="temperature1" selected="selected">Temperature 1</option>
+                  <option value="temperature2">Temperature 2</option>
+                  <option value="humidiy">Humidity</option>
+                  <option value="light1">Light</option>
+                  <option value="pressure">Presure</option>
+                  <option value="altitude">Altitude</option>
                 </select>
               </div>
             </div>
@@ -159,7 +159,7 @@
             <div class="col-md-3">
                 <div class="form-group">
                   <label>Date Interval:</label>
-                  <input type="text" class="form-control pull-left" name="daterange">
+                  <input type="text" name="dates" class="form-control pull-left" name="daterange">
                   <!-- /.input group -->
                 </div>
                 <!-- /.form group -->
