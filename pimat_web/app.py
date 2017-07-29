@@ -146,7 +146,11 @@ def login():
 @login_required
 def logout():
     logout_user()
-    session.pop()
+    session.pop('first_name', None)
+    session.pop('last_name', None)
+    session.pop('email', None)
+    session.pop('username', None)
+
     return render_template("login.html")
 
 
