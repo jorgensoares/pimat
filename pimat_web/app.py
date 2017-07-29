@@ -7,7 +7,7 @@ import signal
 import sys
 from pimat_server.relays import get_pin_status, Relays
 from flask_sqlalchemy import SQLAlchemy
-from pimat_server.scheduler import add_schedule
+from pimat_server.scheduler import add_schedule, remove_schedule
 from datetime import datetime, timedelta
 
 relay_config = configparser.ConfigParser()
@@ -19,13 +19,13 @@ app.config['SQLALCHEMY_ECHO'] = False
 db = SQLAlchemy(app)
 
 
-def get_date(days):
+def get_previous_date(days):
     return datetime.today() - timedelta(days=days)
 
 
 def get_now():
     # get the current date and time as a string
-    return datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    return datetime.now().strftime('%Y-%m-%d %H:%M:%S')
 
 
 def sigterm_handler(_signo, _stack_frame):
@@ -85,10 +85,7 @@ def index():
     relay_status['relay3'] = get_pin_status(relay_pins['relay3'])
     relay_status['relay4'] = get_pin_status(relay_pins['relay4'])
 
-    start_date = None
-    end_date = None
-
-    sensors_data = Sensors.query.filter(Sensors.timestamp.between(get_date(1), get_now())).\
+    sensors_data = Sensors.query.filter(Sensors.timestamp.between(get_previous_date(1), get_now())).\
         order_by(Sensors.timestamp.asc()).all()
 
     return render_template('index.html',
@@ -128,7 +125,10 @@ def add_new_schedule(action, schedule_id):
         return redirect('/')
 
     elif request.method == 'POST' and action == 'delete':
-
+        details = Schedules.query.filter(Schedules.id == schedule_id).all()
+        relay = details.relay
+        print relay
+        remove_schedule(relay)
         Schedules.query.filter(Schedules.id == schedule_id).delete()
         db.session.commit()
 
