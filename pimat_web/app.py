@@ -75,7 +75,6 @@ class Schedules(db.Model):
 def index():
     relay_pins = dict()
     relay_status = dict()
-
     relay_pins['relay1'] = relay_config['pins']['relay1']
     relay_pins['relay2'] = relay_config['pins']['relay2']
     relay_pins['relay3'] = relay_config['pins']['relay3']
@@ -88,11 +87,14 @@ def index():
     sensors_data = Sensors.query.filter(Sensors.timestamp.between(get_previous_date(1), get_now())).\
         order_by(Sensors.timestamp.asc()).all()
 
+    last_reading = Schedules.query.order_by(Sensors.timestamp.desc()).first
+
     return render_template('index.html',
                            pins=relay_pins,
                            status=relay_status,
                            sensors_data=sensors_data,
-                           schedules=Schedules.query.order_by(Schedules.relay.asc()).all()
+                           schedules=Schedules.query.order_by(Schedules.relay.asc()).all(),
+                           last_reading=last_reading
                            )
 
 
