@@ -62,9 +62,6 @@ class User(db.Model):
     def get_id(self):
         return self.id
 
-    # Required for administrative interface
-    def __unicode__(self):
-        return self.username
 
 
 class Sensors(db.Model):
@@ -115,16 +112,16 @@ def user_loader(user_id):
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
-    """For GET requests, display the login form. For POSTS, login the current user
-    by processing the form."""
+    if request.method == 'POST':
+        print request.form.get("username")
 
-    user = User.query.get(request.form.get("username"))
-    if user:
-        if user.password == request.form.get("password"):
-            login_user(user, remember=True)
-            return redirect(url_for("index"))
-
-    return render_template("login.html")
+        user = User.query.get(request.form.get("username"))
+        if user:
+            if user.password == request.form.get("password"):
+                login_user(user, remember=True)
+                return redirect(url_for("index"))
+    else:
+        return render_template("login.html")
 
 
 @app.route("/logout", methods=["GET"])
@@ -221,8 +218,9 @@ def switch_relay(action, relay):
     else:
         return render_template('error.html', error="wrong request")
 
-@login_required
+
 @app.route("/sensors", methods=['POST', 'GET'])
+@login_required
 def sensors():
     if request.args.get('sensor') and request.args.get('dates'):
 
