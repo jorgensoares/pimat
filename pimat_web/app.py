@@ -122,7 +122,7 @@ def add_new_schedule(action, schedule_id):
 
         last = Schedules.query.order_by(Schedules.id.desc()).first()
         print last.id
-        add_schedule(relay, start_time, stop_time)
+        add_schedule(relay, start_time, stop_time, schedule_id)
 
         return redirect('/')
 
