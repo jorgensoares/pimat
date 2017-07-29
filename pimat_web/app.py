@@ -158,9 +158,10 @@ def sensors():
         end_month, end_day, end_year = end_date.split('/')
         start_date = '{0}/{1}/{2}'.format(start_year, start_month, start_day)
         end_date = '{0}/{1}/{2} 23:59:59'.format(end_year, end_month, end_day)
+        column = 'sensors.%s' % sensor
 
-
-        result = Sensors.query.filter(Sensors.timestamp.between(start_date, end_date)).all()
+        result = Sensors.query.with_entities(Sensors.timestamp, column).\
+            filter(Sensors.timestamp.between(start_date, end_date)).all()
 
         return render_template('sensors.html', result=result, sensor=sensor)
 

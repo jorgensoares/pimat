@@ -248,12 +248,12 @@ $(function() {
               {% endfor %}],
       datasets: [{
         type: 'line',
-        label: 'Temperature',
+        label: "{{ sensor }}",
         yAxisID: "y-axis-0",
         borderColor: "rgba(217,83,79,0.75)",
         backgroundColor: "rgba(217,83,79,0.75)",
         data: [{% for item in result %}
-                      "{{ item.temperature1 }}",
+                      "{{ item.1 }}",
                     {% endfor %}]
       }]
     };
@@ -289,7 +289,7 @@ $(function() {
             id: "y-axis-0",
             scaleLabel: {
                 display: true,
-                labelString: 'Temperature/Humidity'
+                labelString: "{{ sensor }}"
             },
             gridLines : {
                 display : true

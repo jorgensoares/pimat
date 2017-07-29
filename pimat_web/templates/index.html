@@ -583,7 +583,7 @@
         borderColor: "rgba(217,83,79,0.75)",
         backgroundColor: "rgba(217,83,79,0.75)",
         data: [{% for item in sensors_data %}
-                      "{{ item.%s }}" % sensor,
+                      "{{ item.temperature1 }}",
                     {% endfor %}]
       }, {
         type: 'line',
