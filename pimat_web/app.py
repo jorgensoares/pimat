@@ -90,7 +90,7 @@ def index():
                            pins=relay_pins,
                            status=relay_status,
                            sensors_data=Sensors.query.order_by(Sensors.timestamp.asc()).all(),
-                           schedules=Schedules.query.order_by(Sensors.relay.asc()).all()
+                           schedules=Schedules.query.order_by(Schedules.relay.asc()).all()
                            )
 
 
@@ -120,15 +120,8 @@ def add_new_schedule():
         db.session.add(schedule)
         db.session.commit()
 
-        # conn = mysql.connect()
-        # cursor = conn.cursor()
-        # cursor.execute("""INSERT INTO `schedules` (`relay`, `switch`, `start_time`, `stop_time`, `enabled`)
-        #             VALUES (%s, %s, %s, %s, 1)""", (relay, switch, start_time, stop_time,))
-        #
-        # cursor.close()
-        # conn.commit()
-        # conn.close()
-
+        last = Schedules.query.order_by(Schedules.id.desc()).first()
+        print last.id
         add_schedule(relay, start_time, stop_time)
 
         return redirect('/')
