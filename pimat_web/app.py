@@ -62,7 +62,7 @@ class Schedules(db.Model):
     switch = db.Column(db.String(50))
     start_time = db.Column(db.Time)
     stop_time = db.Column(db.Time)
-    enabled = db.Column(db.Bit)
+    enabled = db.Column(db.String(1))
 
     def __init__(self, relay, switch, start_time, stop_time, enabled):
         self.relay = relay
@@ -86,26 +86,11 @@ def index():
     relay_status['relay3'] = get_pin_status(relay_pins['relay3'])
     relay_status['relay4'] = get_pin_status(relay_pins['relay4'])
 
-
-
-    sensors_data = Sensors.query.order_by(Sensors.timestamp.asc()).all()
-
-
-
-    conn = mysql.connect()
-    cursor = conn.cursor()
-    cursor.execute("SELECT * from schedules")
-    schedules = cursor.fetchall()
-    cursor.close()
-    conn.close()
-
-    schedules = Schedules.query.all()
-
     return render_template('index.html',
                            pins=relay_pins,
                            status=relay_status,
-                           sensors_data=sensors_data,
-                           schedules=schedules
+                           sensors_data=Sensors.query.order_by(Sensors.timestamp.asc()).all(),
+                           schedules=Schedules.query.order_by(Sensors.relay.asc()).all()
                            )
 
 
@@ -131,14 +116,18 @@ def add_new_schedule():
         else:
             switch = None
 
-        conn = mysql.connect()
-        cursor = conn.cursor()
-        cursor.execute("""INSERT INTO `schedules` (`relay`, `switch`, `start_time`, `stop_time`, `enabled`)
-                    VALUES (%s, %s, %s, %s, 1)""", (relay, switch, start_time, stop_time,))
+        schedule = Schedules(relay, switch, start_time, stop_time, '1')
+        db.session.add(schedule)
+        db.session.commit()
 
-        cursor.close()
-        conn.commit()
-        conn.close()
+        # conn = mysql.connect()
+        # cursor = conn.cursor()
+        # cursor.execute("""INSERT INTO `schedules` (`relay`, `switch`, `start_time`, `stop_time`, `enabled`)
+        #             VALUES (%s, %s, %s, %s, 1)""", (relay, switch, start_time, stop_time,))
+        #
+        # cursor.close()
+        # conn.commit()
+        # conn.close()
 
         add_schedule(relay, start_time, stop_time)
 
