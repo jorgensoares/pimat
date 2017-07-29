@@ -574,7 +574,7 @@
 
     var barChartData = {
       labels: [{% for item in result %}
-                  "{{result.timestamp}}",
+                  "{{result.timestamp.strftime('%Y-%m-%d %H:%M')}}",
               {% endfor %}],
       datasets: [{
         type: 'line',
