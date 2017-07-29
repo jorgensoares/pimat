@@ -170,7 +170,7 @@ def sensors():
         result = Sensors.query.with_entities(Sensors.timestamp, column).\
             filter(Sensors.timestamp.between(start_date, end_date)).all()
 
-        return render_template('sensors.html', result=result, sensor=sensor)
+        return render_template('sensors.html', result=result, sensor=sensor, dates=request.args.get("dates"))
 
     else:
         return render_template('sensors.html')

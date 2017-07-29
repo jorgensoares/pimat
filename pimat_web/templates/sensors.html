@@ -146,10 +146,26 @@
               <div class="form-group">
                 <label>Sensor:</label>
                 <select name="sensor" class="form-control select2" style="width: 100%;">
-                  <option value="temperature1" selected="selected">Temperature 1</option>
-                  <option value="temperature2">Temperature 2</option>
-                  <option value="humidiy">Humidity</option>
-                  <option value="light1">Light</option>
+                  {% if sensor == 'temperature1' %}
+                    <option value="temperature1" selected="selected">Temperature 1</option>
+                  {% else %}
+                    <option value="temperature1">Temperature 1</option>
+                  {% endif %}
+                  {% if sensor == 'temperature2' %}
+                    <option value="temperature2" selected="selected">Temperature 2</option>
+                  {% else %}
+                    <option value="temperature2">Temperature 2</option>
+                  {% endif %}
+                  {% if sensor == 'humidity' %}
+                    <option value="humidity" selected="selected">Humidity</option>
+                  {% else %}
+                    <option value="humidity">Humidity</option>
+                  {% endif %}
+                  {% if sensor == 'light1' %}
+                    <option value="light1" selected="selected">Light 1</option>
+                  {% else %}
+                    <option value="light1">Light 1</option>
+                  {% endif %}
                   <option value="pressure">Presure</option>
                   <option value="altitude">Altitude</option>
                 </select>
@@ -159,7 +175,7 @@
             <div class="col-md-3">
                 <div class="form-group">
                   <label>Date Interval:</label>
-                  <input type="text" name="dates" class="form-control pull-left" name="daterange">
+                  <input type="text" name="dates" class="form-control pull-left" value="{{ dates }}">
                   <!-- /.input group -->
                 </div>
                 <!-- /.form group -->
@@ -233,7 +249,11 @@
 <script src="/static/plugins/timepicker/bootstrap-timepicker.min.js"></script>
 <script type="text/javascript">
 $(function() {
-    $('input[name="dates"]').daterangepicker();
+    $('input[name="dates"]').daterangepicker(
+            locale: {
+            format: 'YYYY/MM/DD'
+            }
+    });
 });
 </script>
 <script>

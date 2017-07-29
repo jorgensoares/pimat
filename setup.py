@@ -16,7 +16,6 @@ setup(
         ]
     },
     install_requires=['flask',
-                      'flask-mysql',
                       'configparser',
                       'python-crontab',
                       'RPi.GPIO',
