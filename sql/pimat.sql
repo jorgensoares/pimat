@@ -24,3 +24,11 @@ CREATE TABLE schedules (
        );
 
 
+CREATE TABLE users (
+         id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+         first_name VARCHAR(100),
+         last_name VARCHAR(100),
+         username VARCHAR(80) UNIQUE,
+         password VARCHAR(64),
+         email VARCHAR(120)
+       );

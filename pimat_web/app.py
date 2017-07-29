@@ -1,4 +1,5 @@
 #!/usr/bin/python
+import bcrypt as bcrypt
 import configparser
 from flask import Flask, request, redirect
 from flask import render_template
@@ -9,14 +10,18 @@ from pimat_server.relays import get_pin_status, Relays
 from flask_sqlalchemy import SQLAlchemy
 from pimat_server.scheduler import add_schedule, remove_schedule
 from datetime import datetime, timedelta
+from flask_login import *
 
 relay_config = configparser.ConfigParser()
 relay_config.read('/opt/pimat/relays.ini')
 
 app = Flask(__name__)
+app.secret_key = 'super secret string'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:zaq12wsx@localhost/pimat'
 app.config['SQLALCHEMY_ECHO'] = False
 db = SQLAlchemy(app)
+login_manager = LoginManager()
+login_manager.init_app(app)
 
 
 def get_previous_date(days):
@@ -32,6 +37,35 @@ def sigterm_handler(_signo, _stack_frame):
     # When sysvinit sends the TERM signal, cleanup before exiting.
     print("received signal {}, exiting...".format(_signo))
     sys.exit(0)
+
+
+# Create user model.
+class User(db.Model):
+    __tablename__ = 'user'
+
+    id = db.Column(db.Integer, primary_key=True)
+    first_name = db.Column(db.String(100))
+    last_name = db.Column(db.String(100))
+    username = db.Column(db.String(80), unique=True)
+    email = db.Column(db.String(120))
+    password = db.Column(db.String(64))
+
+    # Flask-Login integration
+    def is_authenticated(self):
+        return True
+
+    def is_active(self):
+        return True
+
+    def is_anonymous(self):
+        return False
+
+    def get_id(self):
+        return self.id
+
+    # Required for administrative interface
+    def __unicode__(self):
+        return self.username
 
 
 class Sensors(db.Model):
@@ -69,6 +103,37 @@ class Schedules(db.Model):
         self.start_time = start_time
         self.stop_time = stop_time
         self.enabled = enabled
+
+
+@login_manager.user_loader
+def user_loader(user_id):
+    """Given *user_id*, return the associated User object.
+
+    :param unicode user_id: user_id (email) user to retrieve
+    """
+    return User.query.get(user_id)
+
+
+@app.route("/login", methods=["GET", "POST"])
+def login():
+    """For GET requests, display the login form. For POSTS, login the current user
+    by processing the form."""
+
+    user = User.query.get(request.form.get("username"))
+    if user:
+        if user.password == request.form.get("password"):
+            login_user(user, remember=True)
+            return redirect(url_for("index"))
+
+    return render_template("login.html")
+
+
+@app.route("/logout", methods=["GET"])
+@login_required
+def logout():
+    """Logout the current user."""
+    logout_user()
+    return render_template("logout.html")
 
 
 @app.route("/")
@@ -157,7 +222,7 @@ def switch_relay(action, relay):
     else:
         return render_template('error.html', error="wrong request")
 
-
+@login_required
 @app.route("/sensors", methods=['POST', 'GET'])
 def sensors():
     if request.args.get('sensor') and request.args.get('dates'):

@@ -22,7 +22,9 @@ setup(
                       'adafruit_python_dht',
                       'pymysql',
                       'flask_sqlalchemy',
-                      'MySQL-python'],
+                      'MySQL-python',
+                      'flask-login',
+                      'bcrypt'],
 
     package_data={'pimat_web': ['templates/*']}
 )
