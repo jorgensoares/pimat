@@ -1,5 +1,4 @@
 #!/usr/bin/python
-import bcrypt as bcrypt
 import configparser
 from flask import Flask, request, redirect
 from flask import render_template
