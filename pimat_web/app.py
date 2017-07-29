@@ -59,9 +59,9 @@ class Schedules(db.Model):
     id = db.Column('id', db.Integer, primary_key=True)
     relay = db.Column(db.String(10))
     switch = db.Column(db.String(50))
-    start_time = db.Column(db.Time)
-    stop_time = db.Column(db.Time)
-    enabled = db.Column(db.String(1))
+    start_time = db.Column(db.String(5))
+    stop_time = db.Column(db.String(5))
+    enabled = db.Column(db.String(3))
 
     def __init__(self, relay, switch, start_time, stop_time, enabled):
         self.relay = relay
@@ -87,7 +87,7 @@ def index():
     sensors_data = Sensors.query.filter(Sensors.timestamp.between(get_previous_date(1), get_now())).\
         order_by(Sensors.timestamp.asc()).all()
 
-    last_reading = Schedules.query.order_by(Sensors.timestamp.desc()).first
+    last_reading = Sensors.query.order_by(Sensors.timestamp.desc()).first()
 
     return render_template('index.html',
                            pins=relay_pins,

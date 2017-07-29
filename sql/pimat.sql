@@ -18,8 +18,8 @@ CREATE TABLE schedules (
          id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
          relay VARCHAR(10),
          switch VARCHAR(50),
-         start_time TIME,
-         stop_time TIME,
+         start_time VARCHAR(10),
+         stop_time VARCHAR(10),
          enabled VARCHAR(3)
        );
 
