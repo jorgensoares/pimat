@@ -190,6 +190,10 @@ def add_new_schedule(action, schedule_id):
         start_time = request.form.get("start_time")
         stop_time = request.form.get("stop_time")
 
+        if start_time > stop_time:
+            flash('Start time must be bigger than stop time')
+            return render_template('schedules.html')
+
         if relay == 'relay1':
             switch = 'Lights Switch'
         elif relay == 'relay2':
