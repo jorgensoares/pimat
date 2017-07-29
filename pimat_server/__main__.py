@@ -94,7 +94,7 @@ def main():
 
     for schedule in schedules:
         print(schedule)
-        add_schedule(schedule['relay'], schedule['start_time'], schedule['stop_time'], schedule['schedule_id'])
+        add_schedule(schedule['relay'], schedule['start_time'], schedule['stop_time'], schedule['id'])
 
     try:
         while True:
