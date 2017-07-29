@@ -134,6 +134,7 @@ def login():
                 session['first_name'] = user.first_name
                 session['last_name'] = user.last_name
                 session['email'] = user.email
+                session['username'] = user.username
                 flash('Welcome {0} {1}'.format(user.first_name, user.last_name))
 
                 return redirect(url_for("index"))
