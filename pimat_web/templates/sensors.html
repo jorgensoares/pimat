@@ -200,7 +200,9 @@
               </p>
               <div class="chart">
                 <!-- Sales Chart Canvas -->
-                <canvas id="chart" style="height: 450px;"></canvas>
+                {% if result %}
+                  <canvas id="chart" style="height: 450px;"></canvas>
+                {% endif %}
               </div>
               <!-- /.chart-responsive -->
             </div>
