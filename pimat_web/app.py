@@ -39,7 +39,7 @@ class Sensors(db.Model):
     # Setting the table name and
     # creating columns for various fields
     __tablename__ = 'sensors'
-    id = db.Column('reading_id', db.Integer, primary_key=True)
+    id = db.Column('id', db.Integer, primary_key=True)
     timestamp = db.Column(db.DateTime)
     temperature1 = db.Column(db.Float)
     temperature2 = db.Column(db.Float)
