@@ -101,10 +101,6 @@ def add_new_schedule():
         start_time = request.form.get("start_time")
         stop_time = request.form.get("stop_time")
 
-        print(relay)
-        print(start_time)
-        print(stop_time)
-
         if relay == 'relay1':
             switch = 'Lights Switch'
         elif relay == 'relay2':
