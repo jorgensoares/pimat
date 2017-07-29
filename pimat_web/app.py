@@ -148,7 +148,7 @@ def switch_relay(action, relay):
         return render_template('error.html', error="wrong request")
 
 
-@app.route("/sensors", methods=['GET'])
+@app.route("/sensors", methods=['POST', 'GET'])
 def sensors():
     if request.args.get('sensor') and request.args.get('dates'):
         sensor = request.form.get("sensor")
@@ -157,9 +157,10 @@ def sensors():
         print (dates)
         print (sensor)
 
-        result = Sensors.query.filter_by(Sensors.timestamp.between('2017-07-28', '2017-07-29'))
+        result = Sensors.query.filter(Sensors.timestamp.between('2017-07-28', '2017-07-29')).all()
         print result
 
+        return render_template('sensors.html', result=result)
 
     else:
         return render_template('sensors.html')

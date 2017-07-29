@@ -233,7 +233,7 @@
 <script src="/static/plugins/timepicker/bootstrap-timepicker.min.js"></script>
 <script type="text/javascript">
 $(function() {
-    $('input[name="daterange"]').daterangepicker();
+    $('input[name="dates"]').daterangepicker();
 });
 </script>
 <script>
@@ -243,14 +243,18 @@ $(function() {
     Chart.defaults.global.elements.line.fill = false;
 
     var barChartData = {
-      labels: [2016, 2017, 2018, 2019, 2020, 2021, 2022],
+      labels: [{% for item in result %}
+                  "{{ item.timestamp.strftime('%Y-%m-%d %H:%M') }}",
+              {% endfor %}],
       datasets: [{
         type: 'line',
         label: 'Temperature',
         yAxisID: "y-axis-0",
         borderColor: "rgba(217,83,79,0.75)",
         backgroundColor: "rgba(217,83,79,0.75)",
-        data: [23.5, 24, 25.5, 24, 28, 29, 24]
+        data: [{% for item in result %}
+                      "{{ item.temperature1 }}",
+                    {% endfor %}]
       }]
     };
 
