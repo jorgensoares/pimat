@@ -134,7 +134,7 @@ def login():
                 session['first_name'] = user.first_name
                 session['last_name'] = user.last_name
                 session['email'] = user.email
-                flash('Logged in successfully.')
+                flash('Welcome {0} {1}'.format(user.first_name, user.last_name))
 
                 return redirect(url_for("index"))
     else:
@@ -145,6 +145,7 @@ def login():
 @login_required
 def logout():
     logout_user()
+    session.pop()
     return render_template("login.html")
 
 
@@ -174,7 +175,6 @@ def dashboard():
                            schedules=Schedules.query.order_by(Schedules.relay.asc()).all(),
                            last_reading=last_reading
                            )
-
 
 
 @app.route("/schedule/<action>/<schedule_id>", methods=['POST', 'GET'])
@@ -210,7 +210,7 @@ def add_new_schedule(action, schedule_id):
         Schedules.query.filter(Schedules.id == schedule_id).delete()
         db.session.commit()
 
-        return url_for('index')
+        return url_for('dashboard')
 
     else:
         return render_template('schedules.html')

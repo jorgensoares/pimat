@@ -52,28 +52,28 @@
           <li class="dropdown user user-menu">
             <a href="#" class="dropdown-toggle" data-toggle="dropdown">
               <img src="/static/images/jorge.png" class="user-image" alt="User Image">
-              <span class="hidden-xs">Jorge Soares</span>
+              <span class="hidden-xs">{{ current_user }}</span>
             </a>
             <ul class="dropdown-menu">
               <!-- User image -->
               <li class="user-header">
                 <img src="/static/images/jorge.png" class="img-circle" alt="User Image">
                 <p>
-                  Jorge Soares
-                  <small>Admin</small>
+                  {{ session.get('first_name') }} {{ session.get('last_name') }}
+                  <small>{{ current_user }}</small>
                 </p>
               </li>
               <!-- Menu Body -->
               <li class="user-body">
                 <div class="row">
                   <div class="col-xs-4 text-center">
-                    <a href="#">Settings</a>
+                    <a href="/settings">Settings</a>
                   </div>
                   <div class="col-xs-4 text-center">
                     <a href="#">Add user</a>
                   </div>
                   <div class="col-xs-4 text-center">
-                    <a href="#">Users</a>
+                    <a href="/users">Users</a>
                   </div>
                 </div>
                 <!-- /.row -->
@@ -102,7 +102,7 @@
       <!-- sidebar menu: : style can be found in sidebar.less -->
       <ul class="sidebar-menu" data-widget="tree">
         <li class="header">MAIN MENU</li>
-        <li class="active"><a href="/"><i class="fa fa fa-cogs"></i> <span>Dashboard</span></a></li>
+        <li class="active"><a href="/dashboard"><i class="fa fa fa-cogs"></i> <span>Dashboard</span></a></li>
         <li><a href="/sensors"><i class="fa fa-line-chart"></i> <span>Sensors</span></a></li>
         <li><a href="/camera"><i class="fa fa-cc"></i> <span>Cameras</span></a></li>
         <li><a href="/logs"><i class="fa fa-file-text-o"></i> <span>Logs</span></a></li>
