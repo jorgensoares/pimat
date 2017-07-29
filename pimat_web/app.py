@@ -150,12 +150,16 @@ def switch_relay(action, relay):
 
 @app.route("/sensors", methods=['GET'])
 def sensors():
-    if request.args.get('sensor') and request.args.get('start_date') and request.args.get('stop_date'):
+    if request.args.get('sensor') and request.args.get('dates'):
         sensor = request.form.get("sensor")
         dates = request.form.get("start_date")
 
         print (dates)
         print (sensor)
+
+        result = Sensors.query.filter_by(Sensors.timestamp.between('2017-07-28', '2017-07-29'))
+        print result
+
 
     else:
         return render_template('sensors.html')
