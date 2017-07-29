@@ -9,13 +9,55 @@ import Adafruit_DHT
 import RPi.GPIO as GPIO
 import configparser
 import pymysql as pymysql
-
+from sqlalchemy import *
 from scheduler import add_schedule, remove_all
 from relays import Relays
+from sqlalchemy.orm import sessionmaker
 
 # define the pin that goes to the circuit
 pin_to_circuit = 27
 dht_pin = 17
+
+db = create_engine('mysql://root:zaq12wsx@localhost/pimat', echo=false)
+Session = sessionmaker(bind=engine)
+session = Session()
+
+
+class Sensors(db.Model):
+    __tablename__ = 'sensors'
+    id = db.Column('id', db.Integer, primary_key=True)
+    timestamp = db.Column(db.DateTime)
+    temperature1 = db.Column(db.Float)
+    temperature2 = db.Column(db.Float)
+    humidity = db.Column(db.Float)
+    light1 = db.Column(db.Float)
+    pressure = db.Column(db.Float)
+    altitude = db.Column(db.Float)
+    source = db.Column(db.String(100))
+
+    def __init__(self, temperature1, humidity, light1):
+        self.timestamp = datetime.now()
+        self.temperature1 = temperature1
+        self.humidity = humidity
+        self.light1 = light1
+        self.source = 'pimat_server'
+
+
+class Schedules(db.Model):
+    __tablename__ = 'schedules'
+    id = db.Column('id', db.Integer, primary_key=True)
+    relay = db.Column(db.String(10))
+    switch = db.Column(db.String(50))
+    start_time = db.Column(db.String(5))
+    stop_time = db.Column(db.String(5))
+    enabled = db.Column(db.String(10))
+
+    def __init__(self, relay, switch, start_time, stop_time, enabled):
+        self.relay = relay
+        self.switch = switch
+        self.start_time = start_time
+        self.stop_time = stop_time
+        self.enabled = enabled
 
 
 def sigterm_handler(_signo, _stack_frame):
@@ -89,10 +131,12 @@ def main():
                 log.error('Wrong status on ini file must be 1 or 0')
                 sys.exit(1)
 
-    for relay in relay_config['schedules']:
-        schedule = relay_config['schedules'][relay]
-        start_time, stop_time = schedule.split('-')
-        add_schedule(relay, start_time, stop_time)
+    schedules = session.query(Schedules).all()
+    print(schedules)
+
+    for schedule in schedules:
+        print(schedule)
+        add_schedule(schedule.relay, schedule.start_time, schedule.stop_time, schedule.schedule_id)
 
     try:
         while True:

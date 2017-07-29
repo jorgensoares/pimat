@@ -30,6 +30,22 @@ def remove_schedule(schedule_id):
         cron.write()
 
 
+def disable_schedule(schedule_id):
+    jobs = cron.find_comment(schedule_id)
+
+    for job in jobs:
+        job.enable(False)
+        cron.write()
+
+
+def enable_schedule(schedule_id):
+    jobs = cron.find_comment(schedule_id)
+
+    for job in jobs:
+        job.enable(False)
+        cron.write()
+
+
 def remove_all():
     cron.remove_all(command='pimat-relay')
 
