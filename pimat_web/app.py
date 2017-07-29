@@ -61,7 +61,7 @@ class Schedules(db.Model):
     switch = db.Column(db.String(50))
     start_time = db.Column(db.String(5))
     stop_time = db.Column(db.String(5))
-    enabled = db.Column(db.String(3))
+    enabled = db.Column(db.String(10))
 
     def __init__(self, relay, switch, start_time, stop_time, enabled):
         self.relay = relay
@@ -116,7 +116,7 @@ def add_new_schedule(action, schedule_id):
         else:
             switch = None
 
-        schedule = Schedules(relay, switch, start_time, stop_time, '1')
+        schedule = Schedules(relay, switch, start_time, stop_time, 'enabled')
         db.session.add(schedule)
         db.session.commit()
 

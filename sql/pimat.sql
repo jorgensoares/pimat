@@ -20,7 +20,7 @@ CREATE TABLE schedules (
          switch VARCHAR(50),
          start_time VARCHAR(10),
          stop_time VARCHAR(10),
-         enabled VARCHAR(3)
+         enabled VARCHAR(10)
        );
 
 
