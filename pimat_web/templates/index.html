@@ -573,8 +573,8 @@
     Chart.defaults.global.elements.line.fill = false;
 
     var barChartData = {
-      labels: [{% for item in timestamp %}
-                  "{{item}}",
+      labels: [{% for item in result %}
+                  "{{result.timestamp}}",
               {% endfor %}],
       datasets: [{
         type: 'line',
@@ -582,8 +582,8 @@
         yAxisID: "y-axis-0",
         borderColor: "rgba(217,83,79,0.75)",
         backgroundColor: "rgba(217,83,79,0.75)",
-        data: [{% for item in temperature1 %}
-                      "{{item}}",
+        data: [{% for item in result %}
+                      "{{ item.temperature1 }}",
                     {% endfor %}]
       }, {
         type: 'line',
@@ -591,8 +591,8 @@
         yAxisID: "y-axis-0",
         borderColor: "rgba(92,184,92,0.75)",
         backgroundColor: "rgba(92,184,92,0.75)",
-        data: [{% for item in humidity %}
-                      "{{item}}",
+        data: [{% for item in result %}
+                      "{{ item.humidity }}",
                     {% endfor %}]
       }, {
         type: 'line',
@@ -600,8 +600,8 @@
         yAxisID: "y-axis-1",
         borderColor: "rgba(51,51,51,0.5)",
         backgroundColor: "rgba(51,51,51,0.5)",
-        data: [{% for item in light1 %}
-                      "{{item}}",
+        data: [{% for item in result %}
+                      "{{ item.light1 }}",
                     {% endfor %}]
       }, {
         type: 'line',

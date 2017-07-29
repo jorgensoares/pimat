@@ -7,6 +7,7 @@ A Lot of work in progress!!
 
 ## Documentation & Installation Guide
 
+apt-get install python-pip python-dev libmysqlclient-dev
 
 ### Contribution
 

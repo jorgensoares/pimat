@@ -107,7 +107,8 @@ def index():
                            temperature1=temperature1,
                            humidity=humidity,
                            light1=light1,
-                           schedules=schedules
+                           schedules=schedules,
+                           result=result
                            )
 
 
