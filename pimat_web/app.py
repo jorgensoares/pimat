@@ -126,6 +126,19 @@ def add_new_schedule():
         return render_template('schedules.html')
 
 
+@app.route("/schedule/delete/<schedule_id>", methods=['POST'])
+def delete_schedule(schedule_id):
+    if request.method == 'POST':
+
+        Schedules.query.filter(Schedules.id == schedule_id).delete()
+        db.session.commit()
+
+        return redirect('/')
+
+    else:
+        return render_template('error.html', error="wrong request")
+
+
 @app.route("/relays/<action>/<relay>", methods=['POST'])
 def switch_relay(action, relay):
     if action and relay:
