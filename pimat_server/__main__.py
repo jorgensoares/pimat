@@ -4,60 +4,18 @@ import logging
 import signal
 import sys
 import time
-
 import Adafruit_DHT
 import RPi.GPIO as GPIO
 import configparser
 import pymysql as pymysql
-from sqlalchemy import *
 from scheduler import add_schedule, remove_all
 from relays import Relays
-from sqlalchemy.orm import sessionmaker
+
 
 # define the pin that goes to the circuit
+GPIO.setmode(GPIO.BCM)
 pin_to_circuit = 27
 dht_pin = 17
-
-db = create_engine('mysql://root:zaq12wsx@localhost/pimat', echo=false)
-Session = sessionmaker(bind=engine)
-session = Session()
-
-
-class Sensors(db.Model):
-    __tablename__ = 'sensors'
-    id = db.Column('id', db.Integer, primary_key=True)
-    timestamp = db.Column(db.DateTime)
-    temperature1 = db.Column(db.Float)
-    temperature2 = db.Column(db.Float)
-    humidity = db.Column(db.Float)
-    light1 = db.Column(db.Float)
-    pressure = db.Column(db.Float)
-    altitude = db.Column(db.Float)
-    source = db.Column(db.String(100))
-
-    def __init__(self, temperature1, humidity, light1):
-        self.timestamp = datetime.now()
-        self.temperature1 = temperature1
-        self.humidity = humidity
-        self.light1 = light1
-        self.source = 'pimat_server'
-
-
-class Schedules(db.Model):
-    __tablename__ = 'schedules'
-    id = db.Column('id', db.Integer, primary_key=True)
-    relay = db.Column(db.String(10))
-    switch = db.Column(db.String(50))
-    start_time = db.Column(db.String(5))
-    stop_time = db.Column(db.String(5))
-    enabled = db.Column(db.String(10))
-
-    def __init__(self, relay, switch, start_time, stop_time, enabled):
-        self.relay = relay
-        self.switch = switch
-        self.start_time = start_time
-        self.stop_time = stop_time
-        self.enabled = enabled
 
 
 def sigterm_handler(_signo, _stack_frame):
@@ -73,7 +31,6 @@ def get_now():
     return datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
 
 signal.signal(signal.SIGTERM, sigterm_handler)
-GPIO.setmode(GPIO.BCM)
 
 
 def rc_time(pin_to_circuit):
@@ -131,8 +88,9 @@ def main():
                 log.error('Wrong status on ini file must be 1 or 0')
                 sys.exit(1)
 
-    schedules = session.query(Schedules).all()
-    print(schedules)
+    with db.cursor() as cursor:
+        cursor.execute('SELECT * FROM schedules;')
+        schedules = cursor.fetchall()
 
     for schedule in schedules:
         print(schedule)
