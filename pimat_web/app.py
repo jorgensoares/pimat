@@ -36,8 +36,6 @@ def sigterm_handler(_signo, _stack_frame):
 
 
 class Sensors(db.Model):
-    # Setting the table name and
-    # creating columns for various fields
     __tablename__ = 'sensors'
     id = db.Column('id', db.Integer, primary_key=True)
     timestamp = db.Column(db.DateTime)
@@ -50,13 +48,28 @@ class Sensors(db.Model):
     source = db.Column(db.String(100))
 
     def __init__(self, temperature1, humidity, light1):
-        # Initializes the fields with entered data
-        # and sets the published date to the current time
         self.timestamp = datetime.now()
         self.temperature1 = temperature1
         self.humidity = humidity
         self.light1 = light1
         self.source = 'pimat_server'
+
+
+class Schedules(db.Model):
+    __tablename__ = 'schedules'
+    id = db.Column('id', db.Integer, primary_key=True)
+    relay = db.Column(db.String(10))
+    switch = db.Column(db.String(50))
+    start_time = db.Column(db.Time)
+    stop_time = db.Column(db.Time)
+    enabled = db.Column(db.Bit)
+
+    def __init__(self, relay, switch, start_time, stop_time, enabled):
+        self.relay = relay
+        self.switch = switch
+        self.start_time = start_time
+        self.stop_time = stop_time
+        self.enabled = enabled
 
 
 @app.route("/")
@@ -73,41 +86,26 @@ def index():
     relay_status['relay3'] = get_pin_status(relay_pins['relay3'])
     relay_status['relay4'] = get_pin_status(relay_pins['relay4'])
 
-    timestamp = list()
-    temperature1 = list()
-    humidity = list()
-    light1 = list()
 
-    result = Sensors.query.order_by(Sensors.timestamp.asc()).all()
-    print result
+
+    sensors_data = Sensors.query.order_by(Sensors.timestamp.asc()).all()
+
+
 
     conn = mysql.connect()
-    cursor = conn.cursor()
-    cursor.execute("SELECT timestamp, temperature1, humidity, light1 from sensors where source='pimat_server'")
-
-    for row in cursor.fetchall():
-        timestamp.append(str(row[0]))
-        temperature1.append(str(row[1]))
-        humidity.append(str(row[2]))
-        light1.append(str(row[3]))
-
-    cursor.close()
-
     cursor = conn.cursor()
     cursor.execute("SELECT * from schedules")
     schedules = cursor.fetchall()
     cursor.close()
     conn.close()
 
+    schedules = Schedules.query.all()
+
     return render_template('index.html',
                            pins=relay_pins,
                            status=relay_status,
-                           timestamp=timestamp,
-                           temperature1=temperature1,
-                           humidity=humidity,
-                           light1=light1,
-                           schedules=schedules,
-                           result=result
+                           sensors_data=sensors_data,
+                           schedules=schedules
                            )
 
 

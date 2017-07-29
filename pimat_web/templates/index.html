@@ -349,12 +349,12 @@
                   <tbody>
                   {% for item in schedules %}
                   <tr>
-                    <td>{{ item[0] }}</td>
-                    <td>{{ item[1] }}</td>
-                    <td>{{ item[2] }}</td>
-                    <td>{{ item[3] }}</td>
-                    <td>{{ item[4] }}</td>
-                    <td><span class="label label-success">{{ item[5] }}</span></td>
+                    <td>{{ item.id }}</td>
+                    <td>{{ item.relay }}</td>
+                    <td>{{ item.switch }}</td>
+                    <td>{{ item.start_time }}</td>
+                    <td>{{ item.stop_time }}</td>
+                    <td><span class="label label-success">{{ item.enabled }}</span></td>
                     <td><a href="#">Edit</a></td>
                     <td><a href="#" data-record-id="23" data-record-title="Schedule Relay_1_12" data-toggle="modal" data-target="#confirm-delete">Delete</a></td>
                   </tr>
@@ -573,8 +573,8 @@
     Chart.defaults.global.elements.line.fill = false;
 
     var barChartData = {
-      labels: [{% for item in result %}
-                  "{{result.timestamp.strftime('%Y-%m-%d %H:%M')}}",
+      labels: [{% for item in sensors_data %}
+                  "{{ item.timestamp.strftime('%Y-%m-%d %H:%M') }}",
               {% endfor %}],
       datasets: [{
         type: 'line',
@@ -582,7 +582,7 @@
         yAxisID: "y-axis-0",
         borderColor: "rgba(217,83,79,0.75)",
         backgroundColor: "rgba(217,83,79,0.75)",
-        data: [{% for item in result %}
+        data: [{% for item in sensors_data %}
                       "{{ item.temperature1 }}",
                     {% endfor %}]
       }, {
@@ -591,7 +591,7 @@
         yAxisID: "y-axis-0",
         borderColor: "rgba(92,184,92,0.75)",
         backgroundColor: "rgba(92,184,92,0.75)",
-        data: [{% for item in result %}
+        data: [{% for item in sensors_data %}
                       "{{ item.humidity }}",
                     {% endfor %}]
       }, {
@@ -600,7 +600,7 @@
         yAxisID: "y-axis-1",
         borderColor: "rgba(51,51,51,0.5)",
         backgroundColor: "rgba(51,51,51,0.5)",
-        data: [{% for item in result %}
+        data: [{% for item in sensors_data %}
                       "{{ item.light1 }}",
                     {% endfor %}]
       }, {
