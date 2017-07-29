@@ -7,11 +7,13 @@ import signal
 import sys
 from pimat_server.relays import get_pin_status, Relays
 from flaskext.mysql import MySQL
-
+from flask_sqlalchemy import SQLAlchemy
+from datetime import datetime
 from pimat_server.scheduler import add_schedule
 
 relay_config = configparser.ConfigParser()
 relay_config.read('/opt/pimat/relays.ini')
+
 
 app = Flask(__name__)
 mysql = MySQL()
@@ -21,11 +23,41 @@ app.config['MYSQL_DATABASE_DB'] = 'pimat'
 app.config['MYSQL_DATABASE_HOST'] = 'localhost'
 mysql.init_app(app)
 
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:zaq12wsx@localhost/pimat'
+app.config['SQLALCHEMY_ECHO'] = False
+
+app.config.from_pyfile('hello.cfg')
+db = SQLAlchemy(app)
+
 
 def sigterm_handler(_signo, _stack_frame):
     # When sysvinit sends the TERM signal, cleanup before exiting.
     print("received signal {}, exiting...".format(_signo))
     sys.exit(0)
+
+
+class Sensors(db.Model):
+    # Setting the table name and
+    # creating columns for various fields
+    __tablename__ = 'sensors'
+    id = db.Column('reading_id', db.Integer, primary_key=True)
+    timestamp = db.Column(db.DateTime)
+    temperature1 = db.Column(db.Float)
+    temperature2 = db.Column(db.Float)
+    humidity = db.Column(db.Float)
+    light1 = db.Column(db.Float)
+    pressure = db.Column(db.Float)
+    altitude = db.Column(db.Float)
+    source = db.Column(db.String(100))
+
+    def __init__(self, temperature1, humidity, light1):
+        # Initializes the fields with entered data
+        # and sets the published date to the current time
+        self.timestamp = datetime.now()
+        self.temperature1 = temperature1
+        self.humidity = humidity
+        self.light1 = light1
+        self.source = 'pimat_server'
 
 
 @app.route("/")
@@ -46,6 +78,9 @@ def index():
     temperature1 = list()
     humidity = list()
     light1 = list()
+
+    result = Sensors.query.order_by(Sensors.timestamp.asc()).all()
+    print result
 
     conn = mysql.connect()
     cursor = conn.cursor()
