@@ -2,6 +2,7 @@
 import configparser
 from flask import Flask, request, redirect
 from flask import render_template
+from flask import session
 from flask import url_for
 import signal
 import sys
@@ -38,10 +39,9 @@ def sigterm_handler(_signo, _stack_frame):
     sys.exit(0)
 
 
-# Create user model.
 class User(db.Model):
 
-    __tablename__ = 'user'
+    __tablename__ = 'users'
 
     id = db.Column(db.Integer, primary_key=True)
     first_name = db.Column(db.String(100))
@@ -62,7 +62,6 @@ class User(db.Model):
 
     def get_id(self):
         return self.id
-
 
 
 class Sensors(db.Model):
@@ -115,6 +114,14 @@ def user_loader(user_id):
     return User.query.get(user_id)
 
 
+@app.route("/")
+def index():
+    if current_user.is_authenticated:
+        return redirect(url_for("dashboard"))
+    else:
+        return render_template("login.html")
+
+
 @app.route("/login", methods=["GET", "POST"])
 def login():
     if request.method == 'POST':
@@ -123,6 +130,10 @@ def login():
         if user:
             if user.password == request.form.get("password"):
                 login_user(user, remember=True)
+                session['first_name'] = user.first_name
+                session['last_name'] = user.last_name
+                session['email'] = user.email
+
                 return redirect(url_for("index"))
     else:
         return render_template("login.html")
@@ -131,40 +142,38 @@ def login():
 @app.route("/logout", methods=["GET"])
 @login_required
 def logout():
-    """Logout the current user."""
     logout_user()
     return render_template("login.html")
 
 
-@app.route("/")
+@app.route("/dashboard")
 @login_required
-def index():
-    if current_user.is_authenticated:
-        relay_pins = dict()
-        relay_status = dict()
-        relay_pins['relay1'] = relay_config['pins']['relay1']
-        relay_pins['relay2'] = relay_config['pins']['relay2']
-        relay_pins['relay3'] = relay_config['pins']['relay3']
-        relay_pins['relay4'] = relay_config['pins']['relay4']
-        relay_status['relay1'] = get_pin_status(relay_pins['relay1'])
-        relay_status['relay2'] = get_pin_status(relay_pins['relay2'])
-        relay_status['relay3'] = get_pin_status(relay_pins['relay3'])
-        relay_status['relay4'] = get_pin_status(relay_pins['relay4'])
+def dashboard():
+    relay_pins = dict()
+    relay_status = dict()
+    relay_pins['relay1'] = relay_config['pins']['relay1']
+    relay_pins['relay2'] = relay_config['pins']['relay2']
+    relay_pins['relay3'] = relay_config['pins']['relay3']
+    relay_pins['relay4'] = relay_config['pins']['relay4']
+    relay_status['relay1'] = get_pin_status(relay_pins['relay1'])
+    relay_status['relay2'] = get_pin_status(relay_pins['relay2'])
+    relay_status['relay3'] = get_pin_status(relay_pins['relay3'])
+    relay_status['relay4'] = get_pin_status(relay_pins['relay4'])
 
-        sensors_data = Sensors.query.filter(Sensors.timestamp.between(get_previous_date(1), get_now())).\
-            order_by(Sensors.timestamp.asc()).all()
+    sensors_data = Sensors.query.filter(Sensors.timestamp.between(get_previous_date(1), get_now())).\
+        order_by(Sensors.timestamp.asc()).all()
 
-        last_reading = Sensors.query.order_by(Sensors.timestamp.desc()).first()
+    last_reading = Sensors.query.order_by(Sensors.timestamp.desc()).first()
 
-        return render_template('index.html',
-                               pins=relay_pins,
-                               status=relay_status,
-                               sensors_data=sensors_data,
-                               schedules=Schedules.query.order_by(Schedules.relay.asc()).all(),
-                               last_reading=last_reading
-                               )
-    else:
-        return redirect(url_for("login"))
+    return render_template('index.html',
+                           pins=relay_pins,
+                           status=relay_status,
+                           sensors_data=sensors_data,
+                           schedules=Schedules.query.order_by(Schedules.relay.asc()).all(),
+                           last_reading=last_reading
+                           )
+
+
 
 @app.route("/schedule/<action>/<schedule_id>", methods=['POST', 'GET'])
 @login_required
