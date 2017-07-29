@@ -94,9 +94,9 @@ def index():
                            )
 
 
-@app.route("/schedule/add", methods=['POST', 'GET'])
-def add_new_schedule():
-    if request.method == 'POST':
+@app.route("/schedule/<action>/<schedule_id>", methods=['POST', 'GET'])
+def add_new_schedule(action, schedule_id):
+    if request.method == 'POST' and action == 'add':
         relay = request.form.get("relay")
         start_time = request.form.get("start_time")
         stop_time = request.form.get("stop_time")
@@ -122,21 +122,15 @@ def add_new_schedule():
 
         return redirect('/')
 
-    else:
-        return render_template('schedules.html')
-
-
-@app.route("/schedule/delete/<schedule_id>", methods=['POST'])
-def delete_schedule(schedule_id):
-    if request.method == 'POST':
+    elif request.method == 'POST' and action == 'delete':
 
         Schedules.query.filter(Schedules.id == schedule_id).delete()
         db.session.commit()
 
-        return redirect('/')
+        return url_for('index')
 
     else:
-        return render_template('error.html', error="wrong request")
+        return render_template('schedules.html')
 
 
 @app.route("/relays/<action>/<relay>", methods=['POST'])
