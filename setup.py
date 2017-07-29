@@ -4,7 +4,7 @@ from setuptools import setup, find_packages
 setup(
     name='pimat',
     description='Raspberry Pi Multi Automation tool',
-    version='0.4.6',
+    version='0.4.7',
     url='https://github.com/jorgensoares/pimat',
     author='Jorge Soares',
     packages=find_packages(exclude=['tests']),
