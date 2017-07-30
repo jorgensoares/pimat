@@ -326,6 +326,12 @@ def logs():
                            )
 
 
+@app.route("/profile", methods=['GET'])
+@login_required
+def profile():
+    return render_template('profile.html', version=version)
+
+
 def main():
     signal.signal(signal.SIGTERM, sigterm_handler)
 

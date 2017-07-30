@@ -1,9 +1,9 @@
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html>
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>piMAT | Logs</title>
+  <title>piMAT | Cameras</title>
   <!-- Tell the browser to be responsive to screen width -->
   <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
   <!-- Bootstrap 3.3.7 -->
@@ -14,7 +14,6 @@
   <link rel="stylesheet" href="static/plugins/timepicker/bootstrap-timepicker.min.css">
   <!-- Theme style -->
   <link rel="stylesheet" href="static/dist/css/AdminLTE.min.css">
-  <!-- AdminLTE Skins -->
   <link rel="stylesheet" href="static/dist/css/skins/skin-blue.css">
 
   <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
@@ -34,7 +33,7 @@
   <header class="main-header">
 
     <!-- Logo -->
-    <a href="/" class="logo">
+    <a href="index2.html" class="logo">
       <!-- mini logo for sidebar mini 50x50 pixels -->
       <span class="logo-mini"><b>pi</b>M</span>
       <!-- logo for regular state and mobile devices -->
@@ -107,8 +106,8 @@
         <li class="header">MAIN MENU</li>
         <li><a href="/"><i class="fa fa fa-cogs"></i> <span>Dashboard</span></a></li>
         <li><a href="/sensors"><i class="fa fa-line-chart"></i> <span>Sensors</span></a></li>
-        <li><a href="/camera"><i class="fa fa-cc"></i> <span>Cameras</span></a></li>
-        <li class="active"><a href="/logs"><i class="fa fa-file-text-o"></i> <span>Logs</span></a></li>
+        <li class="active"><a href="/camera"><i class="fa fa-cc"></i> <span>Cameras</span></a></li>
+        <li><a href="/logs"><i class="fa fa-file-text-o"></i> <span>Logs</span></a></li>
         <li><a href="https://wiki.ocloud.cz/doku.php" target="_blank"><i class="fa fa-book"></i> <span>Documentation</span></a></li>
       </ul>
     </section>
@@ -118,10 +117,10 @@
   <div class="content-wrapper">
     <!-- Content Header (Page header) -->
     <section class="content-header">
-      <h1>Logs</h1>
+      <h1>Cameras</h1>
       <ol class="breadcrumb">
-        <li><a href="index.html"><i class="fa fa fa-cogs"></i>Home</a></li>
-        <li class="active">Logs</li>
+        <li><a href="index.html"><i class="fa fa fa-cogs"></i> Home</a></li>
+        <li class="active">Profile</li>
       </ol>
     </section>
 
@@ -129,36 +128,92 @@
     <section class="content">
 
       <!-- Default box -->
-      <div class="box">
-        <div class="box-header with-border">
-          <h3 class="box-title">Pimat Server Log</h3>
-          <div class="box-tools pull-right">
-            <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
-            </button>
-            <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
+      <div class="row">
+        <div class="col-md-3">
+
+          <!-- Profile Image -->
+          <div class="box box-primary">
+            <div class="box-body box-profile">
+              <img class="profile-user-img img-responsive img-circle" src="/static/images/jorge.png" alt="User profile picture">
+
+              <h3 class="profile-username text-center">Jorge Soares</h3>
+
+              <p class="text-muted text-center">admin</p>
+
+              <a href="#" class="btn btn-primary btn-block"><b>Change Picture</b></a>
+            </div>
+            <!-- /.box-body -->
           </div>
+          <!-- /.box -->
+
         </div>
-        <div class="box-body">
-          <pre>{{ pimat_server_log }}</pre>
+        <!-- /.col -->
+        <div class="col-md-9">
+          <div class="box box-default">
+            <div class="box-header with-border">
+              <h3 class="box-title">Update Details</h3>
+            </div>
+            <!-- /.box-header -->
+            <div class="box-body">
+              <div class="row">
+                <div class="col-md-6">
+                  <fieldset disabled>
+                    <div class="form-group">
+                      <label for="username">Username</label>
+                      <input type="text" class="form-control" id="username" value="Admin">
+                    </div>
+                  </fieldset>
+                  <div class="form-group">
+                    <label for="firtsName">First Name</label>
+                    <input type="email" class="form-control" id="firtsName" value="Jorge">
+                  </div>
+                  <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" class="form-control" id="email" value="admin@ocloud.cz">
+                  </div>
+                </div>
+                <!-- /.col -->
+                <div class="col-md-6">
+                  <fieldset disabled>
+                    <div class="form-group">
+                      <label for="role">Role</label>
+                      <input type="text" class="form-control" id="role" value="admin">
+                    </div>
+                  </fieldset>
+                  <div class="form-group">
+                    <label for="lastName">Last Name</label>
+                    <input type="text" class="form-control" id="lastName" value="Soares">
+                  </div>
+                  <div class="form-group">
+                    <div class="checkbox">
+                      <label>
+                        <input type="checkbox"> Receive E-Mail Alerts
+                      </label>
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <div class="checkbox">
+                      <label>
+                        <input type="checkbox"> Receive SMS Alerts
+                      </label>
+                    </div>
+                  </div>
+                </div>
+                <!-- /.col -->
+              </div>
+              <!-- /.row -->
+            </div>
+            <!-- /.box-body -->
+            <div class="box-footer">
+              <button type="submit" class="btn btn-primary pull-right">Submit</button>
+            </div>
+          </div>
+          <!-- /.nav-tabs-custom -->
         </div>
-        <!-- /.box-body -->
+        <!-- /.col -->
       </div>
       <!-- /.box -->
-      <div class="box">
-        <div class="box-header with-border">
-          <h3 class="box-title">Pimat Web Log</h3>
-          <div class="box-tools pull-right">
-            <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
-            </button>
-            <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
-          </div>
-        </div>
-        <div class="box-body">
-          <pre>{{ pimat_web_log }}</pre>
-        </div>
-        <!-- /.box-body -->
-      </div>
-      <!-- /.box -->
+
     </section>
     <!-- /.content -->
   </div>
