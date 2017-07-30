@@ -353,7 +353,7 @@
                   </thead>
                   <tbody>
                   {% for item in schedules %}
-                  <tr>
+                  <tr data-record-id="{{ item.id }}">
                     <td>{{ item.id }}</td>
                     <td>{{ item.relay }}</td>
                     <td>{{ item.switch }}</td>
