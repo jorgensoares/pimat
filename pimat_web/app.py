@@ -188,7 +188,7 @@ def add_new_schedule(action, schedule_id):
 
         if start_time >= stop_time:
             flash('The stop time cannot be equal or smaller than the start time, please try again!')
-            return render_template('schedules.html', version=version)
+            return render_template('schedules.html', version=version, schedule=None)
 
         if relay == 'relay1':
             switch = 'Lights Switch'
@@ -241,7 +241,7 @@ def add_new_schedule(action, schedule_id):
 
         if request.form.get("start_time") >= request.form.get("stop_time"):
             flash('The stop time cannot be equal or smaller than the start time, please try again!')
-            return render_template('schedules.html', version=version)
+            return render_template('schedules.html', version=version, schedule=None)
 
         schedule.start_time = request.form.get("start_time")
         schedule.stop_time = request.form.get("stop_time")
