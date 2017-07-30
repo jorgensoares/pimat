@@ -366,7 +366,7 @@
                     {% else %}
                       <td><span class="label label-default">{{ item.enabled }}</span></td>
                     {% endif %}
-                    <td><a href="#">Edit</a></td>
+                    <td><a href="/schedule/edit/{{ item.id }}">Edit</a></td>
                     <td><a href="#" data-record-id="{{ item.id }}" data-record-title="{{ item.switch }} with schedule ID:{{ item.id }}"
                            data-toggle="modal" data-target="#confirm-disable">Enable|Disable</a>
                     </td>
