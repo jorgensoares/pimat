@@ -41,7 +41,7 @@ class Schedules(Base):
 
 engine = create_engine('mysql://root:zaq12wsx@localhost/pimat')
 Session = sessionmaker(bind=engine)
-db = Session()
+session = Session()
 
 
 def sigterm_handler(_signo, _stack_frame):
@@ -119,7 +119,7 @@ def main():
     #     cursor.execute('SELECT * FROM schedules;')
     #     schedules = cursor.fetchall()
 
-    schedules = db.query(Schedules).all()
+    schedules = session.query(Schedules).all()
 
     for schedule in schedules:
         print(schedule)
