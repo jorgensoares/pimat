@@ -332,6 +332,11 @@ def profile():
     return render_template('profile.html', version=version)
 
 
+@app.route("/users", methods=['GET'])
+@login_required
+def users():
+    return render_template('users.html', version=version)
+
 
 def main():
     signal.signal(signal.SIGTERM, sigterm_handler)
