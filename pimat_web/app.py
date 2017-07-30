@@ -224,8 +224,15 @@ def add_new_schedule(action, schedule_id):
 
         if cron_schedule.check_status() == 'enable':
             cron_schedule.disable_schedule()
+            schedule = Schedules.query.filter(Schedules.id == schedule_id).first()
+            schedule.enabled = 'disable'
+            db.session.commit()
+
         else:
             cron_schedule.enable_schedule()
+            schedule = Schedules.query.filter(Schedules.id == schedule_id).first()
+            schedule.enabled = 'disable'
+            db.session.commit()
 
         return url_for('dashboard')
 
