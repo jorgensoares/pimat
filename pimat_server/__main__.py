@@ -40,9 +40,7 @@ class Schedules(Base):
 
 
 engine = create_engine('mysql://root:zaq12wsx@localhost/pimat')
-Base.metadata.bind = engine
 Session = sessionmaker(bind=engine)
-Session.configure(bind=engine)
 db = Session()
 
 
