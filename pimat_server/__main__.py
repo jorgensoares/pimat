@@ -131,7 +131,7 @@ def main():
             total = 0
 
             for x in range(0, 9):
-                total += rc_time(pimat_config['pins']['ldr_sensor'])
+                total += rc_time(int(pimat_config['pins']['ldr_sensor']))
 
             average = total / 10
 
@@ -143,7 +143,7 @@ def main():
             if light > 10000:
                 light = 10000
 
-            humidity, temperature = Adafruit_DHT.read_retry(Adafruit_DHT.AM2302, pimat_config['pins']['temp_sensor'])
+            humidity, temperature = Adafruit_DHT.read_retry(Adafruit_DHT.AM2302, int(pimat_config['pins']['temp_sensor']))
 
             if humidity is not None and temperature is not None and light is not None:
                 log.info('Temp={0:0.1f}* Humidity={1:0.1f}% Light={2:0.2f}'.format(temperature, humidity, light))
