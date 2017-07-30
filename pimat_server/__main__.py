@@ -12,6 +12,7 @@ import scheduler
 from relays import Relays
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
+from sqlalchemy.ext.declarative import declarative_base
 from pimat_web.app import Sensors, Schedules
 # define the pin that goes to the circuit
 GPIO.setmode(GPIO.BCM)
@@ -21,7 +22,8 @@ dht_pin = 17
 engine = create_engine('mysql://root:zaq12wsx@localhost/pimat')
 # Bind the engine to the metadata of the Base class so that the
 # declaratives can be accessed through a DBSession instance
-Schedules.metadata.bind = engine
+Base = declarative_base()
+Base.metadata.bind = engine
 
 DBSession = sessionmaker(bind=engine)
 # A DBSession() instance establishes all conversations with the database
