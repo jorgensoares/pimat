@@ -10,6 +10,7 @@ import configparser
 import pymysql as pymysql
 import scheduler
 from relays import Relays
+from sqlalchemy import Column
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
@@ -30,19 +31,12 @@ class Schedules(Base):
 
     __tablename__ = 'schedules'
 
-    id = db.Column('id', db.Integer, primary_key=True)
-    relay = db.Column(db.String(10))
-    switch = db.Column(db.String(50))
-    start_time = db.Column(db.String(5))
-    stop_time = db.Column(db.String(5))
-    enabled = db.Column(db.String(10))
-
-    def __init__(self, relay, switch, start_time, stop_time, enabled):
-        self.relay = relay
-        self.switch = switch
-        self.start_time = start_time
-        self.stop_time = stop_time
-        self.enabled = enabled
+    id = Column('id', db.Integer, primary_key=True)
+    relay = Column(db.String(10))
+    switch = Column(db.String(50))
+    start_time = Column(db.String(5))
+    stop_time = Column(db.String(5))
+    enabled = Column(db.String(10))
 
 
 engine = create_engine('mysql://root:zaq12wsx@localhost/pimat')
