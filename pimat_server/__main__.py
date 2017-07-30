@@ -90,13 +90,6 @@ def main():
     pimat_config = configparser.ConfigParser()
     pimat_config.read('/opt/pimat/config.ini')
 
-    sensors_log = logging.getLogger()
-    handler = logging.FileHandler('/var/log/pimat/sensors.log')
-    formatter = logging.Formatter('[%(levelname)s] [%(asctime)-15s] [PID: %(process)d] [%(name)s] %(message)s')
-    handler.setFormatter(formatter)
-    sensors_log.addHandler(handler)
-    sensors_log.setLevel(logging.DEBUG)
-
     server_log = logging.getLogger()
     handler = logging.FileHandler('/var/log/pimat/pimat-server.log')
     formatter = logging.Formatter('[%(levelname)s] [%(asctime)-15s] [PID: %(process)d] [%(name)s] %(message)s')
@@ -160,7 +153,7 @@ def main():
             humidity, temperature = Adafruit_DHT.read_retry(Adafruit_DHT.AM2302, int(pimat_config['pins']['temp_sensor']))
 
             if humidity is not None and temperature is not None and light is not None:
-                sensors_log.info('Temp={0:0.1f}* Humidity={1:0.1f}% Light={2:0.2f}'.format(temperature, humidity, light))
+                server_log.info('Temp={0:0.1f}* Humidity={1:0.1f}% Light={2:0.2f}'.format(temperature, humidity, light))
                 reading = Sensors(temperature, humidity, light)
                 db.add(reading)
                 db.commit()
