@@ -271,19 +271,15 @@ def camera():
 @app.route("/logs", methods=['GET'])
 @login_required
 def logs():
-    with open("/var/log/pimat/sensors.log", "r") as f:
-        sensors_log = f.read()
+    with open("/var/log/pimat/pimat-server.log", "r") as f:
+        pimat_server_log = f.read()
 
     with open("/var/log/pimat/pimat-web.log", "r") as f:
         pimat_web_log = f.read()
 
-    with open("/var/log/pimat/pimat-server.log", "r") as f:
-        pimat_server_log = f.read()
-
     return render_template('logs.html',
-                           sensors_log=sensors_log,
-                           pimat_web_log=pimat_web_log,
-                           pimat_server_log=pimat_server_log
+                           pimat_server_log=pimat_server_log,
+                           pimat_web_log=pimat_web_log
                            )
 
 
