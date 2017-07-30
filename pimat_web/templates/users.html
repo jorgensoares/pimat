@@ -106,7 +106,7 @@
         <li class="header">MAIN MENU</li>
         <li><a href="/"><i class="fa fa fa-cogs"></i> <span>Dashboard</span></a></li>
         <li><a href="/sensors"><i class="fa fa-line-chart"></i> <span>Sensors</span></a></li>
-        <li class="active"><a href="/camera"><i class="fa fa-cc"></i> <span>Cameras</span></a></li>
+        <li><a href="/camera"><i class="fa fa-cc"></i> <span>Cameras</span></a></li>
         <li><a href="/logs"><i class="fa fa-file-text-o"></i> <span>Logs</span></a></li>
         <li><a href="https://wiki.ocloud.cz/doku.php" target="_blank"><i class="fa fa-book"></i> <span>Documentation</span></a></li>
       </ul>
@@ -135,7 +135,7 @@
           <div class="table-responsive">
             <table class="table no-margin">
               <thead>
-              <tr>
+              <tr data-record-id="{{ item.id }}">
                 <th>User ID</th>
                 <th>Username</th>
                 <th>First Name</th>
@@ -259,6 +259,7 @@
         // $.ajax({url: '/schedules/delete/' + id, type: 'DELETE'})
         $.post({url: '/user/delete/' + id, success: function(){window.location.href = "/"}}).then()
         $modalDiv.addClass('loading');
+        $('[data-record-id=' + id + ']').remove();
         setTimeout(function() {
             $modalDiv.modal('hide').removeClass('loading');
         }, 1000)
@@ -267,6 +268,11 @@
         var data = $(e.relatedTarget).data();
         $('.title', this).text(data.recordTitle);
         $('.btn-ok', this).data('recordId', data.recordId);
+    });
+    $('#confirm-delete').click(function () {
+        var id = $(this).data('recordId');
+
+        $('#myModal').modal('hide');
     });
 </script>
 
