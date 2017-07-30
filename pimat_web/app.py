@@ -332,6 +332,12 @@ def profile():
     return render_template('profile.html', version=version)
 
 
+@app.route("/users/<action>/<user_id>", methods=['GET'])
+@login_required
+def edit_user(action,user_id):
+    return render_template('create_user.html', version=version)
+
+
 @app.route("/users", methods=['GET'])
 @login_required
 def users():
@@ -339,13 +345,6 @@ def users():
                            version=version,
                            users=User.query.order_by(User.id.asc()).all()
                            )
-
-
-@app.route("/users/<action>/<id>", methods=['GET', 'POST'])
-@login_required
-def edit_user(action, id):
-    if request.method == 'GET' and action == 'create':
-        return render_template('create_user.html', version=version)
 
 
 def main():
