@@ -359,9 +359,9 @@
                     <td>{{ item.switch }}</td>
                     <td>{{ item.start_time }}</td>
                     <td>{{ item.stop_time }}</td>
-                    {% if item.enabled == 'enabled' %}
+                    {% if item.enabled == 'enable' %}
                       <td><span class="label label-success">{{ item.enabled }}</span></td>
-                    {% elif item.enabled == 'disabled' %}
+                    {% elif item.enabled == 'disable' %}
                       <td><span class="label label-danger">{{ item.enabled }}</span></td>
                     {% else %}
                       <td><span class="label label-default">{{ item.enabled }}</span></td>
