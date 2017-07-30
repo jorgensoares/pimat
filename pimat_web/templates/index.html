@@ -52,7 +52,7 @@
           <li class="dropdown user user-menu">
             <a href="#" class="dropdown-toggle" data-toggle="dropdown">
               <img src="/static/images/jorge.png" class="user-image" alt="User Image">
-              <span class="hidden-xs">{{ session.get('username') }}</span>
+              <span class="hidden-xs">{{ current_user.name) }}</span>
             </a>
             <ul class="dropdown-menu">
               <!-- User image -->
@@ -60,7 +60,7 @@
                 <img src="/static/images/jorge.png" class="img-circle" alt="User Image">
                 <p>
                   {{ session.get('first_name') }} {{ session.get('last_name') }}
-                  <small>{{ session.get('username') }}</small>
+                  <small>{{ current_user.name) }}</small>
                 </p>
               </li>
               <!-- Menu Body -->
@@ -144,7 +144,7 @@
 
             <div class="info-box-content">
               <span class="info-box-text">Lights</span>
-              <span class="info-box-number">{{ status.relay1 }}</span>
+              <span class="info-box-number">{{ get_pin_status(relay_config['pins']['relay1']) }}</span>
             </div>
             <!-- /.info-box-content -->
           </div>
@@ -310,7 +310,7 @@
                   </thead>
                   <tbody>
                   <tr>
-                    <td>relay1 - pin{{ pins.relay1 }}</td>
+                    <td>relay1 - pin{{ relay_config['pins']['relay1'] }}</td>
                     <td>relay2 - pin{{ pins.relay2 }}</td>
                     <td>relay3 - pin{{ pins.relay3 }}</td>
                     <td>relay4 - pin{{ pins.relay4 }}</td>

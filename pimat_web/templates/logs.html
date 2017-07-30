@@ -55,7 +55,7 @@
           <li class="dropdown user user-menu">
             <a href="#" class="dropdown-toggle" data-toggle="dropdown">
               <img src="/static/images/jorge.png" class="user-image" alt="User Image">
-              <span class="hidden-xs">{{ session.get('username') }}</span>
+              <span class="hidden-xs">{{ current_user.name) }}</span>
             </a>
             <ul class="dropdown-menu">
               <!-- User image -->
@@ -63,7 +63,7 @@
                 <img src="/static/images/jorge.png" class="img-circle" alt="User Image">
                 <p>
                   {{ session.get('first_name') }} {{ session.get('last_name') }}
-                  <small>{{ session.get('username') }}</small>
+                  <small>{{ current_user.name) }}</small>
                 </p>
               </li>
               <!-- Menu Body -->

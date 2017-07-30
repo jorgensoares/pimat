@@ -9,7 +9,7 @@ import signal
 import sys
 from pimat_server.relays import get_pin_status, Relays
 from flask_sqlalchemy import SQLAlchemy
-from pimat_server.scheduler import add_schedule, remove_schedule
+from pimat_server.scheduler import Cron
 from datetime import datetime, timedelta
 from flask_login import *
 
@@ -19,7 +19,9 @@ relay_config.read('/opt/pimat/relays.ini')
 app = Flask(__name__)
 app.secret_key = 'super secret string'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:zaq12wsx@localhost/pimat'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_ECHO'] = False
+
 db = SQLAlchemy(app)
 login_manager = LoginManager()
 login_manager.init_app(app)
@@ -48,8 +50,15 @@ class User(db.Model):
     first_name = db.Column(db.String(100))
     last_name = db.Column(db.String(100))
     username = db.Column(db.String(80), unique=True)
-    email = db.Column(db.String(120))
     password = db.Column(db.String(64))
+    email = db.Column(db.String(120))
+
+    def __init__(self, first_name, last_name, username, password, email):
+        self.first_name = first_name
+        self.last_name = last_name
+        self.username = username
+        self.password = password
+        self.email = email
 
     # Flask-Login integration
     def is_authenticated(self):
@@ -108,11 +117,12 @@ class Schedules(db.Model):
 
 @login_manager.user_loader
 def user_loader(user_id):
-    """Given *user_id*, return the associated User object.
-
-    :param unicode user_id: user_id (email) user to retrieve
-    """
     return User.query.get(user_id)
+
+
+@login_manager.unauthorized_handler
+def unauthorized_handler():
+    return 'Unauthorized'
 
 
 @app.route("/")
@@ -134,7 +144,6 @@ def login():
                 session['first_name'] = user.first_name
                 session['last_name'] = user.last_name
                 session['email'] = user.email
-                session['username'] = user.username
                 flash('Welcome {0} {1}'.format(user.first_name, user.last_name))
 
                 return redirect(url_for("index"))
@@ -149,9 +158,8 @@ def logout():
     session.pop('first_name', None)
     session.pop('last_name', None)
     session.pop('email', None)
-    session.pop('username', None)
 
-    return render_template("login.html")
+    return redirect(url_for("index"))
 
 
 @app.route("/dashboard")
@@ -176,6 +184,7 @@ def dashboard():
     return render_template('index.html',
                            pins=relay_pins,
                            status=relay_status,
+                           relay_config=relay_config,
                            sensors_data=sensors_data,
                            schedules=Schedules.query.order_by(Schedules.relay.asc()).all(),
                            last_reading=last_reading
@@ -190,8 +199,8 @@ def add_new_schedule(action, schedule_id):
         start_time = request.form.get("start_time")
         stop_time = request.form.get("stop_time")
 
-        if start_time > stop_time:
-            flash('Start time must be bigger than stop time')
+        if start_time >= stop_time:
+            flash('The stop time cannot be equal or smaller than the start time, please try again!')
             return render_template('schedules.html')
 
         if relay == 'relay1':
@@ -210,12 +219,14 @@ def add_new_schedule(action, schedule_id):
         db.session.commit()
 
         last = Schedules.query.order_by(Schedules.id.desc()).first()
-        add_schedule(relay, start_time, stop_time, last.id)
+        cron_schedule = Cron(last.id)
+        cron_schedule.add_schedule(relay, start_time, stop_time)
 
         return redirect('/')
 
     elif request.method == 'POST' and action == 'delete':
-        remove_schedule(schedule_id)
+        cron_schedule = Cron(schedule_id.id)
+        cron_schedule.remove_schedule()
         Schedules.query.filter(Schedules.id == schedule_id).delete()
         db.session.commit()
 
@@ -235,12 +246,12 @@ def switch_relay(action, relay):
         if action == 'on':
             relay_object = Relays(relay, pin)
             relay_object.start()
-            return url_for('index')
+            return url_for('dashboard')
 
         elif action == 'off':
             relay_object = Relays(relay, pin)
             relay_object.stop()
-            return url_for('index')
+            return url_for('dashboard')
 
         else:
             return render_template('error.html', error="Relay must be ON or OFF")

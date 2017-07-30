@@ -8,7 +8,7 @@ import Adafruit_DHT
 import RPi.GPIO as GPIO
 import configparser
 import pymysql as pymysql
-from scheduler import add_schedule, remove_all
+import scheduler
 from relays import Relays
 
 
@@ -22,7 +22,7 @@ def sigterm_handler(_signo, _stack_frame):
     # When sysvinit sends the TERM signal, cleanup before exiting.
     print("[" + get_now() + "] received signal {}, exiting...".format(_signo))
     GPIO.cleanup()
-    remove_all()
+    scheduler.remove_all()
     sys.exit(0)
 
 
@@ -68,8 +68,9 @@ def main():
                          charset='utf8mb4',
                          cursorclass=pymysql.cursors.DictCursor)
 
-    # Clean cron
-    remove_all()
+    # Clean stuff
+    GPIO.cleanup()
+    scheduler.remove_all()
 
     for relay in relay_config['pins']:
         for pin in relay_config['pins'][relay]:
@@ -94,7 +95,8 @@ def main():
 
     for schedule in schedules:
         print(schedule)
-        add_schedule(schedule['relay'], schedule['start_time'], schedule['stop_time'], schedule['id'])
+        cron_schedule = scheduler.Cron(schedule['id'])
+        cron_schedule.add_schedule(schedule['relay'], schedule['start_time'], schedule['stop_time'])
 
     try:
         while True:
@@ -105,7 +107,13 @@ def main():
 
             average = total / 10
 
-            light = (1 / float(average)) * 10000
+            try:
+                light = (1 / float(average)) * 10000
+            except ZeroDivisionError:
+                light = 10000
+
+            if light > 10000:
+                light = 10000
 
             humidity, temperature = Adafruit_DHT.read_retry(Adafruit_DHT.AM2302, dht_pin)
 
@@ -115,7 +123,6 @@ def main():
                 with db.cursor() as cursor:
                     sql = """INSERT INTO `sensors` (`timestamp`, `temperature1`, `humidity`, `light1`, `source`)
                     VALUES (NOW(), %s, %s, %s, %s)"""
-
                     cursor.execute(sql, (temperature, humidity, light, 'pimat_server'))
 
                 db.commit()
@@ -123,7 +130,7 @@ def main():
             else:
                 log.error('Failed to get reading. Try again!')
                 GPIO.cleanup()
-                remove_all()
+                scheduler.remove_all()
                 db.close()
 
                 raise Exception('Failed to get reading')
@@ -131,10 +138,10 @@ def main():
             time.sleep(120)
 
     except KeyboardInterrupt:
-        pass
+        print('Program received a Ctrl+C signal')
     finally:
         GPIO.cleanup()
-        remove_all()
+        scheduler.remove_all()
         db.close()
 
 
