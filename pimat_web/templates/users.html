@@ -135,7 +135,7 @@
           <div class="table-responsive">
             <table class="table no-margin">
               <thead>
-              <tr data-record-id="{{ item.id }}">
+              <tr>
                 <th>User ID</th>
                 <th>Username</th>
                 <th>First Name</th>
@@ -148,7 +148,7 @@
               </thead>
               <tbody>
               {% for item in users %}
-              <tr>
+              <tr data-record-id="{{ item.id }}">
                 <td>{{ item.id }}</td>
                 <td>{{ item.username }}</td>
                 <td>{{ item.first_name }}</td>
