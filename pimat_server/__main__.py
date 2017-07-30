@@ -122,9 +122,10 @@ def main():
     schedules = session.query(Schedules).all()
 
     for schedule in schedules:
-        print(schedule)
-        cron_schedule = scheduler.Cron(schedule['id'])
-        cron_schedule.add_schedule(schedule['relay'], schedule['start_time'], schedule['stop_time'])
+        print(schedule.id)
+        print(schedule.relay)
+        cron_schedule = scheduler.Cron(schedule.id)
+        cron_schedule.add_schedule(schedule.relay, schedule.start_time, schedule.stop_time)
 
     try:
         while True:
