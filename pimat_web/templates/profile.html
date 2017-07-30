@@ -106,7 +106,7 @@
         <li class="header">MAIN MENU</li>
         <li><a href="/"><i class="fa fa fa-cogs"></i> <span>Dashboard</span></a></li>
         <li><a href="/sensors"><i class="fa fa-line-chart"></i> <span>Sensors</span></a></li>
-        <li class="active"><a href="/camera"><i class="fa fa-cc"></i> <span>Cameras</span></a></li>
+        <li><a href="/camera"><i class="fa fa-cc"></i> <span>Cameras</span></a></li>
         <li><a href="/logs"><i class="fa fa-file-text-o"></i> <span>Logs</span></a></li>
         <li><a href="https://wiki.ocloud.cz/doku.php" target="_blank"><i class="fa fa-book"></i> <span>Documentation</span></a></li>
       </ul>
@@ -117,9 +117,9 @@
   <div class="content-wrapper">
     <!-- Content Header (Page header) -->
     <section class="content-header">
-      <h1>Cameras</h1>
+      <h1>Profile</h1>
       <ol class="breadcrumb">
-        <li><a href="index.html"><i class="fa fa fa-cogs"></i> Home</a></li>
+        <li><a href="/"><i class="fa fa fa-cogs"></i> Home</a></li>
         <li class="active">Profile</li>
       </ol>
     </section>
@@ -136,9 +136,9 @@
             <div class="box-body box-profile">
               <img class="profile-user-img img-responsive img-circle" src="/static/images/jorge.png" alt="User profile picture">
 
-              <h3 class="profile-username text-center">Jorge Soares</h3>
+              <h3 class="profile-username text-center">{{ current_user.first_name }} {{ current_user.last_name }}</h3>
 
-              <p class="text-muted text-center">admin</p>
+              <p class="text-muted text-center">{{ current_user.username }}</p>
 
               <a href="#" class="btn btn-primary btn-block"><b>Change Picture</b></a>
             </div>
@@ -160,16 +160,16 @@
                   <fieldset disabled>
                     <div class="form-group">
                       <label for="username">Username</label>
-                      <input type="text" class="form-control" id="username" value="Admin">
+                      <input type="text" class="form-control" id="username" value="{{ current_user.username }}">
                     </div>
                   </fieldset>
                   <div class="form-group">
                     <label for="firtsName">First Name</label>
-                    <input type="email" class="form-control" id="firtsName" value="Jorge">
+                    <input type="email" class="form-control" id="firtsName" value="{{ current_user.first_name }}">
                   </div>
                   <div class="form-group">
                     <label for="email">Email</label>
-                    <input type="email" class="form-control" id="email" value="admin@ocloud.cz">
+                    <input type="email" class="form-control" id="email" value="{{ current_user.email }}">
                   </div>
                 </div>
                 <!-- /.col -->
@@ -182,7 +182,7 @@
                   </fieldset>
                   <div class="form-group">
                     <label for="lastName">Last Name</label>
-                    <input type="text" class="form-control" id="lastName" value="Soares">
+                    <input type="text" class="form-control" id="lastName" value="{{ current_user.last_name }}">
                   </div>
                   <div class="form-group">
                     <div class="checkbox">
