@@ -1,0 +1,280 @@
+ <!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>piMAT | Cameras</title>
+  <!-- Tell the browser to be responsive to screen width -->
+  <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+  <!-- Bootstrap 3.3.7 -->
+  <link rel="stylesheet" href="static/bower_components/bootstrap/dist/css/bootstrap.min.css">
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="static/bower_components/font-awesome/css/font-awesome.min.css">
+  <!-- Bootstrap time Picker -->
+  <link rel="stylesheet" href="static/plugins/timepicker/bootstrap-timepicker.min.css">
+  <!-- Theme style -->
+  <link rel="stylesheet" href="static/dist/css/AdminLTE.min.css">
+  <link rel="stylesheet" href="static/dist/css/skins/skin-blue.css">
+
+  <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+  <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+  <!--[if lt IE 9]>
+  <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+  <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+  <![endif]-->
+
+  <!-- Google Font -->
+  <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
+</head>
+<body class="hold-transition skin-blue sidebar-mini">
+<div class="wrapper">
+
+  <header class="main-header">
+
+    <!-- Logo -->
+    <a href="index2.html" class="logo">
+      <!-- mini logo for sidebar mini 50x50 pixels -->
+      <span class="logo-mini"><b>pi</b>M</span>
+      <!-- logo for regular state and mobile devices -->
+      <span class="logo-lg"><b>pi</b>MAT</span>
+    </a>
+
+    <!-- Header Navbar: style can be found in header.less -->
+    <nav class="navbar navbar-static-top">
+      <!-- Sidebar toggle button-->
+      <a href="#" class="sidebar-toggle" data-toggle="push-menu" role="button">
+        <span class="sr-only">Toggle navigation</span>
+      </a>
+      <!-- Navbar Right Menu -->
+      <div class="navbar-custom-menu">
+        <ul class="nav navbar-nav">
+
+          <!-- User Account: style can be found in dropdown.less -->
+          <li class="dropdown user user-menu">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+              <img src="/static/images/jorge.png" class="user-image" alt="User Image">
+              <span class="hidden-xs">{{ current_user.username }}</span>
+            </a>
+            <ul class="dropdown-menu">
+              <!-- User image -->
+              <li class="user-header">
+                <img src="/static/images/jorge.png" class="img-circle" alt="User Image">
+                <p>
+                  {{ current_user.first_name }} {{ current_user.last_name }}
+                  <small>{{ current_user.username }}</small>
+                </p>
+              </li>
+              <!-- Menu Body -->
+              <li class="user-body">
+                <div class="row">
+                  <div class="col-xs-4 text-center">
+                    <a href="#">Settings</a>
+                  </div>
+                  <div class="col-xs-4 text-center">
+                    <a href="#">Add user</a>
+                  </div>
+                  <div class="col-xs-4 text-center">
+                    <a href="#">Users</a>
+                  </div>
+                </div>
+                <!-- /.row -->
+              </li>
+              <!-- Menu Footer-->
+              <li class="user-footer">
+                <div class="pull-left">
+                  <a href="#" class="btn btn-default btn-flat">Change Password</a>
+                </div>
+                <div class="pull-right">
+                  <a href="/logout" class="btn btn-default btn-flat">Sign out</a>
+                </div>
+              </li>
+            </ul>
+          </li>
+          <!-- Control Sidebar Toggle Button -->
+        </ul>
+      </div>
+
+    </nav>
+  </header>
+  <!-- Left side column. contains the logo and sidebar -->
+  <aside class="main-sidebar">
+    <!-- sidebar: style can be found in sidebar.less -->
+    <section class="sidebar">
+      <!-- sidebar menu: : style can be found in sidebar.less -->
+      <ul class="sidebar-menu" data-widget="tree">
+        <li class="header">MAIN MENU</li>
+        <li><a href="/"><i class="fa fa fa-cogs"></i> <span>Dashboard</span></a></li>
+        <li><a href="/sensors"><i class="fa fa-line-chart"></i> <span>Sensors</span></a></li>
+        <li class="active"><a href="/camera"><i class="fa fa-cc"></i> <span>Cameras</span></a></li>
+        <li><a href="/logs"><i class="fa fa-file-text-o"></i> <span>Logs</span></a></li>
+        <li><a href="https://wiki.ocloud.cz/doku.php" target="_blank"><i class="fa fa-book"></i> <span>Documentation</span></a></li>
+      </ul>
+    </section>
+    <!-- /.sidebar -->
+  </aside>
+  <!-- Content Wrapper. Contains page content -->
+  <div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <h1>Cameras</h1>
+      <ol class="breadcrumb">
+        <li><a href="index.html"><i class="fa fa fa-cogs"></i> Home</a></li>
+        <li class="active">Users</li>
+      </ol>
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+      <!-- Default box -->
+      <div class="box">
+        <div class="box-header with-border">
+          <h3 class="box-title">Title</h3>
+        </div>
+        <div class="box-body">
+          <div class="table-responsive">
+            <table class="table no-margin">
+              <thead>
+              <tr>
+                <th>User ID</th>
+                <th>Username</th>
+                <th>First Name</th>
+                <th>Last Name</th>
+                <th>E-mail</th>
+                <th>Role</th>
+                <th></th>
+                <th></th>
+              </tr>
+              </thead>
+              <tbody>
+              {% for item in schedules %}
+              <tr>
+                <td>{{ item.id }}</td>
+                <td>{{ item.relay }}</td>
+                <td>{{ item.switch }}</td>
+                <td>{{ item.start_time }}</td>
+                <td>{{ item.stop_time }}</td>
+                {% if item.enabled == 'enable' %}
+                  <td><span class="label label-success">{{ item.enabled }}</span></td>
+                {% elif item.enabled == 'disable' %}
+                  <td><span class="label label-danger">{{ item.enabled }}</span></td>
+                {% else %}
+                  <td><span class="label label-default">{{ item.enabled }}</span></td>
+                {% endif %}
+                <td><a href="#" data-record-id="{{ item.id }}" data-record-title="{{ item.switch }} with schedule ID:{{ item.id }}"
+                       data-toggle="modal" data-target="#confirm-reset">Reset Password</a>
+                </td>
+                <td><a href="#" data-record-id="{{ item.id }}" data-record-title="{{ item.switch }} with schedule ID:{{ item.id }}"
+                       data-toggle="modal" data-target="#confirm-delete">Delete</a>
+                </td>
+              </tr>
+              {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <!-- /.box-body -->
+        <div class="box-footer clearfix">
+          <a href="/schedule/add/new" class="btn btn-sm btn-info btn-flat pull-left">Create User</a>
+        </div>
+        <!-- /.box-footer-->
+      </div>
+      <!-- /.box -->
+
+    </section>
+    <!-- /.content -->
+  </div>
+  <!-- /.content-wrapper -->
+  {% include "footer.html" %}
+
+  <div class="modal fade" id="confirm-reset" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+          <div class="modal-content">
+              <div class="modal-header">
+                  <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                  <h4 class="modal-title" id="myModalLabel2">Confirm Turn OFF</h4>
+              </div>
+              <div class="modal-body">
+                  <p>You are about to turn OFF the <b><i class="title"></i></b> switch.</p>
+                  <p>Do you want to proceed?</p>
+              </div>
+              <div class="modal-footer">
+                  <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                  <button type="button" class="btn btn-danger btn-ok">Turn OFF</button>
+              </div>
+          </div>
+      </div>
+  </div>
+
+  <div class="modal fade" id="confirm-delete" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+          <div class="modal-content">
+              <div class="modal-header">
+                  <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                  <h4 class="modal-title" id="myModalLabel">Confirm Delete</h4>
+              </div>
+              <div class="modal-body">
+                  <p>You are about to delete <b><i class="title"></i></b> this procedure is irreversible.</p>
+                  <p>Do you want to proceed?</p>
+              </div>
+              <div class="modal-footer">
+                  <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                  <button type="button" class="btn btn-danger btn-ok">Delete</button>
+              </div>
+          </div>
+      </div>
+  </div>
+  <!-- Add the sidebar's background. This div must be placed
+       immediately after the control sidebar -->
+  <div class="control-sidebar-bg"></div>
+
+</div>
+<!-- ./wrapper -->
+
+<!-- jQuery 3 -->
+<script src="static/bower_components/jquery/dist/jquery.min.js"></script>
+<!-- Bootstrap 3.3.7 -->
+<script src="static/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+<!-- FastClick -->
+<script src="static/bower_components/fastclick/lib/fastclick.js"></script>
+<!-- AdminLTE App -->
+<script src="static/dist/js/adminlte.min.js"></script>
+<!-- SlimScroll -->
+<script src="static/bower_components/jquery-slimscroll/jquery.slimscroll.min.js"></script>
+<script>
+    $('#confirm-reset').on('click', '.btn-ok', function(e) {
+        var $modalDiv = $(e.delegateTarget);
+        var id = $(this).data('recordId');
+        // $.ajax({url: '/relays/on/' + id, type: 'DELETE'})
+        $.post({url: '/relays/on/' + id, success: function(){window.location.href = "/"}}).then()
+        $modalDiv.addClass('loading');
+        setTimeout(function() {
+            $modalDiv.modal('hide').removeClass('loading');
+        }, 1000)
+    });
+    $('#confirm-reset').on('show.bs.modal', function(e) {
+        var data = $(e.relatedTarget).data();
+        $('.title', this).text(data.recordTitle);
+        $('.btn-ok', this).data('recordId', data.recordId);
+    });
+
+
+    $('#confirm-delete').on('click', '.btn-ok', function(e) {
+        var $modalDiv = $(e.delegateTarget);
+        var id = $(this).data('recordId');
+        // $.ajax({url: '/schedules/delete/' + id, type: 'DELETE'})
+        $.post({url: '/schedule/delete/' + id, success: function(){window.location.href = "/"}}).then()
+        $modalDiv.addClass('loading');
+        setTimeout(function() {
+            $modalDiv.modal('hide').removeClass('loading');
+        }, 1000)
+    });
+    $('#confirm-delete').on('show.bs.modal', function(e) {
+        var data = $(e.relatedTarget).data();
+        $('.title', this).text(data.recordTitle);
+        $('.btn-ok', this).data('recordId', data.recordId);
+    });
+
+</script>
+</body>
+</html>
