@@ -235,6 +235,26 @@ def add_new_schedule(action, schedule_id):
 
         return url_for('dashboard')
 
+    elif request.method == 'POST' and action == 'edit':
+        cron_schedule = Cron(schedule_id)
+        schedule = Schedules.query.filter(Schedules.id == schedule_id).first()
+
+        if request.form.get("start_time") >= request.form.get("stop_time"):
+            flash('The stop time cannot be equal or smaller than the start time, please try again!')
+            return render_template('schedules.html', version=version)
+
+        schedule.start_time = request.form.get("start_time")
+        schedule.start_time = request.form.get("stop_time")
+        db.session.commit()
+        cron_schedule.edit(request.form.get("start_time"), request.form.get("stop_time"))
+
+        return redirect(url_for("dashboard"))
+
+    elif request.method == 'GET' and action == 'edit':
+        cron_schedule = Cron(schedule_id)
+        schedule = Schedules.query.filter(Schedules.id == schedule_id).first()
+        return render_template('schedules.html', version=version, schedule=schedule)
+
     else:
         return render_template('schedules.html', version=version)
 

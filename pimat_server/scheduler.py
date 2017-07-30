@@ -51,6 +51,19 @@ class Cron(object):
             job.enable()
             cron.write()
 
+    def edit(self, start_time, stop_time):
+        jobs = cron.find_comment(self.schedule_id)
+
+        for job in jobs:
+            if 'start' in job.command:
+                hour, minute = start_time.slipt(':')
+                job.minute.on(minute)
+                job.hour.on(hour)
+            else:
+                hour, minute = stop_time.slipt(':')
+                job.minute.on(minute)
+                job.hour.on(hour)
+
     def check_status(self):
         jobs = cron.find_comment(self.schedule_id)
         status = dict()

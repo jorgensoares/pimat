@@ -146,22 +146,36 @@
           <div class="row">
             <form class="form-schedule" action="/schedule/add/new" method="post">
             <div class="col-md-3">
-              <div class="form-group">
-                <label>Switch:</label>
-                <select class="form-control select2" name="relay" id="" style="width: 100%;">
-                  <option selected="selected" value="relay1">Light Switch</option>
-                  <option value="relay2">Exhaust Switch</option>
-                  <option value="relay3">Fan Switch</option>
-                  <option value="relay4">Water Pump Switch</option>
-                </select>
-              </div>
+              {% if schedule %}
+                <fieldset disabled>
+                <div class="form-group">
+                  <label>Switch:</label>
+                  <select class="form-control select2" name="relay" id="relay_s" style="width: 100%;">
+                    <option selected="selected" value="{{ schedule.relay }}">{{ schedule.switch }}</option>
+                    <option value="relay2">Exhaust Switch</option>
+                    <option value="relay3">Fan Switch</option>
+                    <option value="relay4">Water Pump Switch</option>
+                  </select>
+                </div>
+                </fieldset>
+              {% else %}
+                <div class="form-group">
+                  <label>Switch:</label>
+                  <select class="form-control select2" name="relay" id="relay" style="width: 100%;">
+                    <option selected="selected" value="relay1">Light Switch</option>
+                    <option value="relay2">Exhaust Switch</option>
+                    <option value="relay3">Fan Switch</option>
+                    <option value="relay4">Water Pump Switch</option>
+                  </select>
+                </div>
+              {% endif %}
             </div>
             <!-- /.col -->
             <div class="col-md-2">
               <div class="form-group">
                 <label>Start Time:</label>
                 <div class="input-group bootstrap-timepicker timepicker">
-                    <input id="timepicker1" name="start_time" type="text" class="form-control input-small">
+                    <input id="timepicker1" name="start_time" type="text" class="form-control input-small" value="{{ schedule.start_time }}">
                     <span class="input-group-addon"><i class="glyphicon glyphicon-time"></i></span>
                 </div>
                 <!-- /.input group -->
@@ -172,7 +186,7 @@
               <div class="form-group">
                 <label>Stop Time:</label>
                 <div class="input-group bootstrap-timepicker timepicker">
-                    <input id="timepicker2" name="stop_time" type="text" class="form-control input-small">
+                    <input id="timepicker2" name="stop_time" type="text" class="form-control input-small" value="{{ schedule.stop_time }}">
                     <span class="input-group-addon"><i class="glyphicon glyphicon-time"></i></span>
                 </div>
                 <!-- /.input group -->
