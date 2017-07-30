@@ -341,6 +341,13 @@ def users():
                            )
 
 
+@app.route("/users/<action>/<id>", methods=['GET', 'POST'])
+@login_required
+def edit_user(action, id):
+    if request.method == 'GET' and action == 'create':
+        return render_template('create_user.html', version=version)
+
+
 def main():
     signal.signal(signal.SIGTERM, sigterm_handler)
 

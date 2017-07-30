@@ -1,4 +1,4 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html>
 <head>
   <meta charset="utf-8">
@@ -106,7 +106,7 @@
         <li class="header">MAIN MENU</li>
         <li><a href="/"><i class="fa fa fa-cogs"></i> <span>Dashboard</span></a></li>
         <li><a href="/sensors"><i class="fa fa-line-chart"></i> <span>Sensors</span></a></li>
-        <li><a href="/camera"><i class="fa fa-cc"></i> <span>Cameras</span></a></li>
+        <li class="active"><a href="/camera"><i class="fa fa-cc"></i> <span>Cameras</span></a></li>
         <li><a href="/logs"><i class="fa fa-file-text-o"></i> <span>Logs</span></a></li>
         <li><a href="https://wiki.ocloud.cz/doku.php" target="_blank"><i class="fa fa-book"></i> <span>Documentation</span></a></li>
       </ul>
@@ -117,62 +117,62 @@
   <div class="content-wrapper">
     <!-- Content Header (Page header) -->
     <section class="content-header">
-      <h1>Users</h1>
+      <h1>Cameras</h1>
       <ol class="breadcrumb">
         <li><a href="index.html"><i class="fa fa fa-cogs"></i> Home</a></li>
-        <li class="active">Users</li>
+        <li class="active">Cameras</li>
       </ol>
     </section>
 
     <!-- Main content -->
     <section class="content">
+
       <!-- Default box -->
-      <div class="box">
-        <div class="box-header with-border">
-          <h3 class="box-title">Users List</h3>
-        </div>
-        <div class="box-body">
-          <div class="table-responsive">
-            <table class="table no-margin">
-              <thead>
-              <tr>
-                <th>User ID</th>
-                <th>Username</th>
-                <th>First Name</th>
-                <th>Last Name</th>
-                <th>E-mail</th>
-                <th>Role</th>
-                <th></th>
-                <th></th>
-              </tr>
-              </thead>
-              <tbody>
-              {% for item in users %}
-              <tr data-record-id="{{ item.id }}">
-                <td>{{ item.id }}</td>
-                <td>{{ item.username }}</td>
-                <td>{{ item.first_name }}</td>
-                <td>{{ item.last_name }}</td>
-                <td>{{ item.email }}</td>
-                <td>Role</td>
-                <td><a href="#" data-record-id="{{ item.id }}" data-record-title="{{ item.username }}"
-                       data-toggle="modal" data-target="#confirm-reset">Reset Password</a>
-                </td>
-                <td><a href="#" data-record-id="{{ item.id }}" data-record-title="{{ item.username }}"
-                       data-toggle="modal" data-target="#confirm-delete">Delete</a>
-                </td>
-              </tr>
-              {% endfor %}
-              </tbody>
-            </table>
+        <div class="register-box">
+          <div class="register-box-body">
+            <p class="login-box-msg">Register a new user</p>
+
+            <form action="../../index.html" method="post">
+              <div class="form-group has-feedback">
+                <input type="text" class="form-control" placeholder="First name">
+                <span class="glyphicon glyphicon-user form-control-feedback"></span>
+              </div>
+              <div class="form-group has-feedback">
+                <input type="text" class="form-control" placeholder="Last name">
+                <span class="glyphicon glyphicon-user form-control-feedback"></span>
+              </div>
+              <div class="form-group has-feedback">
+                <input type="email" class="form-control" placeholder="Email">
+                <span class="glyphicon glyphicon-envelope form-control-feedback"></span>
+              </div>
+              <div class="form-group has-feedback">
+                <input type="password" class="form-control" placeholder="Password">
+                <span class="glyphicon glyphicon-lock form-control-feedback"></span>
+              </div>
+              <div class="form-group has-feedback">
+                <input type="password" class="form-control" placeholder="Retype password">
+                <span class="glyphicon glyphicon-log-in form-control-feedback"></span>
+              </div>
+              <div class="row">
+                <div class="col-xs-8">
+                  <div class="checkbox icheck">
+                    <label>
+                      <input type="checkbox"> I agree to the <a href="#">terms</a>
+                    </label>
+                  </div>
+                </div>
+                <!-- /.col -->
+                <div class="col-xs-4">
+                  <button type="submit" class="btn btn-primary btn-block btn-flat">Register</button>
+                </div>
+                <!-- /.col -->
+              </div>
+            </form>
+
+            <a href="login.html" class="text-center">I already have a membership</a>
           </div>
+          <!-- /.form-box -->
         </div>
-        <!-- /.box-body -->
-        <div class="box-footer clearfix">
-          <a href="/users/create/new" class="btn btn-sm btn-info btn-flat pull-left">Create User</a>
-        </div>
-        <!-- /.box-footer-->
-      </div>
       <!-- /.box -->
 
     </section>
@@ -180,44 +180,6 @@
   </div>
   <!-- /.content-wrapper -->
   {% include "footer.html" %}
-
-  <div class="modal fade" id="confirm-reset" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-      <div class="modal-dialog">
-          <div class="modal-content">
-              <div class="modal-header">
-                  <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-                  <h4 class="modal-title" id="myModalLabel2">Confirm Turn OFF</h4>
-              </div>
-              <div class="modal-body">
-                  <p>You are about to turn OFF the <b><i class="title"></i></b> switch.</p>
-                  <p>Do you want to proceed?</p>
-              </div>
-              <div class="modal-footer">
-                  <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-                  <button type="button" class="btn btn-danger btn-ok">Turn OFF</button>
-              </div>
-          </div>
-      </div>
-  </div>
-
-  <div class="modal fade" id="confirm-delete" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-      <div class="modal-dialog">
-          <div class="modal-content">
-              <div class="modal-header">
-                  <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-                  <h4 class="modal-title" id="myModalLabel">Confirm Delete</h4>
-              </div>
-              <div class="modal-body">
-                  <p>You are about to delete <b><i class="title"></i></b> this procedure is irreversible.</p>
-                  <p>Do you want to proceed?</p>
-              </div>
-              <div class="modal-footer">
-                  <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-                  <button type="button" class="btn btn-danger btn-ok">Delete</button>
-              </div>
-          </div>
-      </div>
-  </div>
   <!-- Add the sidebar's background. This div must be placed
        immediately after the control sidebar -->
   <div class="control-sidebar-bg"></div>
@@ -235,42 +197,6 @@
 <script src="static/dist/js/adminlte.min.js"></script>
 <!-- SlimScroll -->
 <script src="static/bower_components/jquery-slimscroll/jquery.slimscroll.min.js"></script>
-<script>
-    $('#confirm-reset').on('click', '.btn-ok', function(e) {
-        var $modalDiv = $(e.delegateTarget);
-        var id = $(this).data('recordId');
-        // $.ajax({url: '/relays/on/' + id, type: 'DELETE'})
-        $.post({url: '/user/reset/' + id, success: function(){window.location.href = "/"}}).then()
-        $modalDiv.addClass('loading');
-        setTimeout(function() {
-            $modalDiv.modal('hide').removeClass('loading');
-        }, 1000)
-    });
-    $('#confirm-reset').on('show.bs.modal', function(e) {
-        var data = $(e.relatedTarget).data();
-        $('.title', this).text(data.recordTitle);
-        $('.btn-ok', this).data('recordId', data.recordId);
-    });
-
-
-    $('#confirm-delete').on('click', '.btn-ok', function(e) {
-        var $modalDiv = $(e.delegateTarget);
-        var id = $(this).data('recordId');
-        // $.ajax({url: '/schedules/delete/' + id, type: 'DELETE'})
-        $.post({url: '/user/delete/' + id, success: function(){window.location.href = "/"}}).then()
-        $modalDiv.addClass('loading');
-        $('[data-record-id=' + id + ']').remove();
-        setTimeout(function() {
-            $modalDiv.modal('hide').removeClass('loading');
-        }, 1000)
-    });
-    $('#confirm-delete').on('show.bs.modal', function(e) {
-        var data = $(e.relatedTarget).data();
-        $('.title', this).text(data.recordTitle);
-        $('.btn-ok', this).data('recordId', data.recordId);
-    });
-
-</script>
 
 </body>
 </html>
