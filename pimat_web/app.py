@@ -201,7 +201,7 @@ def add_new_schedule(action, schedule_id):
         else:
             switch = None
 
-        schedule = Schedules(relay, switch, start_time, stop_time, 'enabled')
+        schedule = Schedules(relay, switch, start_time, stop_time, 'enable')
         db.session.add(schedule)
         db.session.commit()
 
@@ -216,6 +216,16 @@ def add_new_schedule(action, schedule_id):
         cron_schedule.remove_schedule()
         Schedules.query.filter(Schedules.id == schedule_id).delete()
         db.session.commit()
+
+        return url_for('dashboard')
+
+    elif request.method == 'POST' and action == 'switch':
+        cron_schedule = Cron(schedule_id)
+
+        if cron_schedule.check_status() == 'enable':
+            cron_schedule.disable_schedule()
+        else:
+            cron_schedule.enable_schedule()
 
         return url_for('dashboard')
 
