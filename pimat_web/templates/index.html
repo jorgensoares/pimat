@@ -368,10 +368,10 @@
                     {% endif %}
                     <td><a href="#">Edit</a></td>
                     <td><a href="#" data-record-id="{{ item.id }}" data-record-title="{{ item.switch }} with schedule ID:{{ item.id }}"
-                           data-toggle="modal" data-target="#confirm-delete">Delete</a>
+                           data-toggle="modal" data-target="#confirm-disable">Enable|Disable</a>
                     </td>
                     <td><a href="#" data-record-id="{{ item.id }}" data-record-title="{{ item.switch }} with schedule ID:{{ item.id }}"
-                           data-toggle="modal" data-target="#confirm-disable">Enable/Disable</a>
+                           data-toggle="modal" data-target="#confirm-delete">Delete</a>
                     </td>
                   </tr>
                   {% endfor %}
@@ -512,10 +512,10 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-                    <h4 class="modal-title" id="myModalLabel3">Confirm Delete</h4>
+                    <h4 class="modal-title" id="myModalLabel3">Confirm Action</h4>
                 </div>
                 <div class="modal-body">
-                    <p>You are about to enable/disable <b><i class="title"></i></b> this procedure is irreversible.</p>
+                    <p>You are about to enable|disable <b><i class="title"></i></b>.</p>
                     <p>Do you want to proceed?</p>
                 </div>
                 <div class="modal-footer">
