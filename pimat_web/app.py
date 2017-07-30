@@ -209,7 +209,7 @@ def add_new_schedule(action, schedule_id):
         return redirect('/')
 
     elif request.method == 'POST' and action == 'delete':
-        cron_schedule = Cron(schedule_id.id)
+        cron_schedule = Cron(schedule_id)
         cron_schedule.remove_schedule()
         Schedules.query.filter(Schedules.id == schedule_id).delete()
         db.session.commit()

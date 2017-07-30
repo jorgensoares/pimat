@@ -23,7 +23,8 @@ setup(
                       'pymysql',
                       'flask_sqlalchemy',
                       'MySQL-python',
-                      'flask-login'],
+                      'flask-login',
+                      'sqlalchemy'],
 
     package_data={'pimat_web': ['templates/*']}
 )
