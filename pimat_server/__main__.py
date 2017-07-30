@@ -14,13 +14,6 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
 
-
-# define the pin that goes to the circuit
-GPIO.setmode(GPIO.BCM)
-pin_to_circuit = 27
-dht_pin = 17
-
-
 # Bind the DB engine to the metadata of the Base class
 Base = declarative_base()
 
@@ -93,6 +86,9 @@ def rc_time(pin_to_circuit):
 def main():
     relay_config = configparser.ConfigParser()
     relay_config.read('/opt/pimat/relays.ini')
+    pimat_config = configparser.ConfigParser()
+    pimat_config.read('/opt/pimat/config.ini')
+
     log = logging.getLogger()
     handler = logging.FileHandler('/var/log/pimat/sensors.log')
     formatter = logging.Formatter('[%(levelname)s] [%(asctime)-15s] [PID: %(process)d] [%(name)s] %(message)s')
@@ -100,7 +96,7 @@ def main():
     log.addHandler(handler)
     log.setLevel(logging.DEBUG)
 
-    engine = create_engine('mysql://root:zaq12wsx@localhost/pimat')
+    engine = create_engine(pimat_config['database']['engine'])
     session = sessionmaker(bind=engine)
     db = session()
 
@@ -135,7 +131,7 @@ def main():
             total = 0
 
             for x in range(0, 9):
-                total += rc_time(pin_to_circuit)
+                total += rc_time(pimat_config['pins']['ldr_sensor'])
 
             average = total / 10
 
@@ -147,7 +143,7 @@ def main():
             if light > 10000:
                 light = 10000
 
-            humidity, temperature = Adafruit_DHT.read_retry(Adafruit_DHT.AM2302, dht_pin)
+            humidity, temperature = Adafruit_DHT.read_retry(Adafruit_DHT.AM2302, pimat_config['pins']['temp_sensor'])
 
             if humidity is not None and temperature is not None and light is not None:
                 log.info('Temp={0:0.1f}* Humidity={1:0.1f}% Light={2:0.2f}'.format(temperature, humidity, light))
