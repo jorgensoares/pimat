@@ -244,7 +244,7 @@ def add_new_schedule(action, schedule_id):
             return render_template('schedules.html', version=version)
 
         schedule.start_time = request.form.get("start_time")
-        schedule.start_time = request.form.get("stop_time")
+        schedule.stop_time = request.form.get("stop_time")
         db.session.commit()
         cron_schedule.edit(request.form.get("start_time"), request.form.get("stop_time"))
 

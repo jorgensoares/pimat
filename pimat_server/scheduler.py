@@ -57,10 +57,14 @@ class Cron(object):
         for job in jobs:
             if 'start' in job.command:
                 hour, minute = start_time.split(':')
+                print hour
+                print minute
                 job.minute.on(minute)
                 job.hour.on(hour)
             else:
                 hour, minute = stop_time.split(':')
+                print hour
+                print minute
                 job.minute.on(minute)
                 job.hour.on(hour)
 

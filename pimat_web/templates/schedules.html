@@ -144,13 +144,13 @@
         <!-- /.box-header -->
         <div class="box-body">
           <div class="row">
-            {% if schedule is None %}
+            {% if schedule == None %}
                 <form class="form-schedule" action="/schedule/add/new" method="post">
             {% else %}
                 <form class="form-schedule" action="/schedule/edit/{{ schedule.id }}" method="post">
             {% endif %}
             <div class="col-md-3">
-              {% if schedule is None %}
+              {% if schedule == None %}
                 <div class="form-group">
                   <label>Switch:</label>
                   <select class="form-control select2" name="relay" id="relay" style="width: 100%;">
