@@ -335,7 +335,10 @@ def profile():
 @app.route("/users", methods=['GET'])
 @login_required
 def users():
-    return render_template('users.html', version=version)
+    return render_template('users.html',
+                           version=version,
+                           users=User.query.order_by(User.id.asc()).all()
+                           )
 
 
 def main():
