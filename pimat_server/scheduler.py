@@ -11,7 +11,7 @@ def remove_all():
 class Cron(object):
 
     def __init__(self, schedule_id):
-        self.relay = schedule_id
+        self.schedule_id = schedule_id
 
     def add_schedule(self, relay, start_time, stop_time):
         start_hour, start_minute = start_time.split(':')

@@ -3,7 +3,6 @@ import configparser
 from flask import Flask, request, redirect
 from flask import flash
 from flask import render_template
-from flask import session
 from flask import url_for
 import signal
 import sys
@@ -141,9 +140,6 @@ def login():
         if user:
             if user.password == request.form.get("password"):
                 login_user(user, remember=True)
-                session['first_name'] = user.first_name
-                session['last_name'] = user.last_name
-                session['email'] = user.email
                 flash('Welcome {0} {1}'.format(user.first_name, user.last_name))
 
                 return redirect(url_for("index"))
@@ -155,39 +151,27 @@ def login():
 @login_required
 def logout():
     logout_user()
-    session.pop('first_name', None)
-    session.pop('last_name', None)
-    session.pop('email', None)
-
     return redirect(url_for("index"))
 
 
 @app.route("/dashboard")
 @login_required
 def dashboard():
-    relay_pins = dict()
     relay_status = dict()
-    relay_pins['relay1'] = relay_config['pins']['relay1']
-    relay_pins['relay2'] = relay_config['pins']['relay2']
-    relay_pins['relay3'] = relay_config['pins']['relay3']
-    relay_pins['relay4'] = relay_config['pins']['relay4']
-    relay_status['relay1'] = get_pin_status(relay_pins['relay1'])
-    relay_status['relay2'] = get_pin_status(relay_pins['relay2'])
-    relay_status['relay3'] = get_pin_status(relay_pins['relay3'])
-    relay_status['relay4'] = get_pin_status(relay_pins['relay4'])
+    relay_status['relay1'] = get_pin_status(relay_config['pins']['relay1'])
+    relay_status['relay2'] = get_pin_status(relay_config['pins']['relay2'])
+    relay_status['relay3'] = get_pin_status(relay_config['pins']['relay3'])
+    relay_status['relay4'] = get_pin_status(relay_config['pins']['relay4'])
 
     sensors_data = Sensors.query.filter(Sensors.timestamp.between(get_previous_date(1), get_now())).\
         order_by(Sensors.timestamp.asc()).all()
 
-    last_reading = Sensors.query.order_by(Sensors.timestamp.desc()).first()
-
     return render_template('index.html',
-                           pins=relay_pins,
-                           status=relay_status,
                            relay_config=relay_config,
+                           status=relay_status,
                            sensors_data=sensors_data,
                            schedules=Schedules.query.order_by(Schedules.relay.asc()).all(),
-                           last_reading=last_reading
+                           last_reading=Sensors.query.order_by(Sensors.timestamp.desc()).first()
                            )
 
 

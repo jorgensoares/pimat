@@ -9,13 +9,14 @@ relay_config.read(relay_file)
 
 
 def get_pin_status(pin):
-
     status = check_output(['gpio', 'read', pin])
 
     if status[0] == '0':
         return 'ON'
+
     elif status[0] == '1':
         return 'OFF'
+
     else:
         return None
 
