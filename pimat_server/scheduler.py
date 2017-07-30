@@ -59,12 +59,14 @@ class Cron(object):
                 hour, minute = start_time.split(':')
                 print hour
                 print minute
+                print job.command
                 job.minute.on(minute)
                 job.hour.on(hour)
             else:
                 hour, minute = stop_time.split(':')
                 print hour
                 print minute
+                print job.command
                 job.minute.on(minute)
                 job.hour.on(hour)
 
