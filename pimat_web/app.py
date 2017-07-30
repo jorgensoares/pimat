@@ -332,7 +332,7 @@ def profile():
     return render_template('profile.html', version=version)
 
 
-@app.route("/user/<action>/<user_id>", methods=['GET'])
+@app.route("/user/create", methods=['GET'])
 @login_required
 def edit_user(action,user_id):
     return render_template('create_user.html', version=version)
