@@ -251,12 +251,11 @@ def add_new_schedule(action, schedule_id):
         return redirect(url_for("dashboard"))
 
     elif request.method == 'GET' and action == 'edit':
-        cron_schedule = Cron(schedule_id)
         schedule = Schedules.query.filter(Schedules.id == schedule_id).first()
         return render_template('schedules.html', version=version, schedule=schedule)
 
     else:
-        return render_template('schedules.html', version=version)
+        return render_template('schedules.html', version=version, schedule=None)
 
 
 @app.route("/relays/<action>/<relay>", methods=['POST'])

@@ -144,9 +144,23 @@
         <!-- /.box-header -->
         <div class="box-body">
           <div class="row">
-            <form class="form-schedule" action="/schedule/add/new" method="post">
+            {% if schedule is None %}
+                <form class="form-schedule" action="/schedule/add/new" method="post">
+            {% else %}
+                <form class="form-schedule" action="/schedule/edit/{{ schedule.id }}" method="post">
+            {% endif %}
             <div class="col-md-3">
-              {% if schedule %}
+              {% if schedule is None %}
+                <div class="form-group">
+                  <label>Switch:</label>
+                  <select class="form-control select2" name="relay" id="relay" style="width: 100%;">
+                    <option selected="selected" value="relay1">Light Switch</option>
+                    <option value="relay2">Exhaust Switch</option>
+                    <option value="relay3">Fan Switch</option>
+                    <option value="relay4">Water Pump Switch</option>
+                  </select>
+                </div>
+              {% else %}
                 <fieldset disabled>
                 <div class="form-group">
                   <label>Switch:</label>
@@ -158,16 +172,6 @@
                   </select>
                 </div>
                 </fieldset>
-              {% else %}
-                <div class="form-group">
-                  <label>Switch:</label>
-                  <select class="form-control select2" name="relay" id="relay" style="width: 100%;">
-                    <option selected="selected" value="relay1">Light Switch</option>
-                    <option value="relay2">Exhaust Switch</option>
-                    <option value="relay3">Fan Switch</option>
-                    <option value="relay4">Water Pump Switch</option>
-                  </select>
-                </div>
               {% endif %}
             </div>
             <!-- /.col -->
