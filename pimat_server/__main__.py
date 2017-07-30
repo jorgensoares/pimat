@@ -7,7 +7,6 @@ import time
 import Adafruit_DHT
 import RPi.GPIO as GPIO
 import configparser
-import pymysql as pymysql
 import scheduler
 from relays import Relays
 from sqlalchemy import Column, Integer, String, Float, DateTime
@@ -22,8 +21,7 @@ pin_to_circuit = 27
 dht_pin = 17
 
 
-# Bind the engine to the metadata of the Base class so that the
-# declaratives can be accessed through a DBSession instance
+# Bind the DB engine to the metadata of the Base class
 Base = declarative_base()
 
 
@@ -61,9 +59,9 @@ class Sensors(Base):
         self.source = 'pimat_server'
 
 
-engine = create_engine('mysql://root:zaq12wsx@localhost/pimat')
-Session = sessionmaker(bind=engine)
-session = Session()
+def get_now():
+    # get the current date and time as a string
+    return datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
 
 
 def sigterm_handler(_signo, _stack_frame):
@@ -72,13 +70,6 @@ def sigterm_handler(_signo, _stack_frame):
     GPIO.cleanup()
     scheduler.remove_all()
     sys.exit(0)
-
-
-def get_now():
-    # get the current date and time as a string
-    return datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-
-signal.signal(signal.SIGTERM, sigterm_handler)
 
 
 def rc_time(pin_to_circuit):
@@ -109,15 +100,11 @@ def main():
     log.addHandler(handler)
     log.setLevel(logging.DEBUG)
 
-    db = pymysql.connect(host='localhost',
-                         user='root',
-                         password='zaq12wsx',
-                         db='pimat',
-                         charset='utf8mb4',
-                         cursorclass=pymysql.cursors.DictCursor)
+    engine = create_engine('mysql://root:zaq12wsx@localhost/pimat')
+    session = sessionmaker(bind=engine)
+    db = session()
 
     # Clean stuff
-    GPIO.cleanup()
     scheduler.remove_all()
 
     for relay in relay_config['pins']:
@@ -137,9 +124,9 @@ def main():
                 log.error('Wrong status on ini file must be 1 or 0')
                 sys.exit(1)
 
-    schedules = session.query(Schedules).all()
-
+    schedules = db.query(Schedules).all()
     for schedule in schedules:
+        print ('Adding schedule with ID: {0} for relay {1}'.format(schedule.id, schedule.relay))
         cron_schedule = scheduler.Cron(schedule.id)
         cron_schedule.add_schedule(schedule.relay, schedule.start_time, schedule.stop_time)
 
@@ -164,17 +151,9 @@ def main():
 
             if humidity is not None and temperature is not None and light is not None:
                 log.info('Temp={0:0.1f}* Humidity={1:0.1f}% Light={2:0.2f}'.format(temperature, humidity, light))
-
-                # with db.cursor() as cursor:
-                #     sql = """INSERT INTO `sensors` (`timestamp`, `temperature1`, `humidity`, `light1`, `source`)
-                #     VALUES (NOW(), %s, %s, %s, %s)"""
-                #     cursor.execute(sql, (temperature, humidity, light, 'pimat_server'))
-                #
-                # db.commit()
-
                 reading = Sensors(temperature, humidity, light)
-                session.add(reading)
-                session.commit()
+                db.add(reading)
+                db.commit()
 
             else:
                 log.error('Failed to get reading. Try again!')
@@ -193,6 +172,7 @@ def main():
         scheduler.remove_all()
         db.close()
 
+signal.signal(signal.SIGTERM, sigterm_handler)
 
 if __name__ == '__main__':
     main()
