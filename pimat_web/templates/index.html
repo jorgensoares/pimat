@@ -597,7 +597,7 @@
         var $modalDiv = $(e.delegateTarget);
         var id = $(this).data('recordId');
         // $.ajax({url: '/schedules/delete/' + id, type: 'DELETE'})
-        $.post({url: '/schedule/delete/' + id, success: function(){window.location.href = "/"}}).then()
+        $.post({url: '/schedule/switch/' + id, success: function(){window.location.href = "/"}}).then()
         $modalDiv.addClass('loading');
         setTimeout(function() {
             $modalDiv.modal('hide').removeClass('loading');
