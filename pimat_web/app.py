@@ -11,8 +11,8 @@ from flask_sqlalchemy import SQLAlchemy
 from pimat_server.scheduler import Cron
 from datetime import datetime, timedelta
 from flask_login import *
-
-version = '0.6.5'
+from version import __version__
+version = __version__
 
 relay_config = configparser.ConfigParser()
 relay_config.read('/opt/pimat/relays.ini')
