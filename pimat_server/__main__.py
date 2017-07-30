@@ -10,7 +10,7 @@ import configparser
 import pymysql as pymysql
 import scheduler
 from relays import Relays
-from sqlalchemy import Column, Integer, String
+from sqlalchemy import Column, Integer, String, Float, DateTime
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
@@ -37,6 +37,28 @@ class Schedules(Base):
     start_time = Column(String(5))
     stop_time = Column(String(5))
     enabled = Column(String(10))
+
+
+class Sensors(Base):
+
+    __tablename__ = 'sensors'
+
+    id = Column('id', Integer, primary_key=True)
+    timestamp = Column(DateTime)
+    temperature1 = Column(Float)
+    temperature2 = Column(Float)
+    humidity = Column(Float)
+    light1 = Column(Float)
+    pressure = Column(Float)
+    altitude = Column(Float)
+    source = Column(String(100))
+
+    def __init__(self, temperature1, humidity, light1):
+        self.timestamp = datetime.datetime.now()
+        self.temperature1 = temperature1
+        self.humidity = humidity
+        self.light1 = light1
+        self.source = 'pimat_server'
 
 
 engine = create_engine('mysql://root:zaq12wsx@localhost/pimat')
@@ -115,15 +137,9 @@ def main():
                 log.error('Wrong status on ini file must be 1 or 0')
                 sys.exit(1)
 
-    # with db.cursor() as cursor:
-    #     cursor.execute('SELECT * FROM schedules;')
-    #     schedules = cursor.fetchall()
-
     schedules = session.query(Schedules).all()
 
     for schedule in schedules:
-        print(schedule.id)
-        print(schedule.relay)
         cron_schedule = scheduler.Cron(schedule.id)
         cron_schedule.add_schedule(schedule.relay, schedule.start_time, schedule.stop_time)
 
@@ -149,12 +165,16 @@ def main():
             if humidity is not None and temperature is not None and light is not None:
                 log.info('Temp={0:0.1f}* Humidity={1:0.1f}% Light={2:0.2f}'.format(temperature, humidity, light))
 
-                with db.cursor() as cursor:
-                    sql = """INSERT INTO `sensors` (`timestamp`, `temperature1`, `humidity`, `light1`, `source`)
-                    VALUES (NOW(), %s, %s, %s, %s)"""
-                    cursor.execute(sql, (temperature, humidity, light, 'pimat_server'))
+                # with db.cursor() as cursor:
+                #     sql = """INSERT INTO `sensors` (`timestamp`, `temperature1`, `humidity`, `light1`, `source`)
+                #     VALUES (NOW(), %s, %s, %s, %s)"""
+                #     cursor.execute(sql, (temperature, humidity, light, 'pimat_server'))
+                #
+                # db.commit()
 
-                db.commit()
+                reading = Sensors(temperature, humidity, light)
+                session.add(reading)
+                session.commit()
 
             else:
                 log.error('Failed to get reading. Try again!')
