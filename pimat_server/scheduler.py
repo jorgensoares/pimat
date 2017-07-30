@@ -48,7 +48,7 @@ class Cron(object):
         jobs = cron.find_comment(self.schedule_id)
 
         for job in jobs:
-            job.enable(False)
+            job.enable()
             cron.write()
 
     def check_status(self):
