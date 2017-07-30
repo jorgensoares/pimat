@@ -41,8 +41,9 @@ class Schedules(Base):
 
 engine = create_engine('mysql://root:zaq12wsx@localhost/pimat')
 Base.metadata.bind = engine
-DBSession = sessionmaker(bind=engine)
-db = DBSession()
+Session = sessionmaker(bind=engine)
+Session.configure(bind=engine)
+db = Session()
 
 
 def sigterm_handler(_signo, _stack_frame):
