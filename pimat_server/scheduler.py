@@ -57,18 +57,15 @@ class Cron(object):
         for job in jobs:
             if 'start' in job.command:
                 hour, minute = start_time.split(':')
-                print hour
-                print minute
-                print job.command
                 job.minute.on(minute)
                 job.hour.on(hour)
+                cron.write()
             else:
                 hour, minute = stop_time.split(':')
-                print hour
-                print minute
                 print job.command
                 job.minute.on(minute)
                 job.hour.on(hour)
+                cron.write()
 
     def check_status(self):
         jobs = cron.find_comment(self.schedule_id)
