@@ -12,6 +12,8 @@ from pimat_server.scheduler import Cron
 from datetime import datetime, timedelta
 from flask_login import *
 
+version = '0.6.5'
+
 relay_config = configparser.ConfigParser()
 relay_config.read('/opt/pimat/relays.ini')
 
@@ -167,6 +169,7 @@ def dashboard():
         order_by(Sensors.timestamp.asc()).all()
 
     return render_template('index.html',
+                           version=version,
                            relay_config=relay_config,
                            status=relay_status,
                            sensors_data=sensors_data,
@@ -185,7 +188,7 @@ def add_new_schedule(action, schedule_id):
 
         if start_time >= stop_time:
             flash('The stop time cannot be equal or smaller than the start time, please try again!')
-            return render_template('schedules.html')
+            return render_template('schedules.html', version=version)
 
         if relay == 'relay1':
             switch = 'Lights Switch'
@@ -217,7 +220,7 @@ def add_new_schedule(action, schedule_id):
         return url_for('dashboard')
 
     else:
-        return render_template('schedules.html')
+        return render_template('schedules.html', version=version)
 
 
 @app.route("/relays/<action>/<relay>", methods=['POST'])
@@ -256,16 +259,20 @@ def sensors():
         result = Sensors.query.with_entities(Sensors.timestamp, sensor_column).\
             filter(Sensors.timestamp.between(start_date, end_date)).all()
 
-        return render_template('sensors.html', result=result, sensor=sensor, dates=request.args.get("dates"))
+        return render_template('sensors.html',
+                               version=version,
+                               result=result,
+                               sensor=sensor,
+                               dates=request.args.get("dates"))
 
     else:
-        return render_template('sensors.html')
+        return render_template('sensors.html', version=version)
 
 
 @app.route("/camera", methods=['GET'])
 @login_required
 def camera():
-    return render_template('camera.html')
+    return render_template('camera.html', version=version)
 
 
 @app.route("/logs", methods=['GET'])
@@ -278,6 +285,7 @@ def logs():
         pimat_web_log = f.read()
 
     return render_template('logs.html',
+                           version=version,
                            pimat_server_log=pimat_server_log,
                            pimat_web_log=pimat_web_log
                            )
