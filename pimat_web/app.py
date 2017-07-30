@@ -277,7 +277,14 @@ def logs():
     with open("/var/log/pimat/pimat-web.log", "r") as f:
         pimat_web_log = f.read()
 
-    return render_template('logs.html', sensors_log=sensors_log, pimat_web_log=pimat_web_log)
+    with open("/var/log/pimat/pimat-server.log", "r") as f:
+        pimat_server_log = f.read()
+
+    return render_template('logs.html',
+                           sensors_log=sensors_log,
+                           pimat_web_log=pimat_web_log,
+                           pimat_server_log=pimat_server_log
+                           )
 
 
 def main():

@@ -13,6 +13,7 @@ from sqlalchemy import Column, Integer, String, Float, DateTime
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
+GPIO.setmode(GPIO.BCM)
 
 # Bind the DB engine to the metadata of the Base class
 Base = declarative_base()
@@ -89,44 +90,57 @@ def main():
     pimat_config = configparser.ConfigParser()
     pimat_config.read('/opt/pimat/config.ini')
 
-    log = logging.getLogger()
+    sensors_log = logging.getLogger()
     handler = logging.FileHandler('/var/log/pimat/sensors.log')
     formatter = logging.Formatter('[%(levelname)s] [%(asctime)-15s] [PID: %(process)d] [%(name)s] %(message)s')
     handler.setFormatter(formatter)
-    log.addHandler(handler)
-    log.setLevel(logging.DEBUG)
+    sensors_log.addHandler(handler)
+    sensors_log.setLevel(logging.DEBUG)
 
+    server_log = logging.getLogger()
+    handler = logging.FileHandler('/var/log/pimat/pimat-server.log')
+    formatter = logging.Formatter('[%(levelname)s] [%(asctime)-15s] [PID: %(process)d] [%(name)s] %(message)s')
+    handler.setFormatter(formatter)
+    server_log.addHandler(handler)
+    server_log.setLevel(logging.DEBUG)
+
+    server_log.info('Starting booting sequence at {0}'.format(get_now()))
     engine = create_engine(pimat_config['database']['engine'])
     session = sessionmaker(bind=engine)
     db = session()
 
-    # Clean stuff
+    # Clean cron
     scheduler.remove_all()
 
     for relay in relay_config['pins']:
         for pin in relay_config['pins'][relay]:
 
             relay_object = Relays(relay, pin)
-            relay_object.set_mode()
+            mode = relay_object.set_mode()
+            server_log.info('Setting mode {0} for {1}'.format(mode, relay))
             time.sleep(0.5)
 
             if relay_config['status'][relay] == '1':
-                relay_object.start()
+                status = relay_object.start()
+                server_log.info('{0} was {1}'.format(relay, status))
 
             elif relay_config['status'][relay] == '0':
-                relay_object.stop()
+                status = relay_object.stop()
+                server_log.info('{0} was {1}'.format(relay, status))
 
             else:
-                log.error('Wrong status on ini file must be 1 or 0')
-                sys.exit(1)
+                server_log.error('Wrong status on ini file must be 1 or 0')
+                raise Exception('Wrong status on ini file must be 1 or 0')
 
     schedules = db.query(Schedules).all()
     for schedule in schedules:
-        print ('Adding schedule with ID: {0} for relay {1}'.format(schedule.id, schedule.relay))
+        server_log.info('Adding schedule with ID: {0} for {1}'.format(schedule.id, schedule.relay))
         cron_schedule = scheduler.Cron(schedule.id)
         cron_schedule.add_schedule(schedule.relay, schedule.start_time, schedule.stop_time)
 
     try:
+        server_log.info('Pimat server started, collecting sensors data.')
+
         while True:
             total = 0
 
@@ -146,13 +160,13 @@ def main():
             humidity, temperature = Adafruit_DHT.read_retry(Adafruit_DHT.AM2302, int(pimat_config['pins']['temp_sensor']))
 
             if humidity is not None and temperature is not None and light is not None:
-                log.info('Temp={0:0.1f}* Humidity={1:0.1f}% Light={2:0.2f}'.format(temperature, humidity, light))
+                sensors_log.info('Temp={0:0.1f}* Humidity={1:0.1f}% Light={2:0.2f}'.format(temperature, humidity, light))
                 reading = Sensors(temperature, humidity, light)
                 db.add(reading)
                 db.commit()
 
             else:
-                log.error('Failed to get reading. Try again!')
+                server_log.error('Failed to get reading. Try again!')
                 GPIO.cleanup()
                 scheduler.remove_all()
                 db.close()

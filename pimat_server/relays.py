@@ -28,23 +28,21 @@ class Relays(object):
 
     def start(self):
         call(['gpio', 'write', self.pin, '0'])
-        print(self.relay)
         relay_config.set('status', self.relay, '1')
-
         with open(relay_file, 'w') as ini_file:
             relay_config.write(ini_file)
+        return 'started'
 
     def stop(self):
         call(['gpio', 'write', self.pin, '1'])
-        print(self.relay)
         relay_config.set('status', self.relay, '0')
-
         with open(relay_file, 'w') as ini_file:
             relay_config.write(ini_file)
+        return 'stopped'
 
     def set_mode(self, mode='out'):
         call(['gpio', 'mode', self.pin, mode])
-        print(mode)
+        return mode
 
 
 def main():
