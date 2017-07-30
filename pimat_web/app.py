@@ -221,16 +221,15 @@ def add_new_schedule(action, schedule_id):
 
     elif request.method == 'POST' and action == 'switch':
         cron_schedule = Cron(schedule_id)
+        schedule = Schedules.query.filter(Schedules.id == schedule_id).first()
 
-        if cron_schedule.check_status() == 'enable':
+        if schedule.enabled == 'enable':
             cron_schedule.disable_schedule()
-            schedule = Schedules.query.filter(Schedules.id == schedule_id).first()
             schedule.enabled = 'disable'
             db.session.commit()
 
         else:
             cron_schedule.enable_schedule()
-            schedule = Schedules.query.filter(Schedules.id == schedule_id).first()
             schedule.enabled = 'enable'
             db.session.commit()
 
