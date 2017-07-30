@@ -68,7 +68,7 @@
                     <a href="/settings">Settings</a>
                   </div>
                   <div class="col-xs-4 text-center">
-                    <a href="#">Add user</a>
+                    <a href="#">Profile</a>
                   </div>
                   <div class="col-xs-4 text-center">
                     <a href="/users">Users</a>
@@ -348,6 +348,7 @@
                     <th>Status</th>
                     <th></th>
                     <th></th>
+                    <th></th>
                   </tr>
                   </thead>
                   <tbody>
@@ -367,8 +368,11 @@
                     {% endif %}
                     <td><a href="#">Edit</a></td>
                     <td><a href="#" data-record-id="{{ item.id }}" data-record-title="{{ item.switch }} with schedule ID:{{ item.id }}"
-                           data-toggle="modal" data-target="#confirm-delete">Delete
-                        </a></td>
+                           data-toggle="modal" data-target="#confirm-delete">Delete</a>
+                    </td>
+                    <td><a href="#" data-record-id="{{ item.id }}" data-record-title="{{ item.switch }} with schedule ID:{{ item.id }}"
+                           data-toggle="modal" data-target="#confirm-disable">Enable/Disable</a>
+                    </td>
                   </tr>
                   {% endfor %}
                   </tbody>
@@ -502,6 +506,25 @@
             </div>
         </div>
     </div>
+
+    <div class="modal fade" id="confirm-disable" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                    <h4 class="modal-title" id="myModalLabel3">Confirm Delete</h4>
+                </div>
+                <div class="modal-body">
+                    <p>You are about to enable/disable <b><i class="title"></i></b> this procedure is irreversible.</p>
+                    <p>Do you want to proceed?</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-danger btn-ok">Submitt</button>
+                </div>
+            </div>
+        </div>
+    </div>
   <!-- /.control-sidebar -->
   <!-- Add the sidebar's background. This div must be placed
        immediately after the control sidebar -->
@@ -565,6 +588,22 @@
         }, 1000)
     });
     $('#confirm-delete').on('show.bs.modal', function(e) {
+        var data = $(e.relatedTarget).data();
+        $('.title', this).text(data.recordTitle);
+        $('.btn-ok', this).data('recordId', data.recordId);
+    });
+
+    $('#confirm-disable').on('click', '.btn-ok', function(e) {
+        var $modalDiv = $(e.delegateTarget);
+        var id = $(this).data('recordId');
+        // $.ajax({url: '/schedules/delete/' + id, type: 'DELETE'})
+        $.post({url: '/schedule/delete/' + id, success: function(){window.location.href = "/"}}).then()
+        $modalDiv.addClass('loading');
+        setTimeout(function() {
+            $modalDiv.modal('hide').removeClass('loading');
+        }, 1000)
+    });
+    $('#confirm-disable').on('show.bs.modal', function(e) {
         var data = $(e.relatedTarget).data();
         $('.title', this).text(data.recordTitle);
         $('.btn-ok', this).data('recordId', data.recordId);

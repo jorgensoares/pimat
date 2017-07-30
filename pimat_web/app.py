@@ -209,7 +209,7 @@ def add_new_schedule(action, schedule_id):
         cron_schedule = Cron(last.id)
         cron_schedule.add_schedule(relay, start_time, stop_time)
 
-        return redirect('/')
+        return redirect(url_for("dashboard"))
 
     elif request.method == 'POST' and action == 'delete':
         cron_schedule = Cron(schedule_id)
