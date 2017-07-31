@@ -1,9 +1,12 @@
 #!/usr/bin/python
 import configparser
 from flask import Flask, request, redirect, render_template, flash, url_for
-from flask_restful import Api, Resource, reqparse
+from flask_restful import Api, Resource, reqparse, marshal
 import signal
 import sys
+
+from flask_restful import fields
+
 from pimat_server.relays import get_pin_status, Relays
 from flask_sqlalchemy import SQLAlchemy
 from pimat_server.scheduler import Cron
@@ -46,27 +49,6 @@ def sigterm_handler(_signo, _stack_frame):
     print("received signal {}, exiting...".format(_signo))
     sys.exit(0)
 
-def to_json(inst, cls):
-    """
-    Jsonify the sql alchemy query result.
-    """
-    convert = dict()
-    # add your coversions for things like datetime's
-    # and what-not that aren't serializable.
-    d = dict()
-    for c in cls.__table__.columns:
-        v = getattr(inst, c.name)
-        if c.type in convert.keys() and v is not None:
-            try:
-                d[c.name] = convert[c.type](v)
-            except:
-                d[c.name] = "Error:  Failed to covert using ", str(convert[c.type])
-        elif v is None:
-            d[c.name] = str()
-        else:
-            d[c.name] = v
-    return json.dumps(d)
-
 
 class SensorsAPI(Resource):
 
@@ -90,12 +72,19 @@ class SensorsAPI(Resource):
         print args
         return {'Status': 'success'}, 201
 
+schdules_fields = {
+    'start_time': fields.String,
+    'stop_time': fields.String,
+    'relay': fields.Boolean,
+    'id': fields.String
+}
+
 
 class SchedulesAPI(Resource):
 
     def get(self):
         schedules = Schedules.query.order_by(Schedules.relay.asc()).all()
-        return Schedules.query.order_by(Schedules.relay.asc()).all(), 201
+        return {'schedules': [marshal(schedule, schdules_fields) for schedule in schedules]}
 
 
 class User(db.Model):
