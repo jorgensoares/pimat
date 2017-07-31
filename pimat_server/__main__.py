@@ -13,6 +13,8 @@ from sqlalchemy import Column, Integer, String, Float, DateTime
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
+import requests
+import json
 GPIO.setmode(GPIO.BCM)
 
 # Bind the DB engine to the metadata of the Base class
@@ -51,6 +53,17 @@ class Sensors(Base):
         self.humidity = humidity
         self.light1 = light1
         self.source = 'pimat_server'
+
+
+def post_data(json_event_data):
+    retries = 3
+    while retries > 1:
+        retries -= 1
+        response = requests.post('http://10.14.11.252/api/sensors/add', data=json.dumps(json_event_data),
+                                 headers={'content-type': 'application/json'})
+        if response.status_code == 200:
+            print('Data was posted to http://10.14.11.252/api/sensors/add')
+            break
 
 
 def get_now():
@@ -157,6 +170,12 @@ def main():
                 reading = Sensors(temperature, humidity, light)
                 db.add(reading)
                 db.commit()
+                json_data = dict()
+                json_data['temperature1'] = temperature
+                json_data['humidity'] = humidity
+                json_data['light1'] = light
+                json_data['source'] = 'pimat_server'
+                post_data(json_data)
 
             else:
                 server_log.error('Failed to get reading. Try again!')

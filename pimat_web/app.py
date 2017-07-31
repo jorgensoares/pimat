@@ -50,7 +50,6 @@ class TaskListAPI(Resource):
 
     def __init__(self):
         self.reqparse = reqparse.RequestParser()
-        self.reqparse.add_argument('timestamp', type=datetime, required=True, location='json')
         self.reqparse.add_argument('temperature1', type=float, default="", location='json')
         self.reqparse.add_argument('temperature2', type=float, default="", location='json')
         self.reqparse.add_argument('humidity', type=float, default="", location='json')
@@ -62,8 +61,10 @@ class TaskListAPI(Resource):
 
     def post(self):
         args = self.reqparse.parse_args()
-        print(args)
-
+        reading = Sensors(args['temperature1'], args['humidity'], args['light1'], args['source'])
+        db.session.add(reading)
+        db.session.commit()
+        print args
         return {'Status': 'success'}, 201
 
 
@@ -113,12 +114,12 @@ class Sensors(db.Model):
     altitude = db.Column(db.Float)
     source = db.Column(db.String(100))
 
-    def __init__(self, temperature1, humidity, light1):
+    def __init__(self, temperature1, humidity, light1, source):
         self.timestamp = datetime.now()
         self.temperature1 = temperature1
         self.humidity = humidity
         self.light1 = light1
-        self.source = 'pimat_server'
+        self.source = source
 
 
 class Schedules(db.Model):
@@ -377,7 +378,7 @@ def users():
 
 @app.errorhandler(404)
 def not_found(error):
-    return render_template('404', error="wrong request")
+    return render_template('404', error=error)
 
 
 api.add_resource(TaskListAPI, '/api/sensors/add')

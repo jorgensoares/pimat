@@ -30,7 +30,8 @@ setup(
                       'MySQL-python',
                       'flask-login',
                       'sqlalchemy',
-                      'flask-restful'],
+                      'flask-restful',
+                      'requests'],
 
     package_data={'pimat_web': ['templates/*']}
 )
