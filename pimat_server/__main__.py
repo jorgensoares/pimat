@@ -187,7 +187,7 @@ def main():
                 json_data['humidity'] = humidity
                 json_data['light1'] = light
                 json_data['source'] = 'pimat_server'
-                print(json.dumps(json_event_data, default=json_serial))
+                print(json.dumps(json_data, default=json_serial))
                 post_data(json_data)
 
             else:
