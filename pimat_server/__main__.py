@@ -71,7 +71,7 @@ def post_data(json_event_data):
     retries = 3
     while retries > 1:
         retries -= 1
-        response = requests.post('http://10.14.11.252/api/sensors/add', data=json.dumps(json_event_data), default=json_serial,
+        response = requests.post('http://10.14.11.252/api/sensors/add', data=json.dumps(json_event_data, default=json_serial),
                                  headers={'content-type': 'application/json'})
         if response.status_code == 200:
             print('Data was posted to http://10.14.11.252/api/sensors/add')

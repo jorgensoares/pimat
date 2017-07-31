@@ -56,7 +56,7 @@ class TaskListAPI(Resource):
         self.reqparse.add_argument('light1', type=float, default="", location='json')
         self.reqparse.add_argument('pressure', type=float, default="", location='json')
         self.reqparse.add_argument('altitude', type=float, default="", location='json')
-        self.reqparse.add_argument('source', type=float, required=True, location='json')
+        self.reqparse.add_argument('source', type=str, required=True, location='json')
         super(TaskListAPI, self).__init__()
 
     def post(self):
