@@ -55,11 +55,23 @@ class Sensors(Base):
         self.source = 'pimat_server'
 
 
+def json_serial(obj):
+    """JSON serializer for objects not serializable by default json code"""
+    # yyyy-MM-dd'T'HH:mm:ss.SSS    strict_date_hour_minute_second_millis
+    if isinstance(obj, datetime):
+        tz_string = "Z"
+        serial = "%s.%03d" % (
+            obj.strftime("%Y-%m-%dT%H:%M:%S"),
+            int(obj.microsecond / 1000))
+        return serial
+    raise TypeError("Type not serializable")
+
+
 def post_data(json_event_data):
     retries = 3
     while retries > 1:
         retries -= 1
-        response = requests.post('http://10.14.11.252/api/sensors/add', data=json.dumps(json_event_data),
+        response = requests.post('http://10.14.11.252/api/sensors/add', data=json.dumps(json_event_data), default=json_serial,
                                  headers={'content-type': 'application/json'})
         if response.status_code == 200:
             print('Data was posted to http://10.14.11.252/api/sensors/add')
@@ -175,6 +187,7 @@ def main():
                 json_data['humidity'] = humidity
                 json_data['light1'] = light
                 json_data['source'] = 'pimat_server'
+                print(json.dumps(json_event_data, default=json_serial))
                 post_data(json_data)
 
             else:
