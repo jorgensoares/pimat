@@ -6,7 +6,7 @@ cron = CronTab(user='root')
 
 def remove_all():
     cron.remove_all()
-
+    cron.write()
 
 class Cron(object):
 
