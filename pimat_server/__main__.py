@@ -14,6 +14,7 @@ import json
 
 GPIO.setmode(GPIO.BCM)
 
+
 def json_serial(obj):
     """JSON serializer for objects not serializable by default json code"""
     # yyyy-MM-dd'T'HH:mm:ss.SSS    strict_date_hour_minute_second_millis
@@ -58,6 +59,7 @@ def rc_time(pin_to_circuit):
 
 
 def main():
+    retries = 3
     relay_config = configparser.ConfigParser()
     relay_config.read('/opt/pimat/relays.ini')
     pimat_config = configparser.ConfigParser()
@@ -95,7 +97,14 @@ def main():
                 server_log.error('Wrong status on ini file must be 1 or 0')
                 raise Exception('Wrong status on ini file must be 1 or 0')
 
-    get_schedules = requests.get("http://localhost/api/schedules")
+    while retries > 1:
+        retries -= 1
+        get_schedules = requests.get("http://localhost/api/schedules")
+
+        if get_schedules.status_code == 200:
+            server_log.info('Schedules received!')
+            break
+
     schedules = json.loads(get_schedules.content)
 
     for schedule in schedules['schedules']:
@@ -135,7 +144,6 @@ def main():
 
                 server_log.info('Temp={0:0.1f}* Humidity={1:0.1f}% Light={2:0.2f}'.format(temperature, humidity, light))
 
-                retries = 3
                 while retries > 1:
                     retries -= 1
                     response = requests.post('http://localhost/api/sensors',
