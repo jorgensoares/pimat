@@ -67,17 +67,6 @@ def json_serial(obj):
     raise TypeError("Type not serializable")
 
 
-def post_data(json_event_data):
-    retries = 3
-    while retries > 1:
-        retries -= 1
-        response = requests.post('http://10.14.11.252/api/sensors/add', data=json.dumps(json_event_data, default=json_serial),
-                                 headers={'content-type': 'application/json'})
-        if response.status_code == 200:
-            print('Data was posted to http://10.14.11.252/api/sensors/add')
-            break
-
-
 def get_now():
     # get the current date and time as a string
     return datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
@@ -179,16 +168,30 @@ def main():
 
             if humidity is not None and temperature is not None and light is not None:
                 server_log.info('Temp={0:0.1f}* Humidity={1:0.1f}% Light={2:0.2f}'.format(temperature, humidity, light))
-                reading = Sensors(temperature, humidity, light)
-                db.add(reading)
-                db.commit()
+                #reading = Sensors(temperature, humidity, light)
+                #db.add(reading)
+                #db.commit()
                 json_data = dict()
+                json_data['timestamp'] = datetime.datetime.now()
                 json_data['temperature1'] = temperature
                 json_data['humidity'] = humidity
                 json_data['light1'] = light
                 json_data['source'] = 'pimat_server'
-                print(json.dumps(json_data, default=json_serial))
-                post_data(json_data)
+
+                retries = 3
+                while retries > 1:
+                    retries -= 1
+                    response = requests.post('http://localhost/api/sensors',
+                                             data=json.dumps(json_data, default=json_serial),
+                                             headers={'content-type': 'application/json'})
+
+                    if response.status_code == 201:
+                        server_log.info('Last reading was posted to http://10.14.11.252/api/sensors')
+                        break
+
+                    if response.status_code == 400:
+                        server_log.error('bad request or wrong request data sent to server')
+                        break
 
             else:
                 server_log.error('Failed to get reading. Try again!')

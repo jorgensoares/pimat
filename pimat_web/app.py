@@ -46,10 +46,11 @@ def sigterm_handler(_signo, _stack_frame):
     sys.exit(0)
 
 
-class TaskListAPI(Resource):
+class SensorsAPI(Resource):
 
     def __init__(self):
         self.reqparse = reqparse.RequestParser()
+        self.reqparse.add_argument('timestamp', type=datetime, required=True, location='json')
         self.reqparse.add_argument('temperature1', type=float, default="", location='json')
         self.reqparse.add_argument('temperature2', type=float, default="", location='json')
         self.reqparse.add_argument('humidity', type=float, default="", location='json')
@@ -57,11 +58,11 @@ class TaskListAPI(Resource):
         self.reqparse.add_argument('pressure', type=float, default="", location='json')
         self.reqparse.add_argument('altitude', type=float, default="", location='json')
         self.reqparse.add_argument('source', type=str, required=True, location='json')
-        super(TaskListAPI, self).__init__()
+        super(SensorsAPI, self).__init__()
 
     def post(self):
         args = self.reqparse.parse_args()
-        reading = Sensors(args['temperature1'], args['humidity'], args['light1'], args['source'])
+        reading = Sensors(args['timestamp'], args['temperature1'], args['humidity'], args['light1'], args['source'])
         db.session.add(reading)
         db.session.commit()
         print args
@@ -114,8 +115,8 @@ class Sensors(db.Model):
     altitude = db.Column(db.Float)
     source = db.Column(db.String(100))
 
-    def __init__(self, temperature1, humidity, light1, source):
-        self.timestamp = datetime.now()
+    def __init__(self, timestamp,temperature1, humidity, light1, source):
+        self.timestamp = timestamp
         self.temperature1 = temperature1
         self.humidity = humidity
         self.light1 = light1
@@ -381,7 +382,7 @@ def not_found(error):
     return render_template('404', error=error)
 
 
-api.add_resource(TaskListAPI, '/api/sensors/add')
+api.add_resource(SensorsAPI, '/api/sensors')
 
 
 def main():
