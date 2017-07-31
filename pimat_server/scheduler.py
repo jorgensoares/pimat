@@ -5,7 +5,7 @@ cron = CronTab(user='root')
 
 
 def remove_all():
-    cron.remove_all(command='pimat-relay')
+    cron.remove_all()
 
 
 class Cron(object):
