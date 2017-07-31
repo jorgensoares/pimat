@@ -34,6 +34,12 @@ db = SQLAlchemy(app)
 login_manager = LoginManager()
 login_manager.init_app(app)
 
+schedules_fields = {
+    'start_time': fields.String,
+    'stop_time': fields.String,
+    'relay': fields.String,
+    'id': fields.String
+}
 
 def get_previous_date(days):
     return datetime.today() - timedelta(days=days)
@@ -72,19 +78,12 @@ class SensorsAPI(Resource):
         print args
         return {'Status': 'success'}, 201
 
-schdules_fields = {
-    'start_time': fields.String,
-    'stop_time': fields.String,
-    'relay': fields.Boolean,
-    'id': fields.String
-}
-
 
 class SchedulesAPI(Resource):
 
     def get(self):
         schedules = Schedules.query.order_by(Schedules.relay.asc()).all()
-        return {'schedules': [marshal(schedule, schdules_fields) for schedule in schedules]}
+        return {'schedules': [marshal(schedule, schedules_fields) for schedule in schedules]}, 200
 
 
 class User(db.Model):

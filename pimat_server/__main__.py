@@ -140,7 +140,7 @@ def main():
                 raise Exception('Wrong status on ini file must be 1 or 0')
 
     r = requests.get("http://localhost/api/schedules")
-    print r
+    print r.content
     schedules = db.query(Schedules).all()
     for schedule in schedules:
         server_log.info('Adding schedule with ID: {0} for {1}'.format(schedule.id, schedule.relay))
