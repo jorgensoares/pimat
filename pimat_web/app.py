@@ -1,6 +1,6 @@
 #!/usr/bin/python
 import configparser
-from flask import Flask, request, redirect, render_template, flash, url_for, jsonify
+from flask import Flask, request, redirect, render_template, flash, url_for
 from flask_restful import Api, Resource, reqparse
 import signal
 import sys
@@ -46,6 +46,27 @@ def sigterm_handler(_signo, _stack_frame):
     print("received signal {}, exiting...".format(_signo))
     sys.exit(0)
 
+def to_json(inst, cls):
+    """
+    Jsonify the sql alchemy query result.
+    """
+    convert = dict()
+    # add your coversions for things like datetime's
+    # and what-not that aren't serializable.
+    d = dict()
+    for c in cls.__table__.columns:
+        v = getattr(inst, c.name)
+        if c.type in convert.keys() and v is not None:
+            try:
+                d[c.name] = convert[c.type](v)
+            except:
+                d[c.name] = "Error:  Failed to covert using ", str(convert[c.type])
+        elif v is None:
+            d[c.name] = str()
+        else:
+            d[c.name] = v
+    return json.dumps(d)
+
 
 class SensorsAPI(Resource):
 
@@ -73,7 +94,8 @@ class SensorsAPI(Resource):
 class SchedulesAPI(Resource):
 
     def get(self):
-        return jsonify(data=Schedules.query.order_by(Schedules.relay.asc()).all()), 200
+        schedules = Schedules.query.order_by(Schedules.relay.asc()).all()
+        return Schedules.query.order_by(Schedules.relay.asc()).all(), 201
 
 
 class User(db.Model):
@@ -147,6 +169,10 @@ class Schedules(db.Model):
         self.start_time = start_time
         self.stop_time = stop_time
         self.enabled = enabled
+
+    @property
+    def json(self):
+        return to_json(self, self.__class__)
 
 
 @login_manager.user_loader
