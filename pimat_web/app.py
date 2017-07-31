@@ -1,9 +1,7 @@
 #!/usr/bin/python
 import configparser
-from flask import Flask, request, redirect
-from flask import flash
-from flask import render_template
-from flask import url_for
+from flask import Flask, request, redirect, render_template, flash, url_for
+from flask_restful import Api, Resource, reqparse
 import signal
 import sys
 from pimat_server.relays import get_pin_status, Relays
@@ -11,17 +9,22 @@ from flask_sqlalchemy import SQLAlchemy
 from pimat_server.scheduler import Cron
 from datetime import datetime, timedelta
 from flask_login import *
+import logging
 from version import __version__
 version = __version__
 
 relay_config = configparser.ConfigParser()
 relay_config.read('/opt/pimat/relays.ini')
+file_handler = logging.FileHandler('/var/log/pimat-web.log')
 
 app = Flask(__name__)
+api = Api(app)
 app.secret_key = 'super secret string'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:zaq12wsx@localhost/pimat'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_ECHO'] = False
+app.logger.addHandler(file_handler)
+app.logger.setLevel(logging.INFO)
 
 db = SQLAlchemy(app)
 login_manager = LoginManager()
@@ -41,6 +44,27 @@ def sigterm_handler(_signo, _stack_frame):
     # When sysvinit sends the TERM signal, cleanup before exiting.
     print("received signal {}, exiting...".format(_signo))
     sys.exit(0)
+
+
+class TaskListAPI(Resource):
+
+    def __init__(self):
+        self.reqparse = reqparse.RequestParser()
+        self.reqparse.add_argument('timestamp', type=datetime, required=True, location='json')
+        self.reqparse.add_argument('temperature1', type=float, default="", location='json')
+        self.reqparse.add_argument('temperature2', type=float, default="", location='json')
+        self.reqparse.add_argument('humidity', type=float, default="", location='json')
+        self.reqparse.add_argument('light1', type=float, default="", location='json')
+        self.reqparse.add_argument('pressure', type=float, default="", location='json')
+        self.reqparse.add_argument('altitude', type=float, default="", location='json')
+        self.reqparse.add_argument('source', type=float, required=True, location='json')
+        super(TaskListAPI, self).__init__()
+
+    def post(self):
+        args = self.reqparse.parse_args()
+        print(args)
+
+        return {'Status': 'success'}, 201
 
 
 class User(db.Model):
@@ -129,7 +153,11 @@ def unauthorized_handler():
 @app.route("/")
 def index():
     if current_user.is_authenticated:
+        app.logger.info('informing')
+        app.logger.warning('warning')
+        app.logger.error('screaming bloody murder!')
         return redirect(url_for("dashboard"))
+
     else:
         return render_template("login.html")
 
@@ -345,6 +373,14 @@ def users():
                            version=version,
                            users=User.query.order_by(User.id.asc()).all()
                            )
+
+
+@app.errorhandler(404)
+def not_found(error):
+    return render_template('404', error="wrong request")
+
+
+api.add_resource(TaskListAPI, '/api/sensors/add')
 
 
 def main():
