@@ -139,6 +139,8 @@ def main():
                 server_log.error('Wrong status on ini file must be 1 or 0')
                 raise Exception('Wrong status on ini file must be 1 or 0')
 
+    r = requests.get("http://localhost/api/schedules")
+    print r
     schedules = db.query(Schedules).all()
     for schedule in schedules:
         server_log.info('Adding schedule with ID: {0} for {1}'.format(schedule.id, schedule.relay))
@@ -184,7 +186,7 @@ def main():
                     response = requests.post('http://localhost/api/sensors',
                                              data=json.dumps(json_data, default=json_serial),
                                              headers={'content-type': 'application/json'})
-
+                    print response
                     if response.status_code == 201:
                         server_log.info('Last reading was posted to http://10.14.11.252/api/sensors')
                         break

@@ -50,7 +50,7 @@ class SensorsAPI(Resource):
 
     def __init__(self):
         self.reqparse = reqparse.RequestParser()
-        self.reqparse.add_argument('timestamp', type=datetime, required=True, location='json')
+        self.reqparse.add_argument('timestamp', type=str, required=True, location='json')
         self.reqparse.add_argument('temperature1', type=float, default="", location='json')
         self.reqparse.add_argument('temperature2', type=float, default="", location='json')
         self.reqparse.add_argument('humidity', type=float, default="", location='json')
@@ -67,6 +67,12 @@ class SensorsAPI(Resource):
         db.session.commit()
         print args
         return {'Status': 'success'}, 201
+
+
+class SchedulesAPI(Resource):
+
+    def get(self):
+        return Schedules.query.order_by(Schedules.relay.asc()).all(), 200
 
 
 class User(db.Model):
@@ -383,6 +389,7 @@ def not_found(error):
 
 
 api.add_resource(SensorsAPI, '/api/sensors')
+api.add_resource(SchedulesAPI, '/api/schedules')
 
 
 def main():
