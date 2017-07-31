@@ -59,7 +59,7 @@ def rc_time(pin_to_circuit):
 
 
 def main():
-    retries = 3
+
     relay_config = configparser.ConfigParser()
     relay_config.read('/opt/pimat/relays.ini')
     pimat_config = configparser.ConfigParser()
@@ -97,6 +97,7 @@ def main():
                 server_log.error('Wrong status on ini file must be 1 or 0')
                 raise Exception('Wrong status on ini file must be 1 or 0')
 
+    retries = 4
     while retries > 1:
         retries -= 1
         get_schedules = requests.get("http://localhost/api/schedules")
@@ -144,6 +145,7 @@ def main():
 
                 server_log.info('Temp={0:0.1f}* Humidity={1:0.1f}% Light={2:0.2f}'.format(temperature, humidity, light))
 
+                retries = 3
                 while retries > 1:
                     retries -= 1
                     response = requests.post('http://localhost/api/sensors',
