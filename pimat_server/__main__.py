@@ -139,13 +139,12 @@ def main():
                 server_log.error('Wrong status on ini file must be 1 or 0')
                 raise Exception('Wrong status on ini file must be 1 or 0')
 
-    r = requests.get("http://localhost/api/schedules")
-    print r.content
-    schedules = db.query(Schedules).all()
-    for schedule in schedules:
-        server_log.info('Adding schedule with ID: {0} for {1}'.format(schedule.id, schedule.relay))
-        cron_schedule = scheduler.Cron(schedule.id)
-        cron_schedule.add_schedule(schedule.relay, schedule.start_time, schedule.stop_time)
+    response = requests.get("http://localhost/api/schedules")
+    schedules = json.loads(response)
+    for schedule in schedules['schedules']:
+        server_log.info('Adding schedule with ID: {0} for {1}'.format(schedule['id'], schedule['relay']))
+        cron_schedule = scheduler.Cron(schedule['id'])
+        cron_schedule.add_schedule(schedule['relay'], schedule['start_time'], schedule['stop_time'])
 
     try:
         server_log.info('Pimat server started, collecting sensors data.')

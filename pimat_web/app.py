@@ -83,7 +83,7 @@ class SchedulesAPI(Resource):
 
     def get(self):
         schedules = Schedules.query.order_by(Schedules.relay.asc()).all()
-        return {'schedules': [marshal(schedule, schedules_fields) for schedule in schedules]}, 200
+        return {[marshal(schedule, schedules_fields) for schedule in schedules]}, 200
 
 
 class User(db.Model):
