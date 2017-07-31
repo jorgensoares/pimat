@@ -1,6 +1,6 @@
 #!/usr/bin/python
 import configparser
-from flask import Flask, request, redirect, render_template, flash, url_for
+from flask import Flask, request, redirect, render_template, flash, url_for, jsonify
 from flask_restful import Api, Resource, reqparse
 import signal
 import sys
@@ -10,6 +10,7 @@ from pimat_server.scheduler import Cron
 from datetime import datetime, timedelta
 from flask_login import *
 import logging
+import json
 from version import __version__
 version = __version__
 
@@ -72,7 +73,7 @@ class SensorsAPI(Resource):
 class SchedulesAPI(Resource):
 
     def get(self):
-        return Schedules.query.order_by(Schedules.relay.asc()).all(), 200
+        return jsonify(data=Schedules.query.order_by(Schedules.relay.asc()).all()), 200
 
 
 class User(db.Model):
