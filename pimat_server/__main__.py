@@ -172,12 +172,12 @@ def main():
                 #db.add(reading)
                 #db.commit()
                 json_data = dict()
-                json_data['timestamp'] = datetime.datetime.now()
+                json_data['timestamp'] = get_now()
                 json_data['temperature1'] = temperature
                 json_data['humidity'] = humidity
                 json_data['light1'] = light
                 json_data['source'] = 'pimat_server'
-
+                print(json.dumps(json_data, default=json_serial))
                 retries = 3
                 while retries > 1:
                     retries -= 1
