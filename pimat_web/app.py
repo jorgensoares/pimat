@@ -4,16 +4,13 @@ from flask import Flask, request, redirect, render_template, flash, url_for
 from flask_restful import Api, Resource, reqparse, marshal
 import signal
 import sys
-
 from flask_restful import fields
-
 from pimat_server.relays import get_pin_status, Relays
 from flask_sqlalchemy import SQLAlchemy
 from pimat_server.scheduler import Cron
 from datetime import datetime, timedelta
 from flask_login import *
 import logging
-import json
 from version import __version__
 version = __version__
 
@@ -40,6 +37,7 @@ schedules_fields = {
     'relay': fields.String,
     'id': fields.String
 }
+
 
 def get_previous_date(days):
     return datetime.today() - timedelta(days=days)
@@ -75,8 +73,7 @@ class SensorsAPI(Resource):
         reading = Sensors(args['timestamp'], args['temperature1'], args['humidity'], args['light1'], args['source'])
         db.session.add(reading)
         db.session.commit()
-        print args
-        return {'Status': 'success'}, 201
+        return {'status': 'success'}, 201
 
 
 class SchedulesAPI(Resource):
@@ -132,7 +129,7 @@ class Sensors(db.Model):
     altitude = db.Column(db.Float)
     source = db.Column(db.String(100))
 
-    def __init__(self, timestamp,temperature1, humidity, light1, source):
+    def __init__(self, timestamp, temperature1, humidity, light1, source):
         self.timestamp = timestamp
         self.temperature1 = temperature1
         self.humidity = humidity
@@ -157,10 +154,6 @@ class Schedules(db.Model):
         self.start_time = start_time
         self.stop_time = stop_time
         self.enabled = enabled
-
-    @property
-    def json(self):
-        return to_json(self, self.__class__)
 
 
 @login_manager.user_loader
@@ -385,7 +378,7 @@ def profile():
 
 @app.route("/user/create", methods=['GET'])
 @login_required
-def edit_user(action,user_id):
+def edit_user(action, user_id):
     return render_template('create_user.html', version=version)
 
 

@@ -9,51 +9,10 @@ import RPi.GPIO as GPIO
 import configparser
 import scheduler
 from relays import Relays
-from sqlalchemy import Column, Integer, String, Float, DateTime
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
-from sqlalchemy.ext.declarative import declarative_base
 import requests
 import json
+
 GPIO.setmode(GPIO.BCM)
-
-# Bind the DB engine to the metadata of the Base class
-Base = declarative_base()
-
-
-class Schedules(Base):
-
-    __tablename__ = 'schedules'
-
-    id = Column('id', Integer, primary_key=True)
-    relay = Column(String(10))
-    switch = Column(String(50))
-    start_time = Column(String(5))
-    stop_time = Column(String(5))
-    enabled = Column(String(10))
-
-
-class Sensors(Base):
-
-    __tablename__ = 'sensors'
-
-    id = Column('id', Integer, primary_key=True)
-    timestamp = Column(DateTime)
-    temperature1 = Column(Float)
-    temperature2 = Column(Float)
-    humidity = Column(Float)
-    light1 = Column(Float)
-    pressure = Column(Float)
-    altitude = Column(Float)
-    source = Column(String(100))
-
-    def __init__(self, temperature1, humidity, light1):
-        self.timestamp = datetime.datetime.now()
-        self.temperature1 = temperature1
-        self.humidity = humidity
-        self.light1 = light1
-        self.source = 'pimat_server'
-
 
 def json_serial(obj):
     """JSON serializer for objects not serializable by default json code"""
@@ -112,9 +71,6 @@ def main():
     server_log.setLevel(logging.DEBUG)
 
     server_log.info('Starting booting sequence at {0}'.format(get_now()))
-    engine = create_engine(pimat_config['database']['engine'])
-    session = sessionmaker(bind=engine)
-    db = session()
 
     # Clean cron
     scheduler.remove_all()
@@ -139,8 +95,9 @@ def main():
                 server_log.error('Wrong status on ini file must be 1 or 0')
                 raise Exception('Wrong status on ini file must be 1 or 0')
 
-    response = requests.get("http://localhost/api/schedules")
-    schedules = json.loads(response)
+    get_schedules = requests.get("http://localhost/api/schedules")
+    schedules = json.loads(get_schedules.content)
+
     for schedule in schedules['schedules']:
         server_log.info('Adding schedule with ID: {0} for {1}'.format(schedule['id'], schedule['relay']))
         cron_schedule = scheduler.Cron(schedule['id'])
@@ -165,27 +122,26 @@ def main():
             if light > 10000:
                 light = 10000
 
-            humidity, temperature = Adafruit_DHT.read_retry(Adafruit_DHT.AM2302, int(pimat_config['pins']['temp_sensor']))
+            humidity, temperature = Adafruit_DHT.read_retry(Adafruit_DHT.AM2302,
+                                                            int(pimat_config['pins']['temp_sensor']))
 
             if humidity is not None and temperature is not None and light is not None:
-                server_log.info('Temp={0:0.1f}* Humidity={1:0.1f}% Light={2:0.2f}'.format(temperature, humidity, light))
-                #reading = Sensors(temperature, humidity, light)
-                #db.add(reading)
-                #db.commit()
                 json_data = dict()
                 json_data['timestamp'] = get_now()
                 json_data['temperature1'] = temperature
                 json_data['humidity'] = humidity
                 json_data['light1'] = light
                 json_data['source'] = 'pimat_server'
-                print(json.dumps(json_data, default=json_serial))
+
+                server_log.info('Temp={0:0.1f}* Humidity={1:0.1f}% Light={2:0.2f}'.format(temperature, humidity, light))
+
                 retries = 3
                 while retries > 1:
                     retries -= 1
                     response = requests.post('http://localhost/api/sensors',
                                              data=json.dumps(json_data, default=json_serial),
                                              headers={'content-type': 'application/json'})
-                    print response
+
                     if response.status_code == 201:
                         server_log.info('Last reading was posted to http://10.14.11.252/api/sensors')
                         break
@@ -198,8 +154,6 @@ def main():
                 server_log.error('Failed to get reading. Try again!')
                 GPIO.cleanup()
                 scheduler.remove_all()
-                db.close()
-
                 raise Exception('Failed to get reading')
 
             time.sleep(120)
@@ -209,7 +163,6 @@ def main():
     finally:
         GPIO.cleanup()
         scheduler.remove_all()
-        db.close()
 
 signal.signal(signal.SIGTERM, sigterm_handler)
 

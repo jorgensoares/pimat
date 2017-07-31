@@ -29,7 +29,6 @@ setup(
                       'flask_sqlalchemy',
                       'MySQL-python',
                       'flask-login',
-                      'sqlalchemy',
                       'flask-restful',
                       'requests'],
 
