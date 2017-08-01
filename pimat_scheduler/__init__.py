@@ -137,7 +137,7 @@ class Cron(object):
                         print 'stop status true'
                         stop_status = 'enable'
                     else:
-                        print 'stop status true
+                        print 'stop status true'
                         stop_status = 'disable'
 
                 return 'Start and stop jobs have different status'
