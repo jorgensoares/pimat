@@ -278,10 +278,15 @@ def add_new_schedule(action, schedule_id):
 
     elif request.method == 'POST' and action == 'switch':
         schedule = Schedules.query.filter(Schedules.id == schedule_id).first()
+        json_data = dict()
 
         if schedule.enabled == 'enable':
-            response = requests.post('http://localhost:4002/schedules/{}'.format(schedule_id), data={'action': 'disable'},
-                                     headers={'content-type': 'application/json'}, timeout=2)
+            json_data['action'] = 'disable'
+            response = requests.post('http://localhost:4002/schedules/{}'.format(str(schedule_id)),
+                                     data=json.dumps(json_data),
+                                     headers={'content-type': 'application/json'},
+                                     timeout=2
+                                     )
 
             if response.status_code == 200:
                 schedule.enabled = 'disable'
@@ -290,8 +295,12 @@ def add_new_schedule(action, schedule_id):
                 return render_template('error.html', error="something went wrong with the request")
 
         else:
-            response = requests.post('http://localhost:4002/schedules/{}'.format(schedule_id), data={'action': 'enable'},
-                                     headers={'content-type': 'application/json'}, timeout=2)
+            json_data['action'] = 'disable'
+            response = requests.post('http://localhost:4002/schedules/{}'.format(str(schedule_id)),
+                                     data=json.dumps(json_data),
+                                     headers={'content-type': 'application/json'},
+                                     timeout=2
+                                     )
             if response.status_code == 200:
                 schedule.enabled = 'enable'
                 db.session.commit()
