@@ -127,22 +127,21 @@ class Cron(object):
             if job:
                 if 'start' in job.command:
                     if job.is_enabled() is True:
+                        print 'start status true'
                         start_status = 'enable'
                     else:
+                        print 'start status false'
                         start_status = 'disable'
                 else:
                     if job.is_enabled() is True:
+                        print 'stop status true'
                         stop_status = 'enable'
                     else:
+                        print 'stop status true
                         stop_status = 'disable'
 
-                if start_status == stop_status:
-                    print start_status
-                    print stop_status
-                    return start_status
+                return 'Start and stop jobs have different status'
 
-                else:
-                    return 'Start and stop jobs have different status'
             else:
                 return 'No jobs founds for the provided id'
 
