@@ -125,9 +125,6 @@ class Cron(object):
 
         for job in jobs:
             if job:
-                start_status = ''
-                stop_status = ''
-
                 if 'start' in job.command:
                     if job.is_enabled() is True:
                         start_status = 'enable'
