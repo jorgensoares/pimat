@@ -256,6 +256,7 @@ def add_new_schedule(action, schedule_id):
         cron_schedule.add_schedule(relay, start_time, stop_time)
 
         json_data=dict()
+        json_data['relay'] = relay
         json_data['start_time'] = str(start_time)
         json_data['stop_time'] = str(stop_time)
 

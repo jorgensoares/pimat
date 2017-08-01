@@ -139,6 +139,7 @@ class ScheduleAPI(Resource):
 
     def __init__(self):
         self.reqparse = reqparse.RequestParser()
+        self.reqparse.add_argument('relay', type=str, default="", location='json')
         self.reqparse.add_argument('start_time', type=str, default="", location='json')
         self.reqparse.add_argument('stop_time', type=str, default="", location='json')
         self.reqparse.add_argument('action', type=str, default="", location='json')
