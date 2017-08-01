@@ -189,7 +189,7 @@ class ScheduleAPI(Resource):
         status = cron_object.check_status()
         return {'status': status}, 200
 
-api.add_resource(ScheduleAPI, '/schedules/<int:id>')
+api.add_resource(ScheduleAPI, '/schedules/<id>')
 
 
 def main():
