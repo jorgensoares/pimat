@@ -295,7 +295,7 @@ def add_new_schedule(action, schedule_id):
                 return 404
 
         else:
-            json_data['action'] = 'disable'
+            json_data['action'] = 'enable'
             response = requests.put('http://localhost:4002/schedules/{}'.format(schedule_id),
                                     data=json.dumps(json_data),
                                     headers={'content-type': 'application/json'},
@@ -318,8 +318,9 @@ def add_new_schedule(action, schedule_id):
             return render_template('schedules.html', version=version, schedule=None)
 
         json_data = dict()
-        json_data['start_time'] = str(request.form.get("start_time"))
-        json_data['stop_time'] = str(request.form.get("stop_time"))
+        json_data['action'] = 'edit'
+        json_data['start_time'] = request.form.get("start_time")
+        json_data['stop_time'] = request.form.get("stop_time")
         response = requests.put('http://localhost:4002/schedules/{}'.format(schedule_id), data=json.dumps(json_data),
                                 headers={'content-type': 'application/json'}, timeout=2)
 
