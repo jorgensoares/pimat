@@ -132,14 +132,16 @@ class Cron(object):
                     if job.is_enabled() is True:
                         start_status = 'enable'
                     else:
-                        start_status = 'disabled'
+                        start_status = 'disable'
                 else:
                     if job.is_enabled() is True:
                         stop_status = 'enable'
                     else:
-                        stop_status = 'disabled'
+                        stop_status = 'disable'
 
                 if start_status == stop_status:
+                    print start_status
+                    print stop_status
                     return start_status
 
                 else:
