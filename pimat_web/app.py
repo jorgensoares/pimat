@@ -274,7 +274,7 @@ def add_new_schedule(action, schedule_id):
 
             return url_for('dashboard')
         else:
-            return render_template('error.html', error="something went wrong with the request")
+            return 404
 
     elif request.method == 'POST' and action == 'switch':
         schedule = Schedules.query.filter(Schedules.id == schedule_id).first()
@@ -282,30 +282,31 @@ def add_new_schedule(action, schedule_id):
 
         if schedule.enabled == 'enable':
             json_data['action'] = 'disable'
-            response = requests.post('http://localhost:4002/schedules/{}'.format(str(schedule_id)),
-                                     data=json.dumps(json_data),
-                                     headers={'content-type': 'application/json'},
-                                     timeout=2
-                                     )
+            response = requests.put('http://localhost:4002/schedules/{}'.format(schedule_id),
+                                    data=json.dumps(json_data),
+                                    headers={'content-type': 'application/json'},
+                                    timeout=2
+                                    )
 
             if response.status_code == 200:
                 schedule.enabled = 'disable'
                 db.session.commit()
             else:
-                return render_template('error.html', error="something went wrong with the request")
+                return 404
 
         else:
             json_data['action'] = 'disable'
-            response = requests.post('http://localhost:4002/schedules/{}'.format(str(schedule_id)),
-                                     data=json.dumps(json_data),
-                                     headers={'content-type': 'application/json'},
-                                     timeout=2
-                                     )
+            response = requests.put('http://localhost:4002/schedules/{}'.format(schedule_id),
+                                    data=json.dumps(json_data),
+                                    headers={'content-type': 'application/json'},
+                                    timeout=2
+                                    )
+
             if response.status_code == 200:
                 schedule.enabled = 'enable'
                 db.session.commit()
             else:
-                return render_template('error.html', error="something went wrong with the request")
+                return 404
 
         return url_for('dashboard')
 
@@ -319,16 +320,16 @@ def add_new_schedule(action, schedule_id):
         json_data = dict()
         json_data['start_time'] = str(request.form.get("start_time"))
         json_data['stop_time'] = str(request.form.get("stop_time"))
-        response = requests.post('http://localhost:4002/schedules/{}'.format(schedule_id), data=json.dumps(json_data),
-                                 headers={'content-type': 'application/json'}, timeout=2)
+        response = requests.put('http://localhost:4002/schedules/{}'.format(schedule_id), data=json.dumps(json_data),
+                                headers={'content-type': 'application/json'}, timeout=2)
+
         if response.status_code == 200:
             schedule.start_time = request.form.get("start_time")
             schedule.stop_time = request.form.get("stop_time")
             db.session.commit()
-
             return redirect(url_for("dashboard"))
         else:
-            return render_template('error.html', error="something went wrong with the request")
+            return 404
 
     elif request.method == 'GET' and action == 'edit':
         schedule = Schedules.query.filter(Schedules.id == schedule_id).first()

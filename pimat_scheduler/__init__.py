@@ -147,6 +147,7 @@ class ScheduleAPI(Resource):
 
     def put(self, id):
         args = self.reqparse.parse_args()
+
         if args.action == 'disable':
             cron_object = Cron(id)
             cron_object.disable_schedule()
