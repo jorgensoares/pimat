@@ -125,6 +125,9 @@ class Cron(object):
         status = dict()
         print jobs
         for job in jobs:
+            print job
+            print job.command
+            print job.comment
             if 'start' in job.command:
                 if job.is_enabled() is True:
                     print 'start_enabled'
