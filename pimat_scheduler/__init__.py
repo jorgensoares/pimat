@@ -14,8 +14,6 @@ cron = CronTab(user='root')
 
 app = Flask(__name__)
 api = Api(app)
-app.config['HOST'] = '0.0.0.0'
-app.config['PORT'] = 5002
 
 
 def sigterm_handler(_signo, _stack_frame):
@@ -194,7 +192,12 @@ api.add_resource(ScheduleAPI, '/schedules/<int:id>')
 def main():
     signal.signal(signal.SIGTERM, sigterm_handler)
     boot_sequence()
-    app.run(debug=True)
+    app.run(host='0.0.0.0',
+            port=80,
+            debug=True
+            )
+
+    remove_all()
 
 
 if __name__ == '__main__':
