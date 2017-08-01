@@ -123,7 +123,7 @@ class Cron(object):
     def check_status(self):
         jobs = cron.find_comment(self.schedule_id)
         status = dict()
-        print jobs
+        print jobs.comment
         for job in jobs:
             print job
             print job.command
@@ -143,7 +143,7 @@ class Cron(object):
                     print 'stop_disabled'
                     status["stop_status"] = "disable"
 
-            return 'disable'
+        return 'disable'
 
 
 class ScheduleAPI(Resource):
