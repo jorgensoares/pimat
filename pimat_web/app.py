@@ -4,6 +4,8 @@ from flask import Flask, request, redirect, render_template, flash, url_for
 from flask_restful import Api, Resource, reqparse, marshal
 import signal
 import sys
+import requests
+import json
 from flask_restful import fields
 from pimat_server.relays import get_pin_status, Relays
 from flask_sqlalchemy import SQLAlchemy
@@ -253,7 +255,17 @@ def add_new_schedule(action, schedule_id):
         cron_schedule = Cron(last.id)
         cron_schedule.add_schedule(relay, start_time, stop_time)
 
-        return redirect(url_for("dashboard"))
+        json_data=dict()
+        json_data['start_time'] = str(start_time)
+        json_data['stop_time'] = str(stop_time)
+
+        response = requests.post('http://localhost/schedules/{}'.format(last.id), data=json.dumps(json_data),
+                                 headers={'content-type': 'application/json'})
+
+        if response.status_code == 201:
+            return redirect(url_for("dashboard"))
+        else:
+            return render_template('error.html', error="something went wrong with the request")
 
     elif request.method == 'POST' and action == 'delete':
         cron_schedule = Cron(schedule_id)
