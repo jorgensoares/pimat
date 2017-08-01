@@ -8,6 +8,7 @@ import logging
 import sys
 import requests
 import json
+import signal
 
 cron = CronTab(user='root')
 
@@ -15,6 +16,7 @@ app = Flask(__name__)
 api = Api(app)
 app.config['HOST'] = '0.0.0.0'
 app.config['PORT'] = 5002
+
 
 def sigterm_handler(_signo, _stack_frame):
     # When sysvinit sends the TERM signal, cleanup before exiting.
@@ -139,10 +141,6 @@ class Cron(object):
             return 'disable'
 
 
-
-
-
-
 class ScheduleAPI(Resource):
 
     def __init__(self):
@@ -190,9 +188,14 @@ class ScheduleAPI(Resource):
         status = cron_object.check_status()
         return {'status': status}, 200
 
-
 api.add_resource(ScheduleAPI, '/schedules/<int:id>')
 
-if __name__ == '__main__':
+
+def main():
+    signal.signal(signal.SIGTERM, sigterm_handler)
     boot_sequence()
     app.run(debug=True)
+
+
+if __name__ == '__main__':
+    main()
