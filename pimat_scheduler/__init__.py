@@ -133,7 +133,7 @@ class Cron(object):
                 status["{0}".format(n)] = "disable"
                 n += 1
 
-        if status['1'] == status['0']:
+        if status[1] == status[0]:
             return 'enable'
         else:
             return 'disable'
