@@ -122,28 +122,24 @@ class Cron(object):
 
     def check_status(self):
         jobs = cron.find_comment(self.schedule_id)
-        status = dict()
-        print jobs.comment
-        for job in jobs:
-            print job
-            print job.command
-            print job.comment
-            if 'start' in job.command:
-                if job.is_enabled() is True:
-                    print 'start_enabled'
-                    status["start_status"] = "enable"
-                else:
-                    print 'start_disabled'
-                    status["start_status"] = "disable"
-            else:
-                if job.is_enabled() is True:
-                    print 'stop_enabled'
-                    status["stop_status"] = "enable"
-                else:
-                    print 'stop_disabled'
-                    status["stop_status"] = "disable"
 
-        return 'disable'
+        for job in jobs:
+            if 'start' in job.command:
+                if job.is_enabled() == True:
+                    start_job = 'enable'
+                    print start_job
+                else:
+                    start_job = 'disabled'
+                    print start_job
+            else:
+                if job.is_enabled() == True:
+                    stop_job = 'enable'
+                    print stop_job
+                else:
+                    stop_job = 'disabled'
+                    print stop_job
+
+        return 'enable'
 
 
 class ScheduleAPI(Resource):
