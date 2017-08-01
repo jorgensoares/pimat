@@ -1,12 +1,58 @@
 #!/usr/bin/python
+import configparser
+import datetime
 from crontab import CronTab
+import logging
+import sys
+import requests
+import json
 
 cron = CronTab(user='root')
+
+
+def sigterm_handler(_signo, _stack_frame):
+    # When sysvinit sends the TERM signal, cleanup before exiting.
+    print("[" + get_now() + "] received signal {}, exiting...".format(_signo))
+    remove_all()
+    sys.exit(0)
+
+
+def get_now():
+    # get the current date and time as a string
+    return datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
 
 
 def remove_all():
     cron.remove_all()
     cron.write()
+
+
+def boot_sequence():
+    # Clean cron
+    remove_all()
+
+    server_log = logging.getLogger()
+    handler = logging.FileHandler('/var/log/pimat/pimat-server.log')
+    formatter = logging.Formatter('[%(levelname)s] [%(asctime)-15s] [PID: %(process)d] [%(name)s] %(message)s')
+    handler.setFormatter(formatter)
+    server_log.addHandler(handler)
+    server_log.setLevel(logging.DEBUG)
+
+    retries = 4
+    while retries > 1:
+        retries -= 1
+        get_schedules = requests.get("http://localhost/api/schedules")
+
+        if get_schedules.status_code == 200:
+            server_log.info('Schedules received!')
+            break
+
+    schedules = json.loads(get_schedules.content)
+
+    for schedule in schedules['schedules']:
+        server_log.info('Adding schedule with ID: {0} for {1}'.format(schedule['id'], schedule['relay']))
+        cron_schedule = Cron(schedule['id'])
+        cron_schedule.add_schedule(schedule['relay'], schedule['start_time'], schedule['stop_time'])
 
 
 class Cron(object):
@@ -88,3 +134,10 @@ class Cron(object):
         else:
             return 'disable'
 
+
+def main():
+    boot_sequence()
+
+
+if __name__ == '__main__':
+    main()

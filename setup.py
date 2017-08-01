@@ -16,8 +16,9 @@ setup(
     packages=find_packages(exclude=['tests']),
     entry_points={
         'console_scripts': [
-            'pimat-server = pimat_server.__main__:main',
-            'pimat-relay = pimat_server.relays:main',
+            'pimat-scheduler = pimat_scheduler:main',
+            'pimat-relay = pimat_relays:main',
+            'pimat-sensors = pimat_sensors:main',
             'pimat-web = pimat_web.app:main'
         ]
     },
