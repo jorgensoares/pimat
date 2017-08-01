@@ -1,5 +1,7 @@
 #!/usr/bin/python
 import configparser
+from flask import Flask, jsonify, abort, make_response
+from flask_restful import Api, Resource, reqparse, fields, marshal
 import datetime
 from crontab import CronTab
 import logging
@@ -9,6 +11,10 @@ import json
 
 cron = CronTab(user='root')
 
+app = Flask(__name__)
+api = Api(app)
+app.config['HOST'] = '0.0.0.0'
+app.config['PORT'] = 5002
 
 def sigterm_handler(_signo, _stack_frame):
     # When sysvinit sends the TERM signal, cleanup before exiting.
@@ -117,27 +123,76 @@ class Cron(object):
     def check_status(self):
         jobs = cron.find_comment(self.schedule_id)
         status = dict()
-        n = 0
 
+        n = 0
         for job in jobs:
             if job.is_enabled() is True:
                 status["{0}".format(n)] = "enable"
                 n += 1
-
             else:
                 status["{0}".format(n)] = "disable"
                 n += 1
 
         if status['1'] == status['0']:
             return 'enable'
-
         else:
             return 'disable'
 
 
-def main():
-    boot_sequence()
 
+
+
+
+class ScheduleAPI(Resource):
+
+    def __init__(self):
+        self.reqparse = reqparse.RequestParser()
+        self.reqparse.add_argument('start_time', type=str, default="", location='json')
+        self.reqparse.add_argument('stop_time', type=str, default="", location='json')
+        self.reqparse.add_argument('action', type=str, default="", location='json')
+        super(ScheduleAPI, self).__init__()
+
+    def put(self, id):
+        args = self.reqparse.parse_args()
+        if args.action == 'disable':
+            cron_object = Cron(id)
+            cron_object.disable_schedule()
+            return {'status': 'success'}, 200
+
+        if args.action == 'enable':
+            cron_object = Cron(id)
+            cron_object.enable_schedule()
+            return {'status': 'success'}, 200
+
+        if args.action == 'edit':
+            if len(args.start_time) == 0 or len(args.stop_time) == 0:
+                abort(404)
+
+            cron_object = Cron(id)
+            cron_object.edit(args.start_time, args.stop_time)
+            return {'status': 'success'}, 200
+
+    def post(self, id):
+        args = self.reqparse.parse_args()
+        if len(args.start_time) == 0 or len(args.stop_time) == 0:
+            abort(404)
+
+        cron_object = Cron(id)
+        cron_object.add_schedule(args.relay, args.start_time, args.stop_time)
+        return {'status': 'success'}, 201
+
+    def delete(self, id):
+        cron_object = Cron(id)
+        cron_object.remove_schedule()
+
+    def get(self, id):
+        cron_object = Cron(id)
+        status = cron_object.check_status()
+        return {'status': status}, 200
+
+
+api.add_resource(ScheduleAPI, '/schedules/<int:id>')
 
 if __name__ == '__main__':
-    main()
+    boot_sequence()
+    app.run(debug=True)
