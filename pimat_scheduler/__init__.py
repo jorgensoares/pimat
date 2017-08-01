@@ -124,16 +124,19 @@ class Cron(object):
         jobs = cron.find_comment(self.schedule_id)
         status = dict()
 
-        n = 0
         for job in jobs:
-            if job.is_enabled() is True:
-                status["{0}".format(n)] = "enable"
-                n += 1
+            if 'start' in job.command:
+                if job.is_enabled() is True:
+                    status["start_status"] = "enable"
+                else:
+                    status["start_status"] = "disable"
             else:
-                status["{0}".format(n)] = "disable"
-                n += 1
+                if job.is_enabled() is True:
+                    status["stop_status"] = "enable"
+                else:
+                    status["stop_status"] = "disable"
 
-        if status[1] == status[0]:
+        if status["start_status"] == status["stop_status"]:
             return 'enable'
         else:
             return 'disable'
