@@ -404,7 +404,7 @@ def main():
     signal.signal(signal.SIGTERM, sigterm_handler)
 
     app.run(host='0.0.0.0',
-            port=4001,
+            port=80,
             debug=True)
 
 

@@ -193,7 +193,7 @@ def main():
     signal.signal(signal.SIGTERM, sigterm_handler)
     boot_sequence()
     app.run(host='0.0.0.0',
-            port=80,
+            port=4002,
             debug=True
             )
 
