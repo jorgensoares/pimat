@@ -259,8 +259,8 @@ def add_new_schedule(action, schedule_id):
         json_data['start_time'] = str(start_time)
         json_data['stop_time'] = str(stop_time)
 
-        response = requests.post('http://localhost/schedules/{}'.format(last.id), data=json.dumps(json_data),
-                                 headers={'content-type': 'application/json'})
+        response = requests.post('http://localhost:4002/schedules/{}'.format(last.id), data=json.dumps(json_data),
+                                 headers={'content-type': 'application/json'}, timeout=2)
 
         if response.status_code == 201:
             return redirect(url_for("dashboard"))
