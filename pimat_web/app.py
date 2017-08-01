@@ -250,10 +250,7 @@ def add_new_schedule(action, schedule_id):
         schedule = Schedules(relay, switch, start_time, stop_time, 'enable')
         db.session.add(schedule)
         db.session.commit()
-
         last = Schedules.query.order_by(Schedules.id.desc()).first()
-        cron_schedule = Cron(last.id)
-        cron_schedule.add_schedule(relay, start_time, stop_time)
 
         json_data=dict()
         json_data['relay'] = relay
@@ -269,43 +266,60 @@ def add_new_schedule(action, schedule_id):
             return render_template('error.html', error="something went wrong with the request")
 
     elif request.method == 'POST' and action == 'delete':
-        cron_schedule = Cron(schedule_id)
-        cron_schedule.remove_schedule()
-        Schedules.query.filter(Schedules.id == schedule_id).delete()
-        db.session.commit()
+        response = requests.delete('http://localhost:4002/schedules/{}'.format(schedule_id), timeout=2)
 
-        return url_for('dashboard')
+        if response.status_code == 200:
+            Schedules.query.filter(Schedules.id == schedule_id).delete()
+            db.session.commit()
+
+            return url_for('dashboard')
+        else:
+            return render_template('error.html', error="something went wrong with the request")
 
     elif request.method == 'POST' and action == 'switch':
-        cron_schedule = Cron(schedule_id)
         schedule = Schedules.query.filter(Schedules.id == schedule_id).first()
 
         if schedule.enabled == 'enable':
-            cron_schedule.disable_schedule()
-            schedule.enabled = 'disable'
-            db.session.commit()
+            response = requests.post('http://localhost:4002/schedules/{}'.format(schedule_id), data={'action': 'disable'},
+                                     headers={'content-type': 'application/json'}, timeout=2)
+
+            if response.status_code == 200:
+                schedule.enabled = 'disable'
+                db.session.commit()
+            else:
+                return render_template('error.html', error="something went wrong with the request")
 
         else:
-            cron_schedule.enable_schedule()
-            schedule.enabled = 'enable'
-            db.session.commit()
+            response = requests.post('http://localhost:4002/schedules/{}'.format(schedule_id), data={'action': 'enable'},
+                                     headers={'content-type': 'application/json'}, timeout=2)
+            if response.status_code == 200:
+                schedule.enabled = 'enable'
+                db.session.commit()
+            else:
+                return render_template('error.html', error="something went wrong with the request")
 
         return url_for('dashboard')
 
     elif request.method == 'POST' and action == 'edit':
-        cron_schedule = Cron(schedule_id)
         schedule = Schedules.query.filter(Schedules.id == schedule_id).first()
 
         if request.form.get("start_time") >= request.form.get("stop_time"):
             flash('The stop time cannot be equal or smaller than the start time, please try again!')
             return render_template('schedules.html', version=version, schedule=None)
 
-        schedule.start_time = request.form.get("start_time")
-        schedule.stop_time = request.form.get("stop_time")
-        db.session.commit()
-        cron_schedule.edit(request.form.get("start_time"), request.form.get("stop_time"))
+        json_data = dict()
+        json_data['start_time'] = str(request.form.get("start_time"))
+        json_data['stop_time'] = str(request.form.get("stop_time"))
+        response = requests.post('http://localhost:4002/schedules/{}'.format(schedule_id), data=json.dumps(json_data),
+                                 headers={'content-type': 'application/json'}, timeout=2)
+        if response.status_code == 200:
+            schedule.start_time = request.form.get("start_time")
+            schedule.stop_time = request.form.get("stop_time")
+            db.session.commit()
 
-        return redirect(url_for("dashboard"))
+            return redirect(url_for("dashboard"))
+        else:
+            return render_template('error.html', error="something went wrong with the request")
 
     elif request.method == 'GET' and action == 'edit':
         schedule = Schedules.query.filter(Schedules.id == schedule_id).first()

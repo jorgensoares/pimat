@@ -177,6 +177,7 @@ class ScheduleAPI(Resource):
     def delete(self, id):
         cron_object = Cron(id)
         cron_object.remove_schedule()
+        return {'status': 'success'}, 200
 
     def get(self, id):
         cron_object = Cron(id)
