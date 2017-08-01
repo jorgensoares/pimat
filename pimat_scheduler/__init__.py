@@ -143,9 +143,6 @@ class Cron(object):
                     print 'stop_disabled'
                     status["stop_status"] = "disable"
 
-        if status["start_status"] == status["stop_status"]:
-            return 'enable'
-        else:
             return 'disable'
 
 
