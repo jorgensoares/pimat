@@ -124,22 +124,28 @@ class Cron(object):
         jobs = cron.find_comment(self.schedule_id)
 
         for job in jobs:
-            if 'start' in job.command:
-                if job.is_enabled() == True:
-                    start_job = 'enable'
-                    print start_job
-                else:
-                    start_job = 'disabled'
-                    print start_job
-            else:
-                if job.is_enabled() == True:
-                    stop_job = 'enable'
-                    print stop_job
-                else:
-                    stop_job = 'disabled'
-                    print stop_job
+            if job:
+                start_status = ''
+                stop_status = ''
 
-        return 'enable'
+                if 'start' in job.command:
+                    if job.is_enabled() is True:
+                        start_status = 'enable'
+                    else:
+                        start_status = 'disabled'
+                else:
+                    if job.is_enabled() is True:
+                        stop_status = 'enable'
+                    else:
+                        stop_status = 'disabled'
+
+                if start_status == stop_status:
+                    return start_status
+
+                else:
+                    return 'Start and stop jobs have different status'
+            else:
+                return 'No jobs founds for the provided id'
 
 
 class ScheduleAPI(Resource):
