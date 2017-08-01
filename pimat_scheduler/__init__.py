@@ -115,7 +115,6 @@ class Cron(object):
                 cron.write()
             else:
                 hour, minute = stop_time.split(':')
-                print job.command
                 job.minute.on(minute)
                 job.hour.on(hour)
                 cron.write()
@@ -125,8 +124,9 @@ class Cron(object):
 
         for job in jobs:
             if job:
+                print job.command
                 if 'start' in job.command:
-                    if job.is_enabled() is True:
+                    if job.is_enabled():
                         print 'start status true'
                         start_status = 'enable'
                     else:
