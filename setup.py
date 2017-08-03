@@ -3,7 +3,7 @@ from setuptools import setup, find_packages
 from distutils.util import convert_path
 
 main_ns = {}
-ver_path = convert_path('pimat_web/version.py')
+ver_path = convert_path('version.py')
 with open(ver_path) as ver_file:
     exec(ver_file.read(), main_ns)
 
@@ -18,6 +18,7 @@ setup(
         'console_scripts': [
             'pimat-scheduler = pimat_scheduler.__main__:main',
             'pimat-relay = pimat_relays.__main__:main',
+            'pimat-relay-api = pimat_relays.api:main',
             'pimat-sensors = pimat_sensors.__main__:main',
             'pimat-web = pimat_web.app:main'
         ]

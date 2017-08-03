@@ -208,19 +208,19 @@ def dashboard():
     relay_status = dict()
 
     response = requests.get('http://localhost:4001/relays/{}'.format(relay_config['pins']['relay1']), timeout=0.5)
-    status = json.loads(response.content)
+    status = json.load(response.content)
     relay_status['relay1'] = status['status']
 
     response = requests.get('http://localhost:4001/relays/{}'.format(relay_config['pins']['relay2']), timeout=0.5)
-    status = json.loads(response.content)
+    status = json.load(response.content)
     relay_status['relay2'] = status['status']
 
     response = requests.get('http://localhost:4001/relays/{}'.format(relay_config['pins']['relay3']), timeout=0.5)
-    status = json.loads(response.content)
+    status = json.load(response.content)
     relay_status['relay3'] = status
 
     response = requests.get('http://localhost:4001/relays/{}'.format(relay_config['pins']['relay3']), timeout=0.5)
-    status = json.loads(response.content)
+    status = json.load(response.content)
     relay_status['relay4'] = status
 
     sensors_data = Sensors.query.filter(Sensors.timestamp.between(get_previous_date(1), get_now())).\
@@ -274,7 +274,10 @@ def add_new_schedule(action, schedule_id):
 
         if response.status_code == 201:
             return redirect(url_for("dashboard"))
+
         else:
+            Schedules.query.filter(Schedules.id == last.id).delete()
+            db.session.commit()
             return render_template('error.html', error="something went wrong with the request")
 
     elif request.method == 'POST' and action == 'delete':
@@ -283,8 +286,8 @@ def add_new_schedule(action, schedule_id):
         if response.status_code == 200:
             Schedules.query.filter(Schedules.id == schedule_id).delete()
             db.session.commit()
-
             return url_for('dashboard')
+
         else:
             return 404
 
@@ -333,8 +336,11 @@ def add_new_schedule(action, schedule_id):
         json_data['action'] = 'edit'
         json_data['start_time'] = request.form.get("start_time")
         json_data['stop_time'] = request.form.get("stop_time")
-        response = requests.put('http://localhost:4002/schedules/{}'.format(schedule_id), data=json.dumps(json_data),
-                                headers={'content-type': 'application/json'}, timeout=2)
+        response = requests.put('http://localhost:4002/schedules/{}'.format(schedule_id),
+                                data=json.dumps(json_data),
+                                headers={'content-type': 'application/json'},
+                                timeout=2
+                                )
 
         if response.status_code == 200:
             schedule.start_time = request.form.get("start_time")
@@ -356,21 +362,19 @@ def add_new_schedule(action, schedule_id):
 @login_required
 def switch_relay(action, relay):
     if action and relay:
+        json_data = dict()
+        json_data[action] = action
+        response = requests.put('http://localhost:4001/relays/{}'.format(relay_config['pins'][relay]),
+                                data=json.dumps(json_data),
+                                headers={'content-type': 'application/json'},
+                                timeout=2
+                                )
 
-        pin = relay_config['pins'][relay]
-
-        if action == 'on':
-            relay_object = Relays(relay, pin)
-            relay_object.start()
+        if response.status_code == 200:
             return url_for('dashboard')
-
-        elif action == 'off':
-            relay_object = Relays(relay, pin)
-            relay_object.stop()
-            return url_for('dashboard')
-
         else:
-            return render_template('error.html', error="Relay must be ON or OFF")
+            return 404
+
     else:
         return render_template('error.html', error="wrong request")
 
