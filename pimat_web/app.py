@@ -207,19 +207,19 @@ def logout():
 def dashboard():
     relay_status = dict()
 
-    response = requests.get('http://localhost:4001/relays/{0}'.format(relay_config['pins']['relay1']), timeout=0.5)
+    response = requests.get('http://localhost:4001/relay/{0}'.format(relay_config['pins']['relay1']), timeout=0.5)
     status = json.loads(response.content)
     relay_status['relay1'] = status['status']
 
-    response = requests.get('http://localhost:4001/relays/{0}'.format(relay_config['pins']['relay2']), timeout=0.5)
+    response = requests.get('http://localhost:4001/relay/{0}'.format(relay_config['pins']['relay2']), timeout=0.5)
     status = json.loads(response.content)
     relay_status['relay2'] = status['status']
 
-    response = requests.get('http://localhost:4001/relays/{0}'.format(relay_config['pins']['relay3']), timeout=0.5)
+    response = requests.get('http://localhost:4001/relay/{0}'.format(relay_config['pins']['relay3']), timeout=0.5)
     status = json.loads(response.content)
     relay_status['relay3'] = status
 
-    response = requests.get('http://localhost:4001/relays/{0}'.format(relay_config['pins']['relay3']), timeout=0.5)
+    response = requests.get('http://localhost:4001/relay/{0}'.format(relay_config['pins']['relay3']), timeout=0.5)
     status = json.loads(response.content)
     relay_status['relay4'] = status
 
