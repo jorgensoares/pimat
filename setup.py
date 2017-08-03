@@ -3,7 +3,7 @@ from setuptools import setup, find_packages
 from distutils.util import convert_path
 
 main_ns = {}
-ver_path = convert_path('version.py')
+ver_path = convert_path('pimat_web/version.py')
 with open(ver_path) as ver_file:
     exec(ver_file.read(), main_ns)
 
