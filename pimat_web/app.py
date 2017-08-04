@@ -217,11 +217,11 @@ def dashboard():
 
     response = requests.get('http://localhost:4001/api/relay/{0}'.format(relay_config['pins']['relay3']), timeout=0.5)
     status = json.loads(response.content)
-    relay_status['relay3'] = status
+    relay_status['relay3'] = status['status']
 
-    response = requests.get('http://localhost:4001/api/relay/{0}'.format(relay_config['pins']['relay3']), timeout=0.5)
+    response = requests.get('http://localhost:4001/api/relay/{0}'.format(relay_config['pins']['relay4']), timeout=0.5)
     status = json.loads(response.content)
-    relay_status['relay4'] = status
+    relay_status['relay4'] = status['status']
 
     sensors_data = Sensors.query.filter(Sensors.timestamp.between(get_previous_date(1), get_now())).\
         order_by(Sensors.timestamp.asc()).all()
