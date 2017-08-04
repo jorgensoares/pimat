@@ -48,7 +48,6 @@ def sigterm_handler(_signo, _stack_frame):
     sys.exit(0)
 
 
-
 def main():
     signal.signal(signal.SIGTERM, sigterm_handler)
     pimat_config = configparser.ConfigParser()

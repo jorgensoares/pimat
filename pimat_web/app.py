@@ -297,7 +297,7 @@ def add_new_schedule(action, schedule_id):
 
         if schedule.enabled == 'enable':
             json_data['action'] = 'disable'
-            response = requests.put('http://localhost:4002/api/schedules/{}'.format(schedule_id),
+            response = requests.put('http://localhost:4001/api/schedules/{}'.format(schedule_id),
                                     data=json.dumps(json_data),
                                     headers={'content-type': 'application/json'},
                                     timeout=2
@@ -311,7 +311,7 @@ def add_new_schedule(action, schedule_id):
 
         else:
             json_data['action'] = 'enable'
-            response = requests.put('http://localhost:4002/api/schedules/{}'.format(schedule_id),
+            response = requests.put('http://localhost:4001/api/schedules/{}'.format(schedule_id),
                                     data=json.dumps(json_data),
                                     headers={'content-type': 'application/json'},
                                     timeout=2
