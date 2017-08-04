@@ -332,8 +332,8 @@ def add_new_schedule(action, schedule_id):
 
         json_data = dict()
         json_data['action'] = 'edit'
-        json_data['start_time'] = request.form.get("start_time")
-        json_data['stop_time'] = request.form.get("stop_time")
+        json_data['start_time'] = str(request.form.get("start_time"))
+        json_data['stop_time'] = str(request.form.get("stop_time"))
 
         response = requests.put('http://localhost:4001/api/apischedules/{}'.format(schedule_id),
                                 data=json.dumps(json_data),
