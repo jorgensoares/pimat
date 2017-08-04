@@ -7,9 +7,7 @@ import sys
 import requests
 import json
 from flask_restful import fields
-from pimat_server.relays import get_pin_status, Relays
 from flask_sqlalchemy import SQLAlchemy
-from pimat_server.scheduler import Cron
 from datetime import datetime, timedelta
 from flask_login import *
 import logging
