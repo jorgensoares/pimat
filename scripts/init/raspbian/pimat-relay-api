@@ -4,7 +4,7 @@
 #
 
 ### BEGIN INIT INFO
-# Provides:          pimat-server
+# Provides:          pimat-relay-api
 # Required-Start:    $remote_fs $syslog $network +pimat-web
 # Required-Stop:     $remote_fs $syslog $network
 # Default-Start:     2 3 4 5
@@ -15,7 +15,7 @@
 
 PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 NAME=pimat-relay-api
-DAEMON=/opt/pimat/pimat_relays/api.py
+DAEMON=/usr/local/bin/pimat-relay-api
 DAEMONARGS=""
 PIDFILE=/var/run/$NAME.pid
 LOGFILE=/var/log/pimat/$NAME.log
