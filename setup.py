@@ -16,7 +16,6 @@ setup(
     packages=find_packages(exclude=['tests']),
     entry_points={
         'console_scripts': [
-            'pimat-scheduler = pimat_scheduler.__main__:main',
             'pimat-relay = pimat_relays.__main__:main',
             'pimat-relay-api = pimat_relays.api:main',
             'pimat-sensors = pimat_sensors.__main__:main',
@@ -32,7 +31,9 @@ setup(
                       'MySQL-python',
                       'flask-login',
                       'flask-restful',
-                      'requests'],
+                      'requests',
+                      'Adafruit - BMP'],
 
-    package_data={'pimat_web': ['templates/*']}
+    include_package_data=True,
+    zip_safe=False,
 )

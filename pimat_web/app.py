@@ -207,19 +207,19 @@ def logout():
 def dashboard():
     relay_status = dict()
 
-    response = requests.get('http://localhost:4001/relay/{0}'.format(relay_config['pins']['relay1']), timeout=0.5)
+    response = requests.get('http://localhost:4001/api/relay/{0}'.format(relay_config['pins']['relay1']), timeout=0.5)
     status = json.loads(response.content)
     relay_status['relay1'] = status['status']
 
-    response = requests.get('http://localhost:4001/relay/{0}'.format(relay_config['pins']['relay2']), timeout=0.5)
+    response = requests.get('http://localhost:4001/api/relay/{0}'.format(relay_config['pins']['relay2']), timeout=0.5)
     status = json.loads(response.content)
     relay_status['relay2'] = status['status']
 
-    response = requests.get('http://localhost:4001/relay/{0}'.format(relay_config['pins']['relay3']), timeout=0.5)
+    response = requests.get('http://localhost:4001/api/relay/{0}'.format(relay_config['pins']['relay3']), timeout=0.5)
     status = json.loads(response.content)
     relay_status['relay3'] = status
 
-    response = requests.get('http://localhost:4001/relay/{0}'.format(relay_config['pins']['relay3']), timeout=0.5)
+    response = requests.get('http://localhost:4001/api/relay/{0}'.format(relay_config['pins']['relay3']), timeout=0.5)
     status = json.loads(response.content)
     relay_status['relay4'] = status
 
@@ -269,7 +269,7 @@ def add_new_schedule(action, schedule_id):
         json_data['start_time'] = str(start_time)
         json_data['stop_time'] = str(stop_time)
 
-        response = requests.post('http://localhost:4002/schedules/{}'.format(last.id), data=json.dumps(json_data),
+        response = requests.post('http://localhost:4001/api/schedules/{}'.format(last.id), data=json.dumps(json_data),
                                  headers={'content-type': 'application/json'}, timeout=2)
 
         if response.status_code == 201:
@@ -281,7 +281,7 @@ def add_new_schedule(action, schedule_id):
             return render_template('error.html', error="something went wrong with the request")
 
     elif request.method == 'POST' and action == 'delete':
-        response = requests.delete('http://localhost:4002/schedules/{}'.format(schedule_id), timeout=2)
+        response = requests.delete('http://localhost:4001/api/schedules/{}'.format(schedule_id), timeout=2)
 
         if response.status_code == 200:
             Schedules.query.filter(Schedules.id == schedule_id).delete()
@@ -297,7 +297,7 @@ def add_new_schedule(action, schedule_id):
 
         if schedule.enabled == 'enable':
             json_data['action'] = 'disable'
-            response = requests.put('http://localhost:4002/schedules/{}'.format(schedule_id),
+            response = requests.put('http://localhost:4002/api/schedules/{}'.format(schedule_id),
                                     data=json.dumps(json_data),
                                     headers={'content-type': 'application/json'},
                                     timeout=2
@@ -311,7 +311,7 @@ def add_new_schedule(action, schedule_id):
 
         else:
             json_data['action'] = 'enable'
-            response = requests.put('http://localhost:4002/schedules/{}'.format(schedule_id),
+            response = requests.put('http://localhost:4002/api/schedules/{}'.format(schedule_id),
                                     data=json.dumps(json_data),
                                     headers={'content-type': 'application/json'},
                                     timeout=2
@@ -336,7 +336,8 @@ def add_new_schedule(action, schedule_id):
         json_data['action'] = 'edit'
         json_data['start_time'] = request.form.get("start_time")
         json_data['stop_time'] = request.form.get("stop_time")
-        response = requests.put('http://localhost:4002/schedules/{}'.format(schedule_id),
+
+        response = requests.put('http://localhost:4001/api/apischedules/{}'.format(schedule_id),
                                 data=json.dumps(json_data),
                                 headers={'content-type': 'application/json'},
                                 timeout=2
@@ -364,7 +365,7 @@ def switch_relay(action, relay):
     if action and relay:
         json_data = dict()
         json_data[action] = action
-        response = requests.put('http://localhost:4001/relays/{}'.format(relay_config['pins'][relay]),
+        response = requests.put('http://localhost:4001/api/relay/{}'.format(relay_config['pins'][relay]),
                                 data=json.dumps(json_data),
                                 headers={'content-type': 'application/json'},
                                 timeout=2
@@ -459,7 +460,10 @@ def main():
 
     app.run(host='0.0.0.0',
             port=80,
-            debug=True)
+            threaded=True,
+            debug=True,
+            use_reloader=False
+            )
 
 
 if __name__ == "__main__":

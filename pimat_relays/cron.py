@@ -1,5 +1,5 @@
-#!/usr/bin/python
 from crontab import CronTab
+
 
 cron = CronTab(user='root')
 
@@ -63,28 +63,22 @@ class Cron(object):
                 cron.write()
             else:
                 hour, minute = stop_time.split(':')
-                print job.command
                 job.minute.on(minute)
                 job.hour.on(hour)
                 cron.write()
 
     def check_status(self):
         jobs = cron.find_comment(self.schedule_id)
-        status = dict()
-        n = 0
 
         for job in jobs:
-            if job.is_enabled() is True:
-                status["{0}".format(n)] = "enable"
-                n += 1
+            if job:
+                if job.is_enabled():
+                    status = 'enable'
+                else:
+                    status = 'disable'
+
+                return status
 
             else:
-                status["{0}".format(n)] = "disable"
-                n += 1
-
-        if status['1'] == status['0']:
-            return 'enable'
-
-        else:
-            return 'disable'
+                return 'No jobs founds for the provided id'
 

@@ -113,7 +113,8 @@ def main():
     boot_sequence()
     app.run(host='0.0.0.0',
             port=4002,
-            debug=True
+            debug=True,
+            use_reloader=False
             )
 
     remove_all()
