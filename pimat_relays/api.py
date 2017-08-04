@@ -165,6 +165,7 @@ api.add_resource(RelaysAPI, '/api/relay/<pin>')
 
 def main():
     signal.signal(signal.SIGTERM, sigterm_handler)
+    boot_sequence()
     app.run(host='0.0.0.0',
             port=4001,
             threaded=True,
