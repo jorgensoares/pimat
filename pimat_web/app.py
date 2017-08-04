@@ -325,6 +325,8 @@ def add_new_schedule(action, schedule_id):
 
     elif request.method == 'POST' and action == 'edit':
         schedule = Schedules.query.filter(Schedules.id == schedule_id).first()
+        start_time = request.form.get("start_time")
+        stop_time = request.form.get("stop_time")
 
         if request.form.get("start_time") >= request.form.get("stop_time"):
             flash('The stop time cannot be equal or smaller than the start time, please try again!')
@@ -332,18 +334,18 @@ def add_new_schedule(action, schedule_id):
 
         json_data = dict()
         json_data['action'] = 'edit'
-        json_data['start_time'] = str(request.form.get("start_time"))
-        json_data['stop_time'] = str(request.form.get("stop_time"))
+        json_data['start_time'] = str(start_time)
+        json_data['stop_time'] = str(stop_time)
 
-        response = requests.put('http://localhost:4001/api/apischedules/{}'.format(schedule_id),
+        response = requests.put('http://localhost:4001/api/api/schedules/{}'.format(schedule_id),
                                 data=json.dumps(json_data),
                                 headers={'content-type': 'application/json'},
                                 timeout=2
                                 )
 
         if response.status_code == 200:
-            schedule.start_time = request.form.get("start_time")
-            schedule.stop_time = request.form.get("stop_time")
+            schedule.start_time = start_time
+            schedule.stop_time = stop_time
             db.session.commit()
             return redirect(url_for("dashboard"))
         else:
