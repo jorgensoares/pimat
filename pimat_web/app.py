@@ -337,7 +337,7 @@ def add_new_schedule(action, schedule_id):
         json_data['start_time'] = str(start_time)
         json_data['stop_time'] = str(stop_time)
 
-        response = requests.put('http://localhost:4001/api/api/schedules/{}'.format(schedule_id),
+        response = requests.put('http://localhost:4001/api/schedules/{}'.format(schedule_id),
                                 data=json.dumps(json_data),
                                 headers={'content-type': 'application/json'},
                                 timeout=2
