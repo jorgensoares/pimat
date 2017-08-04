@@ -31,8 +31,7 @@ setup(
                       'MySQL-python',
                       'flask-login',
                       'flask-restful',
-                      'requests',
-                      'Adafruit - BMP'],
+                      'requests'],
 
     include_package_data=True,
     zip_safe=False,
