@@ -365,6 +365,7 @@ def switch_relay(action, relay):
     if action and relay:
         json_data = dict()
         json_data['action'] = action
+        json_data['relay'] = relay
         response = requests.put('http://localhost:4001/api/relay/{}'.format(relay_config['pins'][relay]),
                                 data=json.dumps(json_data),
                                 headers={'content-type': 'application/json'},

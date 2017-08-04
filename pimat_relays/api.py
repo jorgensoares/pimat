@@ -83,7 +83,7 @@ class RelaysAPI(Resource):
 
     def __init__(self):
         self.reqparse = reqparse.RequestParser()
-        self.reqparse.add_argument('relay', type=int, default="", location='json')
+        self.reqparse.add_argument('relay', type=str, default="", location='json')
         self.reqparse.add_argument('action', type=str, default="", location='json')
         super(RelaysAPI, self).__init__()
 
