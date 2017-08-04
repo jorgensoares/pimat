@@ -364,7 +364,7 @@ def add_new_schedule(action, schedule_id):
 def switch_relay(action, relay):
     if action and relay:
         json_data = dict()
-        json_data[action] = action
+        json_data['action'] = action
         response = requests.put('http://localhost:4001/api/relay/{}'.format(relay_config['pins'][relay]),
                                 data=json.dumps(json_data),
                                 headers={'content-type': 'application/json'},
