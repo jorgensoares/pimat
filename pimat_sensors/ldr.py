@@ -26,15 +26,7 @@ def ldr_sensor(pin):
     for x in range(0, 9):
         total += rc_time(int(pin))
 
-    average = total / 10
+    light_average = total / 10
 
-    try:
-        light = (1 / float(average)) * 10000
-    except ZeroDivisionError:
-        light = 10000
-
-    if light > 10000:
-        light = 10000
-
-    return light
+    return light_average
 

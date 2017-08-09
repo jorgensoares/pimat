@@ -435,7 +435,7 @@ def profile():
 
 @app.route("/user/create", methods=['GET'])
 @login_required
-def edit_user(action, user_id):
+def edit_user():
     return render_template('create_user.html', version=version)
 
 
