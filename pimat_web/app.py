@@ -70,7 +70,8 @@ class SensorsAPI(Resource):
 
     def post(self):
         args = self.reqparse.parse_args()
-        reading = Sensors(args['timestamp'], args['temperature1'], args['humidity'], args['light1'], args['source'])
+        reading = Sensors(args['timestamp'], args['temperature1'], args['temperature2'], args['humidity'],
+                          args['light1'], args['pressure'], args['altitude'], args['source'])
         db.session.add(reading)
         db.session.commit()
         return {'status': 'success'}, 201
@@ -129,11 +130,14 @@ class Sensors(db.Model):
     altitude = db.Column(db.Float)
     source = db.Column(db.String(100))
 
-    def __init__(self, timestamp, temperature1, humidity, light1, source):
+    def __init__(self, timestamp, temperature1, temperature2, humidity, light1, pressure, altitude,  source):
         self.timestamp = timestamp
+        self.temperature2 = temperature2
         self.temperature1 = temperature1
         self.humidity = humidity
         self.light1 = light1
+        self.pressure = pressure
+        self.altitude = altitude
         self.source = source
 
 
@@ -169,9 +173,6 @@ def unauthorized_handler():
 @app.route("/")
 def index():
     if current_user.is_authenticated:
-        app.logger.info('informing')
-        app.logger.warning('warning')
-        app.logger.error('screaming bloody murder!')
         return redirect(url_for("dashboard"))
 
     else:

@@ -1,8 +1,8 @@
 #!/usr/bin/python
+import Adafruit_BMP.BMP085 as BMP085
 from ldr import ldr_sensor
 import RPi.GPIO as GPIO
 import Adafruit_DHT
-import pimat_relays
 import configparser
 import datetime
 import requests
@@ -52,23 +52,33 @@ def main():
     signal.signal(signal.SIGTERM, sigterm_handler)
     pimat_config = configparser.ConfigParser()
     pimat_config.read('/opt/pimat/config.ini')
+    bpm_sensor = BMP085.BMP085()
 
     try:
         while True:
 
             light = ldr_sensor(pimat_config['pins']['ldr_sensor'])
-            humidity, temperature = Adafruit_DHT.read_retry(Adafruit_DHT.AM2302,
+            humidity, temperature1 = Adafruit_DHT.read_retry(Adafruit_DHT.AM2302,
                                                             int(pimat_config['pins']['temp_sensor']))
+            temperature2 = bpm_sensor.read_temperature()
+            pressure = bpm_sensor.read_pressure()
+            altitude = bpm_sensor.read_altitude()
 
-            if humidity is not None and temperature is not None and light is not None:
+            if humidity is not None and temperature1 is not None and light and temperature2 and pressure and altitude \
+                    is not None:
                 json_data = dict()
                 json_data['timestamp'] = get_now()
-                json_data['temperature1'] = temperature
+                json_data['temperature1'] = temperature1
+                json_data['temperature2'] = temperature2
                 json_data['humidity'] = humidity
                 json_data['light1'] = light
+                json_data['pressure'] = pressure
+                json_data['altitude'] = altitude
                 json_data['source'] = 'pimat_server'
 
-                server_log.info('Temp={0:0.1f}* Humidity={1:0.1f}% Light={2:0.2f}'.format(temperature, humidity, light))
+                server_log.info('''Temp1={0:0.1f}* Temp2={1:0.2f}* Humidity={2:0.1f}% Light={3:0.2f} Pressure={4:0.2f}Pa
+                                    Altitude={5:0.2f}m'''.format(temperature1, temperature2, humidity, light, pressure,
+                                                                 altitude))
 
                 retries = 3
                 while retries > 1:
