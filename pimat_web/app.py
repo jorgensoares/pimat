@@ -432,6 +432,11 @@ def logs():
 def profile():
     return render_template('profile.html', version=version)
 
+@app.route("/monitoring", methods=['GET'])
+@login_required
+def monitoring():
+    return render_template('monitoring.html', version=version)
+
 
 @app.route("/user/create", methods=['GET'])
 @login_required
