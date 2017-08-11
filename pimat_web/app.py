@@ -440,7 +440,6 @@ def profile():
 @login_required
 def monitoring():
     ip = pimat_config['pimat']['server_ip']
-    print(ip)
     return render_template('monitoring.html', ip=ip, version=version)
 
 
