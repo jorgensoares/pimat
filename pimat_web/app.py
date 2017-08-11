@@ -463,9 +463,9 @@ def monitoring():
     return render_template('monitoring.html', ip=ip, version=version)
 
 
-@app.route("/user/<action>/<id>", methods=['GET', 'POST'])
+@app.route("/user/<action>/<user_id>", methods=['GET', 'POST'])
 @login_required
-def edit_user(action):
+def edit_user(action, user_id):
     if request.method == 'POST' and action == 'create':
         first_name = request.form.get("first_name")
         last_name = request.form.get("last_name")
@@ -495,8 +495,8 @@ def edit_user(action):
             flash('All fields are mandatory!')
             return render_template('user_create.html', version=version)
 
-    elif request.method == 'POST' and action == 'delete' and id:
-        User.query.filter(User.id == id).delete()
+    elif request.method == 'POST' and action == 'delete' and user_id:
+        User.query.filter(User.id == user_id).delete()
         db.session.commit()
 
         return url_for("users")
