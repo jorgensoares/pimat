@@ -207,8 +207,8 @@ class RelayLogger(db.Model):
         self.pin = pin
         self.action = action
         self.value = value
-        self.value = type
-        self.value = source
+        self.type = type
+        self.source = source
 
 
 @login_manager.user_loader
@@ -303,6 +303,9 @@ def dashboard():
     sensors_data = Sensors.query.filter(Sensors.timestamp.between(get_previous_date(1), get_now())).\
         order_by(Sensors.timestamp.asc()).all()
 
+    relay_log = RelayLogger.query.filter(RelayLogger.timestamp.between(get_previous_date(1), get_now())).\
+        order_by(RelayLogger.timestamp.asc()).all()
+
     return render_template('index.html',
                            version=version,
                            relay_config=relay_config,
@@ -310,7 +313,7 @@ def dashboard():
                            sensors_data=sensors_data,
                            schedules=Schedules.query.order_by(Schedules.relay.asc()).all(),
                            last_reading=Sensors.query.order_by(Sensors.timestamp.desc()).first(),
-                           relay_log=RelayLogger.query.filter(Sensors.timestamp == datetime.today()).order_by(RelayLogger.timestamp.desc()).all()
+                           relay_log=relay_log
                            )
 
 
