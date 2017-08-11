@@ -536,7 +536,7 @@ api.add_resource(SchedulesAPI, '/api/schedules')
 
 def main():
     signal.signal(signal.SIGTERM, sigterm_handler)
-
+    db.createall()
     app.run(host='0.0.0.0',
             port=80,
             threaded=True,
