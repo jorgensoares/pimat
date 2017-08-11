@@ -35,7 +35,15 @@
   <!-- /.login-logo -->
   <div class="login-box-body">
     <p class="login-box-msg">Sign in to start your session</p>
-
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+          <ul class=flashes>
+              {% for message in messages %}
+                  <li>{{ message | safe }}</li>
+              {% endfor %}
+          </ul>
+      {% endif %}
+    {% endwith %}
     <form action="/login" method="post">
       <div class="form-group has-feedback">
         <input type="text" class="form-control" name="username" placeholder="Username">

@@ -192,10 +192,15 @@ def login():
             password = request.form.get("password")
 
             if check_password_hash(user.password, password):
+                print user.password
+                print password
                 login_user(user, remember=True)
                 flash('Welcome {0} {1}'.format(user.first_name, user.last_name))
 
                 return redirect(url_for("index"))
+            else:
+                flash('Wrong Username or Password')
+                return render_template("login.html")
     else:
         return render_template("login.html")
 
@@ -474,7 +479,7 @@ def edit_user(action, user_id):
         last_name = request.form.get("last_name")
         username = request.form.get("username")
         email = request.form.get("email")
-        password =request.form.get("password")
+        password = request.form.get("password")
         verify_password = request.form.get("verify_password")
 
         if first_name and last_name and last_name and username and email and password and verify_password:
@@ -519,6 +524,7 @@ def users():
 
 
 @app.errorhandler(404)
+@login_required
 def not_found(error):
     return render_template('error.html', error=error, version=version), 404
 
