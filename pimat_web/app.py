@@ -97,7 +97,7 @@ class RelayLoggerAPI(Resource):
         self.reqparse.add_argument('relay', type=str, required=True, default="", location='json')
         self.reqparse.add_argument('pin', type=int, required=True, default="", location='json')
         self.reqparse.add_argument('action', type=str, required=True, default="", location='json')
-        self.reqparse.add_argument('value', type=int, required=True, default="", location='json')
+        self.reqparse.add_argument('value', type=str, required=True, default="", location='json')
         self.reqparse.add_argument('type', type=str, default="", location='json')
         self.reqparse.add_argument('source', type=str, required=True, default="", location='json')
         super(RelayLoggerAPI, self).__init__()
@@ -197,7 +197,7 @@ class RelayLogger(db.Model):
     relay = db.Column(db.String(50))
     pin = db.Column(db.String(2))
     action = db.Column(db.String(10))
-    value = db.Column(db.String(1))
+    value = db.Column(db.String(10))
     type = db.Column(db.String(20))
     source = db.Column(db.String(100))
 
