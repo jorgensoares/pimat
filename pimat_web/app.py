@@ -96,7 +96,7 @@ class User(db.Model):
     first_name = db.Column(db.String(100))
     last_name = db.Column(db.String(100))
     username = db.Column(db.String(80), unique=True)
-    password = db.Column(db.String(64))
+    password = db.Column(db.String(255))
     email = db.Column(db.String(120))
 
     def __init__(self, first_name, last_name, username, password, email):
@@ -194,7 +194,8 @@ def login():
             print password
             print check_password_hash(user.password, password)
             print generate_password_hash(password)
-            if check_password_hash(user.password, password):
+            #if check_password_hash(user.password, password):
+            if user.password == password:
                 login_user(user, remember=True)
                 flash('Welcome {0} {1}'.format(user.first_name, user.last_name))
 
@@ -473,7 +474,6 @@ def monitoring():
 
 
 @app.route("/user/<action>/<user_id>", methods=['GET', 'POST'])
-@login_required
 def edit_user(action, user_id):
     if request.method == 'POST' and action == 'create':
         first_name = request.form.get("first_name")
