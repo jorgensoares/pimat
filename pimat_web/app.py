@@ -460,7 +460,7 @@ def users():
 
 @app.errorhandler(404)
 def not_found(error):
-    return render_template('404', error=error)
+    return render_template('error.html', error=error, version=version)
 
 
 api.add_resource(SensorsAPI, '/api/sensors')
