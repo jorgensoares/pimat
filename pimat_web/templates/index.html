@@ -370,16 +370,18 @@
                   </tr>
                   </thead>
                   <tbody>
-                  <tr>
-                    <td>{{ relay_log.id }}</td>
-                    <td>{{ relay_log.timestamp }}</td>
-                    <td>{{ relay_log.relay }}</td>
-                    <td>{{ relay_log.pin }}</td>
-                    <td>{{ relay_log.action }}</td>
-                    <td>{{ relay_log.value }}</td>
-                    <td>{{ relay_log.type }}</td>
-                    <td>{{ relay_log.source }}</td>
-                  </tr>
+                  {% for item in relay_log %}
+                      <tr>
+                        <td>{{ item.id }}</td>
+                        <td>{{ item.timestamp }}</td>
+                        <td>{{ item.relay }}</td>
+                        <td>{{ item.pin }}</td>
+                        <td>{{ item.action }}</td>
+                        <td>{{ item.value }}</td>
+                        <td>{{ item.type }}</td>
+                        <td>{{ item.source }}</td>
+                      </tr>
+                  {% endfor %}
                   </tbody>
                 </table>
               </div>
