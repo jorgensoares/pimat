@@ -16,6 +16,9 @@ version = __version__
 
 relay_config = configparser.ConfigParser()
 relay_config.read('/opt/pimat/relays.ini')
+pimat_config = configparser.ConfigParser()
+pimat_config.read('/opt/pimat/config.ini')
+
 file_handler = logging.FileHandler('/var/log/pimat-web.log')
 
 app = Flask(__name__)
@@ -432,10 +435,12 @@ def logs():
 def profile():
     return render_template('profile.html', version=version)
 
+
 @app.route("/monitoring", methods=['GET'])
 @login_required
 def monitoring():
-    return render_template('monitoring.html', version=version)
+    ip = pimat_config['pimat']['server_ip']
+    return render_template('monitoring.html', ip=ip, version=version)
 
 
 @app.route("/user/create", methods=['GET'])
