@@ -186,13 +186,10 @@ def index():
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
-    if request.method == 'POST':
+    if request.method == 'POST' and request.form.get("username") and request.form.get("password"):
         user = User.query.filter_by(username=request.form.get("username")).first()
-
         if user:
-            password = request.form.get("password")
-
-            if check_password_hash(user.password, password):
+            if check_password_hash(user.password, request.form.get("password")):
                 login_user(user, remember=True)
                 flash('Welcome {0} {1}'.format(user.first_name, user.last_name), 'success')
 
@@ -202,8 +199,8 @@ def login():
                 flash('Wrong Password', 'danger')
                 return render_template("login.html")
         else:
-            flash('User not found!')
-            return render_template("login.html", 'danger')
+            flash('User not found!', 'warning')
+            return render_template("login.html")
 
     else:
         return render_template("login.html")
