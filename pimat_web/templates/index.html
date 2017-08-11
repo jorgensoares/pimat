@@ -343,6 +343,52 @@
             </div>
             <!-- /.box-body -->
           </div>
+         <!-- TABLE: Relay logs -->
+          <div class="box">
+            <div class="box-header with-border">
+              <h3 class="box-title">Relay's Log</h3>
+              <div class="box-tools pull-right">
+                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
+                </button>
+                <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
+              </div>
+            </div>
+            <!-- /.box-header -->
+            <div class="box-body">
+              <div class="table-responsive">
+                <table class="table no-margin">
+                  <thead>
+                  <tr>
+                    <th>Log ID</th>
+                    <th>Timestamp</th>
+                    <th>Relay</th>
+                    <th>Pin</th>
+                    <th>Action</th>
+                    <th>Value</th>
+                    <th>Type</th>
+                    <th>Source</th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                  {% for item in relay_log %}
+                      <tr>
+                        <td>{{ item.id }}</td>
+                        <td>{{ item.timestamp }}</td>
+                        <td>{{ item.relay }}</td>
+                        <td>{{ item.pin }}</td>
+                        <td>{{ item.action }}</td>
+                        <td>{{ item.value }}</td>
+                        <td>{{ item.type }}</td>
+                        <td>{{ item.source }}</td>
+                      </tr>
+                  {% endfor %}
+                  </tbody>
+                </table>
+              </div>
+              <!-- /.table-responsive -->
+            </div>
+            <!-- /.box-body -->
+          </div>
         <!-- TABLE: Schedules -->
           <div class="box">
             <div class="box-header with-border">
@@ -400,52 +446,6 @@
               </div>
               <!-- /.table-responsive -->
             </div>
-             <!-- TABLE: Relay logs -->
-              <div class="box">
-                <div class="box-header with-border">
-                  <h3 class="box-title">Relay's Log</h3>
-                  <div class="box-tools pull-right">
-                    <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
-                    </button>
-                    <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
-                  </div>
-                </div>
-                <!-- /.box-header -->
-                <div class="box-body">
-                  <div class="table-responsive">
-                    <table class="table no-margin">
-                      <thead>
-                      <tr>
-                        <th>Log ID</th>
-                        <th>Timestamp</th>
-                        <th>Relay</th>
-                        <th>Pin</th>
-                        <th>Action</th>
-                        <th>Value</th>
-                        <th>Type</th>
-                        <th>Source</th>
-                      </tr>
-                      </thead>
-                      <tbody>
-                      {% for item in relay_log %}
-                          <tr>
-                            <td>{{ item.id }}</td>
-                            <td>{{ item.timestamp }}</td>
-                            <td>{{ item.relay }}</td>
-                            <td>{{ item.pin }}</td>
-                            <td>{{ item.action }}</td>
-                            <td>{{ item.value }}</td>
-                            <td>{{ item.type }}</td>
-                            <td>{{ item.source }}</td>
-                          </tr>
-                      {% endfor %}
-                      </tbody>
-                    </table>
-                  </div>
-                  <!-- /.table-responsive -->
-                </div>
-                <!-- /.box-body -->
-              </div>
             <!-- /.box-body -->
             <div class="box-footer clearfix">
               <a href="/schedule/add/new" class="btn btn-sm btn-info btn-flat pull-left">Create new schedule</a>
@@ -453,6 +453,52 @@
             <!-- /.box-footer -->
           </div>
           <!-- /.box -->
+             <!-- TABLE: Relay logs -->
+          <div class="box">
+            <div class="box-header with-border">
+              <h3 class="box-title">Relay's Log</h3>
+              <div class="box-tools pull-right">
+                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
+                </button>
+                <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
+              </div>
+            </div>
+            <!-- /.box-header -->
+            <div class="box-body">
+              <div class="table-responsive">
+                <table class="table no-margin">
+                  <thead>
+                  <tr>
+                    <th>Log ID</th>
+                    <th>Timestamp</th>
+                    <th>Relay</th>
+                    <th>Pin</th>
+                    <th>Action</th>
+                    <th>Value</th>
+                    <th>Type</th>
+                    <th>Source</th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                  {% for item in relay_log %}
+                      <tr>
+                        <td>{{ item.id }}</td>
+                        <td>{{ item.timestamp }}</td>
+                        <td>{{ item.relay }}</td>
+                        <td>{{ item.pin }}</td>
+                        <td>{{ item.action }}</td>
+                        <td>{{ item.value }}</td>
+                        <td>{{ item.type }}</td>
+                        <td>{{ item.source }}</td>
+                      </tr>
+                  {% endfor %}
+                  </tbody>
+                </table>
+              </div>
+              <!-- /.table-responsive -->
+            </div>
+            <!-- /.box-body -->
+          </div>
         </div>
         <!-- /.col -->
 
