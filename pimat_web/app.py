@@ -203,7 +203,7 @@ def login():
                 return render_template("login.html")
         else:
             flash('User not found!')
-            return render_template("login.html" 'danger')
+            return render_template("login.html", 'danger')
 
     else:
         return render_template("login.html")
@@ -279,7 +279,7 @@ def add_new_schedule(action, schedule_id):
         stop_time = request.form.get("stop_time")
 
         if start_time >= stop_time:
-            flash('The stop time cannot be equal or smaller than the start time, please try again!')
+            flash('The stop time cannot be equal or smaller than the start time, please try again!', 'warning')
             return render_template('schedules.html', version=version, schedule=None)
 
         if relay == 'relay1':
@@ -365,7 +365,7 @@ def add_new_schedule(action, schedule_id):
         stop_time = request.form.get("stop_time")
 
         if request.form.get("start_time") >= request.form.get("stop_time"):
-            flash('The stop time cannot be equal or smaller than the start time, please try again!')
+            flash('The stop time cannot be equal or smaller than the start time, please try again!', 'warning')
             return render_template('schedules.html', version=version, schedule=None)
 
         json_data = dict()
@@ -488,7 +488,7 @@ def edit_user(action, user_id):
 
         if first_name and last_name and last_name and username and email and password and verify_password:
             if User.query.filter(User.username == username).all():
-                flash('User already exists!')
+                flash('User already exists!', 'danger')
                 return render_template('user_create.html', version=version)
 
             if password == verify_password:
@@ -500,11 +500,11 @@ def edit_user(action, user_id):
                 return redirect(url_for("users"))
 
             else:
-                flash('Passwords dont match, please try again!')
+                flash('Passwords dont match, please try again!', 'danger')
                 return render_template('user_create.html', version=version)
 
         else:
-            flash('All fields are mandatory!')
+            flash('All fields are mandatory!', 'danger')
             return render_template('user_create.html', version=version)
 
     elif request.method == 'POST' and action == 'delete' and user_id:
@@ -525,19 +525,19 @@ def edit_user(action, user_id):
                     user.password = generate_password_hash(new_password)
                     db.session.commit()
 
-                    flash('Password changed sucessfully, you should logout and login again!')
+                    flash('Password changed sucessfully, you should logout and login again!', 'success')
                     return redirect(url_for("dashboard"))
 
                 else:
-                    flash('Passwords dont Match!')
+                    flash('Passwords dont Match!', 'danger')
                     return render_template('password_change.html', version=version)
 
             else:
-                flash('Wrong Current Password')
+                flash('Wrong Current Password', 'danger')
                 return render_template('password_change.html', version=version)
 
         else:
-            flash('All fields are mandatory!')
+            flash('All fields are mandatory!', 'danger')
             return render_template('password_change.html', version=version)
 
     else:
