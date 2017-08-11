@@ -15,6 +15,7 @@
   <!-- Theme style -->
   <link rel="stylesheet" href="/static/dist/css/AdminLTE.min.css">
   <link rel="stylesheet" href="/static/dist/css/skins/skin-blue.css">
+  <link rel="stylesheet" href="/static/plugins/iCheck/square/blue.css">
 
   <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
   <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -134,7 +135,11 @@
 
             <form action="../../index.html" method="post">
               <div class="form-group has-feedback">
-                <input type="text" class="form-control" placeholder="Full name">
+                <input type="text" class="form-control" placeholder="First name">
+                <span class="glyphicon glyphicon-user form-control-feedback"></span>
+              </div>
+              <div class="form-group has-feedback">
+                <input type="text" class="form-control" placeholder="Last name">
                 <span class="glyphicon glyphicon-user form-control-feedback"></span>
               </div>
               <div class="form-group has-feedback">
@@ -153,7 +158,7 @@
                 <div class="col-xs-8">
                   <div class="checkbox icheck">
                     <label>
-                      <input type="checkbox"> I agree to the <a href="#">terms</a>
+                      <input type="checkbox"> Administrator
                     </label>
                   </div>
                 </div>
@@ -164,7 +169,6 @@
                 <!-- /.col -->
               </div>
             </form>
-            <a href="login.html" class="text-center">I already have a membership</a>
           </div>
           <!-- /.form-box -->
         </div>
@@ -190,6 +194,15 @@
 <script src="/static/dist/js/adminlte.min.js"></script>
 <!-- SlimScroll -->
 <script src="/static/bower_components/jquery-slimscroll/jquery.slimscroll.min.js"></script>
-
+<script src="/static/plugins/iCheck/icheck.min.js"></script>
+<script>
+  $(function () {
+    $('input').iCheck({
+      checkboxClass: 'icheckbox_square-blue',
+      radioClass: 'iradio_square-blue',
+      increaseArea: '20%' // optional
+    });
+  });
+</script>
 </body>
 </html>
