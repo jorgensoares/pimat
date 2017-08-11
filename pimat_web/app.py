@@ -463,10 +463,30 @@ def monitoring():
     return render_template('monitoring.html', ip=ip, version=version)
 
 
-@app.route("/user/create", methods=['GET'])
+@app.route("/user/create", methods=['GET', 'POST'])
 @login_required
 def edit_user():
-    return render_template('user_create.html', version=version)
+    if request.method == 'POST':
+        first_name = request.form.get("first_name")
+        last_name = request.form.get("last_name")
+        username = request.form.get("username")
+        email = request.form.get("email")
+        password =request.form.get("password")
+        verify_password = request.form.get("verify_password")
+
+        if first_name and last_name and last_name and username and email and password and verify_password:
+            print first_name
+            print last_name
+            print username
+            print email
+            print password
+            print verify_password
+
+        else:
+            flash('All fields are mandatory!')
+            return render_template('user_create.html', version=version)
+    else:
+        return render_template('user_create.html', version=version)
 
 
 @app.route("/users", methods=['GET'])
