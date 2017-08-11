@@ -190,14 +190,20 @@ def login():
 
         if user:
             password = request.form.get("password")
+
             if check_password_hash(user.password, password):
                 login_user(user, remember=True)
                 flash('Welcome {0} {1}'.format(user.first_name, user.last_name))
 
                 return redirect(url_for("index"))
+
             else:
-                flash('Wrong Username or Password')
+                flash('Wrong Password')
                 return render_template("login.html")
+        else:
+            flash('User not found!')
+            return render_template("login.html")
+            
     else:
         return render_template("login.html")
 
