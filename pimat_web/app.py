@@ -190,12 +190,7 @@ def login():
 
         if user:
             password = request.form.get("password")
-            print user.password
-            print password
-            print check_password_hash(user.password, password)
-            print generate_password_hash(password)
-            #if check_password_hash(user.password, password):
-            if user.password == password:
+            if check_password_hash(user.password, password):
                 login_user(user, remember=True)
                 flash('Welcome {0} {1}'.format(user.first_name, user.last_name))
 
