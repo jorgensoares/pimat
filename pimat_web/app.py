@@ -1,18 +1,19 @@
 #!/usr/bin/python
-import configparser
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask import Flask, request, redirect, render_template, flash, url_for
 from flask_restful import Api, Resource, reqparse, marshal
+from flask_sqlalchemy import SQLAlchemy
+from datetime import datetime, timedelta
+from version import __version__
+from flask_restful import fields
+from flask_login import *
+import configparser
+import logging
 import signal
 import sys
 import requests
 import json
-from flask_restful import fields
-from flask_sqlalchemy import SQLAlchemy
-from datetime import datetime, timedelta
-from flask_login import *
-import logging
-from version import __version__
+
 version = __version__
 
 relay_config = configparser.ConfigParser()
@@ -203,7 +204,7 @@ def login():
         else:
             flash('User not found!')
             return render_template("login.html")
-            
+
     else:
         return render_template("login.html")
 
@@ -475,6 +476,7 @@ def monitoring():
 
 
 @app.route("/user/<action>/<user_id>", methods=['GET', 'POST'])
+@login_required
 def edit_user(action, user_id):
     if request.method == 'POST' and action == 'create':
         first_name = request.form.get("first_name")
