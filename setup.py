@@ -31,7 +31,8 @@ setup(
                       'MySQL-python',
                       'flask-login',
                       'flask-restful',
-                      'requests'],
+                      'requests',
+                      'werkzeug'],
 
     include_package_data=True,
     zip_safe=False,

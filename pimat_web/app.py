@@ -1,5 +1,6 @@
 #!/usr/bin/python
 import configparser
+from werkzeug.security import generate_password_hash, check_password_hash
 from flask import Flask, request, redirect, render_template, flash, url_for
 from flask_restful import Api, Resource, reqparse, marshal
 import signal
@@ -170,7 +171,7 @@ def user_loader(user_id):
 
 @login_manager.unauthorized_handler
 def unauthorized_handler():
-    return 'Unauthorized'
+    return redirect(url_for("login"))
 
 
 @app.route("/")
@@ -188,7 +189,9 @@ def login():
         user = User.query.filter_by(username=request.form.get("username")).first()
 
         if user:
-            if user.password == request.form.get("password"):
+            password = request.form.get("password")
+
+            if check_password_hash(user.password, password):
                 login_user(user, remember=True)
                 flash('Welcome {0} {1}'.format(user.first_name, user.last_name))
 
@@ -480,8 +483,8 @@ def edit_user(action, user_id):
                 return render_template('user_create.html', version=version)
 
             if password == verify_password:
-                print 'passwords match'
-                user = User(first_name, last_name, username, password, email)
+                hashed_password = generate_password_hash(password)
+                user = User(first_name, last_name, username, hashed_password, email)
                 db.session.add(user)
                 db.session.commit()
 
