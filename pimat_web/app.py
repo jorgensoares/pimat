@@ -482,9 +482,26 @@ def edit_user():
             print password
             print verify_password
 
+            if User.query.filter(User.username == username).all():
+                flash('User already exists!')
+                return render_template('user_create.html', version=version)
+
+            if password == verify_password:
+                print 'passwords match'
+                user = User(first_name, last_name, username, password, email)
+                db.session.add(user)
+                db.session.commit()
+
+                return url_for('users')
+
+            else:
+                flash('Passwords dont match, please try again!')
+                return render_template('user_create.html', version=version)
+
         else:
             flash('All fields are mandatory!')
             return render_template('user_create.html', version=version)
+
     else:
         return render_template('user_create.html', version=version)
 
