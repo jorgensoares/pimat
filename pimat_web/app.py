@@ -513,6 +513,29 @@ def edit_user(action, user_id):
 
         return url_for("users")
 
+    elif request.method == 'POST' and action == 'password_change':
+        current_password = request.form.get("current_password")
+        new_password = request.form.get("new_password")
+        verify_new_password = request.form.get("verify_new_password")
+
+        if current_password and new_password and verify_new_password:
+            if check_password_hash(current_user.password, current_password):
+                if new_password == verify_new_password:
+                    user = User.query.filter(User.id == current_user.id).first_or_404()
+                    user.password = generate_password_hash(new_password)
+                    db.session.commit()
+
+                else:
+                    flash('Passwords dont Match!')
+                    return render_template('password_change.html', version=version)
+
+            else:
+                flash('Wrong Current Password')
+                return render_template('password_change.html', version=version)
+
+        else:
+            flash('All fields are mandatory!')
+            return render_template('password_change.html', version=version)
 
     else:
         return render_template('user_create.html', version=version)
@@ -525,6 +548,12 @@ def users():
                            version=version,
                            users=User.query.order_by(User.id.asc()).all()
                            )
+
+
+@app.route("/password_change", methods=['GET'])
+@login_required
+def password_change():
+    return render_template('password_change.html', version=version)
 
 
 @app.errorhandler(404)
