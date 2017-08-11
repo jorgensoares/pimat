@@ -446,7 +446,7 @@ def monitoring():
 @app.route("/user/create", methods=['GET'])
 @login_required
 def edit_user():
-    return render_template('create_user.html', version=version)
+    return render_template('user_create.html', version=version)
 
 
 @app.route("/users", methods=['GET'])
