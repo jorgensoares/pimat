@@ -309,7 +309,8 @@ def dashboard():
                            status=relay_status,
                            sensors_data=sensors_data,
                            schedules=Schedules.query.order_by(Schedules.relay.asc()).all(),
-                           last_reading=Sensors.query.order_by(Sensors.timestamp.desc()).first()
+                           last_reading=Sensors.query.order_by(Sensors.timestamp.desc()).first(),
+                           relay_log=RelayLogger.query.filter(Sensors.timestamp == datetime.today()).order_by(RelayLogger.timestamp.desc()).all()
                            )
 
 

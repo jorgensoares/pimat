@@ -343,6 +343,50 @@
             </div>
             <!-- /.box-body -->
           </div>
+         <!-- TABLE: Relay logs -->
+          <div class="box">
+            <div class="box-header with-border">
+              <h3 class="box-title">Relay's Log</h3>
+              <div class="box-tools pull-right">
+                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
+                </button>
+                <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
+              </div>
+            </div>
+            <!-- /.box-header -->
+            <div class="box-body">
+              <div class="table-responsive">
+                <table class="table no-margin">
+                  <thead>
+                  <tr>
+                    <th>Log ID</th>
+                    <th>Timestamp</th>
+                    <th>Relay</th>
+                    <th>Pin</th>
+                    <th>Action</th>
+                    <th>Value</th>
+                    <th>Type</th>
+                    <th>Source</th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                  <tr>
+                    <td>{{ relay_log.id }}</td>
+                    <td>{{ relay_log.timestamp }}</td>
+                    <td>{{ relay_log.relay }}</td>
+                    <td>{{ relay_log.pin }}</td>
+                    <td>{{ relay_log.action }}</td>
+                    <td>{{ relay_log.value }}</td>
+                    <td>{{ relay_log.type }}</td>
+                    <td>{{ relay_log.source }}</td>
+                  </tr>
+                  </tbody>
+                </table>
+              </div>
+              <!-- /.table-responsive -->
+            </div>
+            <!-- /.box-body -->
+          </div>
         <!-- TABLE: Schedules -->
           <div class="box">
             <div class="box-header with-border">
