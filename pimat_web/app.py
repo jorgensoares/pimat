@@ -89,6 +89,29 @@ class SchedulesAPI(Resource):
         return {'schedules': [marshal(schedule, schedules_fields) for schedule in schedules]}, 200
 
 
+class RelayLoggerAPI(Resource):
+
+    def __init__(self):
+        self.reqparse = reqparse.RequestParser()
+        self.reqparse.add_argument('timestamp', type=str, required=True, location='json')
+        self.reqparse.add_argument('relay', type=str, required=True, default="", location='json')
+        self.reqparse.add_argument('pin', type=int, required=True, default="", location='json')
+        self.reqparse.add_argument('action', type=str, required=True, default="", location='json')
+        self.reqparse.add_argument('value', type=int, required=True, default="", location='json')
+        self.reqparse.add_argument('type', type=str, default="", location='json')
+        self.reqparse.add_argument('source', type=str, required=True, default="", location='json')
+        super(RelayLoggerAPI, self).__init__()
+
+    def post(self):
+        args = self.reqparse.parse_args()
+        action = RelayLogger(args['timestamp'], args['relay'], args['pin'], args['action'], args['value'], args['type'],
+                              args['source'])
+        db.session.add(action)
+        db.session.commit()
+
+        return {'status': 'success'}, 201
+
+
 class User(db.Model):
 
     __tablename__ = 'users'
@@ -163,6 +186,29 @@ class Schedules(db.Model):
         self.start_time = start_time
         self.stop_time = stop_time
         self.enabled = enabled
+
+
+class RelayLogger(db.Model):
+
+    __tablename__ = 'relay_logger'
+
+    id = db.Column('id', db.Integer, primary_key=True)
+    timestamp = db.Column(db.DateTime)
+    relay = db.Column(db.String(50))
+    pin = db.Column(db.String(2))
+    action = db.Column(db.String(10))
+    value = db.Column(db.String(1))
+    type = db.Column(db.String(20))
+    source = db.Column(db.String(100))
+
+    def __init__(self, timestamp, relay, pin, action, value, type, source):
+        self.timestamp = timestamp
+        self.relay = relay
+        self.pin = pin
+        self.action = action
+        self.value = value
+        self.value = type
+        self.value = source
 
 
 @login_manager.user_loader
@@ -559,11 +605,12 @@ def password_change():
 @app.errorhandler(404)
 @login_required
 def not_found(error):
-    return render_template('error.html', error=error, version=version), 404
+    return render_template('error.html', error=error, version=version)
 
 
 api.add_resource(SensorsAPI, '/api/sensors')
 api.add_resource(SchedulesAPI, '/api/schedules')
+api.add_resource(RelayLoggerAPI, '/api/v1/relay/logger')
 
 
 def main():
