@@ -170,7 +170,7 @@
         </div>
         <!-- /.box-body -->
         <div class="box-footer clearfix">
-          <a href="/user/create" class="btn btn-sm btn-info btn-flat pull-left">Create User</a>
+          <a href="/user/create/" class="btn btn-sm btn-info btn-flat pull-left">Create User</a>
         </div>
         <!-- /.box-footer-->
       </div>
@@ -258,7 +258,7 @@
         var $modalDiv = $(e.delegateTarget);
         var id = $(this).data('recordId');
         // $.ajax({url: '/schedules/delete/' + id, type: 'DELETE'})
-        $.post({url: '/user/delete/' + id, success: function(){window.location.href = "/"}}).then()
+        $.post('/user/delete/' + id).then()
         $modalDiv.addClass('loading');
         $('[data-record-id=' + id + ']').remove();
         setTimeout(function() {

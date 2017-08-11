@@ -463,10 +463,10 @@ def monitoring():
     return render_template('monitoring.html', ip=ip, version=version)
 
 
-@app.route("/user/create", methods=['GET', 'POST'])
+@app.route("/user/<action>/<id>", methods=['GET', 'POST'])
 @login_required
-def edit_user():
-    if request.method == 'POST':
+def edit_user(action):
+    if request.method == 'POST' and action == 'create':
         first_name = request.form.get("first_name")
         last_name = request.form.get("last_name")
         username = request.form.get("username")
@@ -475,13 +475,6 @@ def edit_user():
         verify_password = request.form.get("verify_password")
 
         if first_name and last_name and last_name and username and email and password and verify_password:
-            print first_name
-            print last_name
-            print username
-            print email
-            print password
-            print verify_password
-
             if User.query.filter(User.username == username).all():
                 flash('User already exists!')
                 return render_template('user_create.html', version=version)
@@ -492,7 +485,7 @@ def edit_user():
                 db.session.add(user)
                 db.session.commit()
 
-                return url_for('users')
+                return redirect(url_for("users"))
 
             else:
                 flash('Passwords dont match, please try again!')
@@ -501,6 +494,13 @@ def edit_user():
         else:
             flash('All fields are mandatory!')
             return render_template('user_create.html', version=version)
+
+    elif request.method == 'POST' and action == 'delete' and id:
+        User.query.filter(User.id == id).delete()
+        db.session.commit()
+
+        return url_for("users")
+
 
     else:
         return render_template('user_create.html', version=version)
