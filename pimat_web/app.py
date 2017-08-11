@@ -525,6 +525,9 @@ def edit_user(action, user_id):
                     user.password = generate_password_hash(new_password)
                     db.session.commit()
 
+                    flash('Passwords cahnged sucessfully, you should logout and login again!')
+                    return render_template('password_change.html', version=version)
+
                 else:
                     flash('Passwords dont Match!')
                     return render_template('password_change.html', version=version)
