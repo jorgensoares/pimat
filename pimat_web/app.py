@@ -199,11 +199,11 @@ def login():
                 return redirect(url_for("index"))
 
             else:
-                flash('Wrong Password')
+                flash('Wrong Password', 'danger')
                 return render_template("login.html")
         else:
             flash('User not found!')
-            return render_template("login.html")
+            return render_template("login.html" 'danger')
 
     else:
         return render_template("login.html")
