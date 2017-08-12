@@ -334,7 +334,7 @@ def login():
 
             else:
                 flash('Wrong Password', 'danger')
-                failed_attempts = int(user.login_attempt)
+                failed_attempts = int(user.login_attempts)
                 failed_attempts += 1
                 user.login_attempts = failed_attempts
                 db.session.commit()
