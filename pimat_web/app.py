@@ -47,7 +47,7 @@ app.config['MAIL_USE_SSL'] = False
 app.config['MAIL_DEFAULT_SENDER'] = 'teste@ocloud.cz'
 app.config['RECAPTCHA_PUBLIC_KEY'] = '6LcwqywUAAAAANqGKZdPMGUmBZ3nKwRadazZS2OZ'
 app.config['RECAPTCHA_PRIVATE_KEY'] = '6LcwqywUAAAAAGB9HhvMq3C_JOfCYLBliH2-un7U'
-
+app.testing = True
 app.logger.addHandler(file_handler)
 app.logger.setLevel(logging.INFO)
 
