@@ -663,10 +663,7 @@ def edit_user(action, user_id):
     else:
         for field, errors in form.errors.items():
             for error in errors:
-                flash(u"Error in the %s field - %s" % (
-                    getattr(form, field).label.text,
-                    error
-                ), 'warning')
+                flash(error, 'warning')
 
     return render_template('user_create.html', version=version, form=form)
 
@@ -684,7 +681,7 @@ def users():
 @app.route("/password_change", methods=['GET'])
 @login_required
 def password_change():
-    if request.method == 'POST' and action == 'password_change':
+    if request.method == 'POST':
         current_password = request.form.get("current_password")
         new_password = request.form.get("new_password")
         verify_new_password = request.form.get("verify_new_password")
