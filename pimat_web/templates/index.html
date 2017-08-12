@@ -614,8 +614,16 @@
     $('#confirm-switch-on').on('click', '.btn-ok', function(e) {
         var $modalDiv = $(e.delegateTarget);
         var id = $(this).data('recordId');
-        // $.ajax({url: '/relays/on/' + id, type: 'DELETE'})
-        $.post({url: '/relays/on/' + id, success: function(){window.location.href = "/"}}).then()
+        var csrf_token = "{{ csrf_token() }}";
+        $.ajaxSetup({
+          beforeSend: function(xhr, settings) {
+            if (!/^(GET|HEAD|OPTIONS|TRACE)$/i.test(settings.type) && !this.crossDomain) {
+                xhr.setRequestHeader("X-CSRFToken", csrf_token);
+              }
+            }
+        });
+        $.ajax({url: '/relays/on/' + id, type: 'POST', success: function(){window.location.href = "/"}})
+        // $.post({url: '/relays/on/' + id, success: function(){window.location.href = "/"}}).then()
         $modalDiv.addClass('loading');
         setTimeout(function() {
             $modalDiv.modal('hide').removeClass('loading');
@@ -630,8 +638,16 @@
     $('#confirm-switch-off').on('click', '.btn-ok', function(e) {
         var $modalDiv = $(e.delegateTarget);
         var id = $(this).data('recordId');
-        // $.ajax({url: '/api/record/' + id, type: 'DELETE'})
-        $.post({url: '/relays/off/' + id, success: function(){window.location.href = "/"}}).then()
+        var csrf_token = "{{ csrf_token() }}";
+        $.ajaxSetup({
+          beforeSend: function(xhr, settings) {
+            if (!/^(GET|HEAD|OPTIONS|TRACE)$/i.test(settings.type) && !this.crossDomain) {
+                xhr.setRequestHeader("X-CSRFToken", csrf_token);
+              }
+            }
+        });
+        $.ajax({url: '/relays/off/' + id, type: 'POST', success: function(){window.location.href = "/"}})
+        // $.post({url: '/relays/off/' + id }).then()
         $modalDiv.addClass('loading');
         setTimeout(function() {
             $modalDiv.modal('hide').removeClass('loading');
@@ -646,8 +662,16 @@
     $('#confirm-delete').on('click', '.btn-ok', function(e) {
         var $modalDiv = $(e.delegateTarget);
         var id = $(this).data('recordId');
-        // $.ajax({url: '/schedules/delete/' + id, type: 'DELETE'})
-        $.post('/schedule/delete/' + id).then()
+        var csrf_token = "{{ csrf_token() }}";
+        $.ajaxSetup({
+          beforeSend: function(xhr, settings) {
+            if (!/^(GET|HEAD|OPTIONS|TRACE)$/i.test(settings.type) && !this.crossDomain) {
+                xhr.setRequestHeader("X-CSRFToken", csrf_token);
+              }
+            }
+        });
+        $.ajax({url: '/schedule/delete/' + id, type: 'POST'})
+        // $.post('/schedule/delete/' + id).then()
         $modalDiv.addClass('loading');
         $('[data-record-id=' + id + ']').remove();
         setTimeout(function() {
@@ -663,8 +687,16 @@
     $('#confirm-disable').on('click', '.btn-ok', function(e) {
         var $modalDiv = $(e.delegateTarget);
         var id = $(this).data('recordId');
-        // $.ajax({url: '/schedules/delete/' + id, type: 'DELETE'})
-        $.post({url: '/schedule/switch/' + id, success: function(){window.location.href = "/"}}).then()
+        var csrf_token = "{{ csrf_token() }}";
+        $.ajaxSetup({
+          beforeSend: function(xhr, settings) {
+            if (!/^(GET|HEAD|OPTIONS|TRACE)$/i.test(settings.type) && !this.crossDomain) {
+                xhr.setRequestHeader("X-CSRFToken", csrf_token);
+              }
+            }
+        });           
+        $.ajax({url: '/schedules/delete/' + id, type: 'POST', success: function(){window.location.href = "/"}})
+        // $.post({url: '/schedule/switch/' + id}).then()
         $modalDiv.addClass('loading');
         setTimeout(function() {
             $modalDiv.modal('hide').removeClass('loading');
