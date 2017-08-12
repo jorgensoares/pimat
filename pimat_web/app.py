@@ -49,7 +49,7 @@ app.config['MAIL_PASSWORD'] = 'zaq12wsx'
 app.config['MAIL_USE_TLS'] = True
 app.config['MAIL_USE_SSL'] = False
 app.config['MAIL_DEFAULT_SENDER'] = 'teste@ocloud.cz'
-app.config['RECAPTCHA'] = True
+app.config['RECAPTCHA'] = False
 app.config['RECAPTCHA_PUBLIC_KEY'] = '6LcwqywUAAAAANqGKZdPMGUmBZ3nKwRadazZS2OZ'
 app.config['RECAPTCHA_PRIVATE_KEY'] = '6LcwqywUAAAAAGB9HhvMq3C_JOfCYLBliH2-un7U'
 
@@ -280,7 +280,7 @@ class CreateUserForm(FlaskForm):
     email = StringField('email', validators=[DataRequired()])
     password = PasswordField('new_password', [
         validators.DataRequired(),
-        validators.EqualTo('verify_new_password', message='Passwords must match')
+        validators.EqualTo('verify_password', message='Passwords must match')
     ])
     verify_password = PasswordField('verify_password')
     role = BooleanField('role')
