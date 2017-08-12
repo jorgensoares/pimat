@@ -21,24 +21,13 @@ from flask_restful import Resource, reqparse, marshal, fields
 from wtforms import StringField, PasswordField, BooleanField, validators
 from flask_wtf import FlaskForm, RecaptchaField
 from wtforms.validators import DataRequired
-
 version = __version__
-
-relay_config = configparser.ConfigParser()
-relay_config.read('/opt/pimat/relays.ini')
-pimat_config = configparser.ConfigParser()
-pimat_config.read('/opt/pimat/config.ini')
-
-file_handler = logging.FileHandler('/var/log/pimat-web.log')
 
 app = Flask(__name__)
 
-csrf = CSRFProtect(app)
-api = Api(app, decorators=[csrf.exempt])
-mail = Mail()
-Principal(app)
-
-app.secret_key = 'super secret string'
+app.config['SERVER_IP'] = '10.14.11.252'
+app.config['LOG'] = '/var/log/pimat-web.log'
+app.config['RELAY_CONFIG'] = '/opt/pimat/relays.ini'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:zaq12wsx@localhost/pimat'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_ECHO'] = False
@@ -52,11 +41,21 @@ app.config['MAIL_DEFAULT_SENDER'] = 'teste@ocloud.cz'
 app.config['RECAPTCHA'] = False
 app.config['RECAPTCHA_PUBLIC_KEY'] = '6LcwqywUAAAAANqGKZdPMGUmBZ3nKwRadazZS2OZ'
 app.config['RECAPTCHA_PRIVATE_KEY'] = '6LcwqywUAAAAAGB9HhvMq3C_JOfCYLBliH2-un7U'
+app.secret_key = 'super secret string'
 
+csrf = CSRFProtect(app)
+api = Api(app, decorators=[csrf.exempt])
+mail = Mail()
 db = SQLAlchemy(app)
-admin_permission = Permission(RoleNeed('admin'))
+Principal(app)
+
+relay_config = configparser.ConfigParser()
+relay_config.read(app.config['RELAY_CONFIG'])
+file_handler = logging.FileHandler(app.config['LOG'])
 app.logger.addHandler(file_handler)
 app.logger.setLevel(logging.INFO)
+
+admin_permission = Permission(RoleNeed('admin'))
 login_manager = LoginManager()
 login_manager.init_app(app)
 mail.init_app(app)
@@ -144,7 +143,7 @@ class User(db.Model):
     password = db.Column(db.String(255))
     email = db.Column(db.String(120))
     role = db.Column(db.String(10))
-    phone = db.Column(db.String(12))
+    phone = db.Column(db.String(16))
     email_alert = db.Column(db.String(3))
     sms_alert = db.Column(db.String(3))
     last_login = db.Column(db.DateTime)
@@ -313,6 +312,12 @@ def user_loader(user_id):
 @login_manager.unauthorized_handler
 def unauthorized_handler():
     return redirect(url_for("login"))
+
+
+@app.errorhandler(404)
+@login_required
+def not_found(error):
+    return render_template('error.html', error=error, version=version)
 
 
 @app.route("/")
@@ -646,8 +651,7 @@ def profile():
 @app.route("/monitoring", methods=['GET'])
 @login_required
 def monitoring():
-    ip = pimat_config['pimat']['server_ip']
-    return render_template('monitoring.html', ip=ip, version=version)
+    return render_template('monitoring.html', ip=app.config['SERVER_IP'], version=version)
 
 
 @app.route("/user/<action>/<user_id>", methods=['GET', 'POST'])
@@ -752,7 +756,7 @@ def password_forgot():
             token = s.dumps({'id': user_details.id})
 
             message = '''Hello, \n\n To reset your password go to: http://%s/password_reset \n\n Token: \n %s''' % \
-                      (pimat_config['pimat']['server_ip'], token)
+                      (app.config['SERVER_IP'], token)
 
             subject = "Pimat Password Reset - %s" % user_details.username
             msg = Message(recipients=[user_details.email],
@@ -779,13 +783,9 @@ def password_reset():
     form = PasswordResetForm()
 
     if form.validate_on_submit():
-        input_user = form.username.data
-        new_password = form.new_password.data
-        token = form.token.data
-
         s = Serializer(app.config['SECRET_KEY'])
         try:
-            data = s.loads(token)
+            data = s.loads(form.token.data)
 
         except SignatureExpired:
             flash('Expired Token', 'danger')
@@ -797,8 +797,8 @@ def password_reset():
 
         user = User.query.filter(User.id == data['id']).first()
 
-        if input_user == user.username:
-            user.password = generate_password_hash(new_password)
+        if form.username.data == user.username:
+            user.password = generate_password_hash(form.new_password.data)
             db.session.commit()
             flash('Password updated successfully, Please login.', 'success')
 
@@ -811,6 +811,7 @@ def password_reset():
                           body=message,
                           subject=subject)
             mail.send(msg)
+
             return redirect(url_for("login"))
 
         else:
@@ -823,12 +824,6 @@ def password_reset():
                 flash(error, 'warning')
 
     return render_template('password_reset_form.html', version=version, form=form)
-
-
-@app.errorhandler(404)
-@login_required
-def not_found(error):
-    return render_template('error.html', error=error, version=version)
 
 
 api.add_resource(SensorsAPI, '/api/sensors')
