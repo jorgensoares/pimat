@@ -644,21 +644,19 @@ def password_forgot():
         if user:
             user_details = User.query.filter(User.username == user).first()
             s = Serializer(app.config['SECRET_KEY'], expires_in=600)
-            token = s.dumps({'username': user_details.username})
+            token = s.dumps({'id': user_details.id})
             print user_details.email
             print token
 
-            message = 'To reset you password go to http://%s/password_reset?token=%s' % (pimat_config['pimat']['server_ip'], token)
+            message = r'To reset your password go to http://%s/password_reset \n Token: \n %s' % (pimat_config['pimat']['server_ip'], token)
             subject = "Pimat Password Reset - %s" % user_details.username
             msg = Message(recipients=[user_details.email],
                           body=message,
                           subject=subject)
             mail.send(msg)
-            flash('Please verify you mailbox!')
 
-        if request.method == 'GET' and request.args.get('token'):
-            print request.args.get('token')
-            return render_template('password_reset_form.html', version=version)
+            flash('Please verify you mailbox!', 'success')
+            return redirect(url_for("password_reset"))
 
         else:
             return render_template('password_forgot.html', version=version)
@@ -667,9 +665,42 @@ def password_forgot():
 
 
 @app.route("/password_reset", methods=['GET', 'POST'])
-def reset_password():
+def password_reset():
+    if request.method == 'POST':
+        input_user = request.form.get("username")
+        new_password = request.form.get("new_password")
+        verify_new_password = request.form.get("verify_new_password")
+        token = request.form.get("token")
+
+        s = Serializer(app.config['SECRET_KEY'])
+        try:
+            data = s.loads(token)
+
+        except SignatureExpired:
+            flash('Expired Token', 'danger')
+            return render_template('password_reset_form.html', version=version)
+
+        except BadSignature:
+            flash('Invalid Token', 'danger')
+            return render_template('password_reset_form.html', version=version)
+
+        user = User.query.filter(User.id == data['id']).first()
+
+        if input_user == user.username:
+            if new_password == verify_new_password:
+                user.password = generate_password_hash(new_password)
+                db.session.commit()
+
+            else:
+                flash('Passwords dont Match!', 'danger')
+                return render_template('password_reset_form.html', version=version)
+
+        else:
+            flash('Invalid user', 'danger')
+            return render_template('password_reset_form.html', version=version)
 
     return render_template('password_reset_form.html', version=version)
+
 
 @app.errorhandler(404)
 @login_required
