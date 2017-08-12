@@ -238,8 +238,8 @@ class RelayLogger(db.Model):
 
 
 class UpdateAppForm(Form):
-    username = StringField('app_name', validators=[DataRequired()])
-    password = StringField('schedule', validators=[DataRequired()])
+    username = StringField('username', validators=[DataRequired()])
+    password = StringField('password', validators=[DataRequired()])
 
 
 @login_manager.user_loader
