@@ -27,24 +27,28 @@ file_handler = logging.FileHandler('/var/log/pimat-web.log')
 
 app = Flask(__name__)
 api = Api(app)
-mail = Mail(app)
+mail = Mail()
+
 app.secret_key = 'super secret string'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:zaq12wsx@localhost/pimat'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_ECHO'] = False
-app.logger.addHandler(file_handler)
-app.logger.setLevel(logging.INFO)
-
-db = SQLAlchemy(app)
-login_manager = LoginManager()
-login_manager.init_app(app)
-
 app.config['MAIL_SERVER']='mail.ocloud.cz'
 app.config['MAIL_PORT'] = 587
 app.config['MAIL_USERNAME'] = 'teste@ocloud.cz'
 app.config['MAIL_PASSWORD'] = 'zaq12wsx'
 app.config['MAIL_USE_TLS'] = False
 app.config['MAIL_USE_SSL'] = True
+app.config['MAIL_DEFAULT_SENDER'] = 'teste@ocloud.cz'
+
+app.logger.addHandler(file_handler)
+app.logger.setLevel(logging.INFO)
+
+db = SQLAlchemy(app)
+login_manager = LoginManager()
+login_manager.init_app(app)
+mail.init_app(app)
+
 
 schedules_fields = {
     'start_time': fields.String,
@@ -652,8 +656,8 @@ def reset_password():
             mail.send(msg)
 
         if request.method == 'GET' and request.args.get('token'):
-            print token
-            return render_template('password_reset.html', version=version)
+            print request.args.get('token')
+            return render_template('password_reset_form.html', version=version)
 
         else:
             return render_template('password_reset.html', version=version)
