@@ -260,8 +260,17 @@
     $('#confirm-delete').on('click', '.btn-ok', function(e) {
         var $modalDiv = $(e.delegateTarget);
         var id = $(this).data('recordId');
-        // $.ajax({url: '/schedules/delete/' + id, type: 'DELETE'})
-        $.post('/user/delete/' + id).then()
+        var csrf_token = "{{ csrf_token() }}";
+        $.ajaxSetup({
+          beforeSend: function(xhr, settings) {
+            if (!/^(GET|HEAD|OPTIONS|TRACE)$/i.test(settings.type) && !this.crossDomain) {
+                xhr.setRequestHeader("X-CSRFToken", csrf_token);
+              }
+            }
+        });
+
+        $.ajax({url: '/user/delete/' + id, type: 'POST'})
+        //$.post('/user/delete/' + id).then()
         $modalDiv.addClass('loading');
         $('[data-record-id=' + id + ']').remove();
         setTimeout(function() {
