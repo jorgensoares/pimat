@@ -636,8 +636,8 @@ def password_change():
     return render_template('password_change.html', version=version)
 
 
-@app.route("/password_reset", methods=['GET', 'POST'])
-def reset_password():
+@app.route("/password_forgot", methods=['GET', 'POST'])
+def password_forgot():
     if request.method == 'POST':
         user = request.form.get("username")
 
@@ -654,16 +654,22 @@ def reset_password():
                           body=message,
                           subject=subject)
             mail.send(msg)
+            flash('Please verify you mailbox!')
 
         if request.method == 'GET' and request.args.get('token'):
             print request.args.get('token')
             return render_template('password_reset_form.html', version=version)
 
         else:
-            return render_template('password_reset.html', version=version)
+            return render_template('password_forgot.html', version=version)
 
-    return render_template('password_reset.html', version=version)
+    return render_template('password_forgot.html', version=version)
 
+
+@app.route("/password_reset", methods=['GET', 'POST'])
+def reset_password():
+
+    return render_template('password_reset_form.html', version=version)
 
 @app.errorhandler(404)
 @login_required
