@@ -681,7 +681,7 @@ def password_forgot():
                           body=message,
                           subject=subject)
             mail.send(msg)
-    
+
             flash('Please verify you mailbox!', 'success')
             return redirect(url_for("password_reset"))
 
