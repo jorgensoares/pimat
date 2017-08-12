@@ -39,6 +39,6 @@ setup(
                       'Flask-Principal'],
 
     include_package_data=True,
-package_data={'pimat_web': ['templates/*']}
+    package_data={'pimat_web': ['static/*']},
     zip_safe=False,
 )
