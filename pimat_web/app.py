@@ -20,7 +20,7 @@ import requests
 import json
 from flask_wtf import FlaskForm, RecaptchaField
 from wtforms import StringField, PasswordField
-from wtforms.validators import DataRequired
+from wtforms.validators import DataRequired, Email
 
 version = __version__
 
@@ -53,7 +53,7 @@ app.config['RECAPTCHA'] = True
 app.config['RECAPTCHA_PUBLIC_KEY'] = '6LcwqywUAAAAANqGKZdPMGUmBZ3nKwRadazZS2OZ'
 app.config['RECAPTCHA_PRIVATE_KEY'] = '6LcwqywUAAAAAGB9HhvMq3C_JOfCYLBliH2-un7U'
 
-admin_permission = Permission(RoleNeed('admini'))
+admin_permission = Permission(RoleNeed('admin'))
 app.logger.addHandler(file_handler)
 app.logger.setLevel(logging.INFO)
 
@@ -266,6 +266,16 @@ class PasswordChangeForm(FlaskForm):
     new_password = PasswordField('new_password', validators=[DataRequired()])
     verify_new_password = PasswordField('verify_new_password', validators=[DataRequired()])
     token = StringField('token', validators=[DataRequired()])
+
+
+class CreateUserForm(FlaskForm):
+    first_name = StringField('first_name', validators=[DataRequired()])
+    last_name = StringField('last_name', validators=[DataRequired()])
+    username = StringField('username', validators=[DataRequired()])
+    email = StringField('email', validators=[DataRequired()])
+    password = PasswordField('password', validators=[DataRequired()])
+    verify_password = PasswordField('verify_password', validators=[DataRequired()])
+    role = StringField('role')
 
 
 @identity_loaded.connect_via(app)
@@ -616,34 +626,25 @@ def monitoring():
 @admin_permission.require()
 @login_required
 def edit_user(action, user_id):
-    if request.method == 'POST' and action == 'create':
-        first_name = request.form.get("first_name")
-        last_name = request.form.get("last_name")
-        username = request.form.get("username")
-        email = request.form.get("email")
-        password = request.form.get("password")
-        verify_password = request.form.get("verify_password")
+    form = CreateUserForm()
 
-        if first_name and last_name and last_name and username and email and password and verify_password:
-            if User.query.filter(User.username == username).all():
-                flash('User already exists!', 'danger')
-                return render_template('user_create.html', version=version)
+    if action == 'create' and form.validate_on_submit():
+        if User.query.filter(User.username == form.username.data).all():
+            flash('User already exists!', 'danger')
+            return render_template('user_create.html', version=version)
 
-            if password == verify_password:
-                hashed_password = generate_password_hash(password)
-                user = User(first_name, last_name, username, hashed_password, email)
-                db.session.add(user)
-                db.session.commit()
+        if form.password.data == form.verify_password.data:
+            hashed_password = generate_password_hash(form.password.data)
+            user = User(form.first_name.data, form.last_name.data, form.username.data, hashed_password, form.email.data,
+                        form.role.data)
+            db.session.add(user)
+            db.session.commit()
 
-                return redirect(url_for("users"))
-
-            else:
-                flash('Passwords dont match, please try again!', 'danger')
-                return render_template('user_create.html', version=version)
+            return redirect(url_for("users"))
 
         else:
-            flash('All fields are mandatory!', 'danger')
-            return render_template('user_create.html', version=version)
+            flash('Passwords dont match, please try again!', 'danger')
+            return render_template('user_create.html', version=version, form=form)
 
     elif request.method == 'POST' and action == 'delete' and user_id:
         User.query.filter(User.id == user_id).delete()
@@ -689,7 +690,7 @@ def edit_user(action, user_id):
             return render_template('password_change.html', version=version)
 
     else:
-        return render_template('user_create.html', version=version)
+        return render_template('user_create.html', version=version, form=form)
 
 
 @app.route("/users", methods=['GET'])
