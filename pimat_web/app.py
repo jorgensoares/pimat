@@ -17,10 +17,12 @@ import signal
 import sys
 import requests
 import json
-from forms import LoginForm, PasswordForgotForm,PasswordResetForm, PasswordChangeForm, CreateUserForm
 from flask_restful import Resource, reqparse, marshal, fields
-version = __version__
+from wtforms import StringField, PasswordField, BooleanField, validators
+from flask_wtf import FlaskForm, RecaptchaField
+from wtforms.validators import DataRequired
 
+version = __version__
 
 relay_config = configparser.ConfigParser()
 relay_config.read('/opt/pimat/relays.ini')
@@ -233,6 +235,54 @@ class RelayLogger(db.Model):
         self.value = value
         self.type = type
         self.source = source
+
+
+class LoginForm(FlaskForm):
+    username = StringField('username', validators=[DataRequired()])
+    password = PasswordField('password', validators=[DataRequired()])
+
+
+class PasswordForgotForm(FlaskForm):
+    username = StringField('username', validators=[DataRequired()])
+
+    if app.config['RECAPTCHA'] is True:
+        recaptcha = RecaptchaField('recaptcha')
+
+
+class PasswordResetForm(FlaskForm):
+    username = StringField('username', validators=[DataRequired()])
+    new_password = PasswordField('new_password', [
+        validators.DataRequired(),
+        validators.EqualTo('verify_new_password', message='Passwords must match')
+    ])
+    verify_new_password = PasswordField('verify_new_password')
+    token = StringField('token', validators=[DataRequired()])
+
+    if app.config['RECAPTCHA'] is True:
+        recaptcha = RecaptchaField('recaptcha')
+
+
+class PasswordChangeForm(FlaskForm):
+    username = StringField('username', validators=[DataRequired()])
+    new_password = PasswordField('new_password', [
+        validators.DataRequired(),
+        validators.EqualTo('verify_new_password', message='Passwords must match')
+    ])
+    verify_new_password = PasswordField('verify_new_password')
+
+
+class CreateUserForm(FlaskForm):
+    first_name = StringField('first_name', validators=[DataRequired()])
+    last_name = StringField('last_name', validators=[DataRequired()])
+    username = StringField('username', validators=[DataRequired()])
+    email = StringField('email', validators=[DataRequired()])
+    password = PasswordField('new_password', [
+        validators.DataRequired(),
+        validators.EqualTo('verify_password', message='Passwords must match')
+    ])
+    verify_password = PasswordField('verify_password')
+    role = StringField('role')
+
 
 @identity_loaded.connect_via(app)
 def on_identity_loaded(sender, identity):
