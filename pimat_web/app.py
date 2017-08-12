@@ -617,6 +617,7 @@ def monitoring():
 
 
 @app.route("/user/<action>/<user_id>", methods=['GET', 'POST'])
+@admin_permission.require()
 @login_required
 def edit_user(action, user_id):
     if request.method == 'POST' and action == 'create':
@@ -696,6 +697,7 @@ def edit_user(action, user_id):
 
 
 @app.route("/users", methods=['GET'])
+@admin_permission.require()
 @login_required
 def users():
     return render_template('users.html',
