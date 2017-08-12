@@ -16,7 +16,7 @@ import signal
 import sys
 import requests
 import json
-from flask_wtf import Form
+from flask_wtf import FlaskForm
 from wtforms import StringField
 from wtforms.validators import DataRequired
 
@@ -238,7 +238,7 @@ class RelayLogger(db.Model):
         self.source = source
 
 
-class UpdateAppForm(Form):
+class UpdateAppForm(FlaskForm):
     username = StringField('username', validators=[DataRequired()])
     password = StringField('password', validators=[DataRequired()])
 
