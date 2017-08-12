@@ -21,12 +21,16 @@ from flask_restful import Resource, reqparse, marshal, fields
 from wtforms import StringField, PasswordField, BooleanField, validators
 from flask_wtf import FlaskForm, RecaptchaField
 from wtforms.validators import DataRequired
+from werkzeug.utils import secure_filename
+import os
+
 version = __version__
 
 app = Flask(__name__)
 
 app.config['SERVER_IP'] = '10.14.11.252'
 app.config['LOG'] = '/var/log/pimat-web.log'
+app.config['UPLOAD_FOLDER'] = '/tmp'
 app.config['RELAY_CONFIG'] = '/opt/pimat/relays.ini'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:zaq12wsx@localhost/pimat'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
@@ -42,6 +46,7 @@ app.config['RECAPTCHA'] = False
 app.config['RECAPTCHA_PUBLIC_KEY'] = '6LcwqywUAAAAANqGKZdPMGUmBZ3nKwRadazZS2OZ'
 app.config['RECAPTCHA_PRIVATE_KEY'] = '6LcwqywUAAAAAGB9HhvMq3C_JOfCYLBliH2-un7U'
 app.secret_key = 'super secret string'
+ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'])
 
 csrf = CSRFProtect(app)
 api = Api(app, decorators=[csrf.exempt])
@@ -74,6 +79,11 @@ def sigterm_handler(_signo, _stack_frame):
     # When sysvinit sends the TERM signal, cleanup before exiting.
     print("received signal {}, exiting...".format(_signo))
     sys.exit(0)
+
+
+def allowed_file(filename):
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 schedules_fields = {
     'start_time': fields.String,
@@ -645,7 +655,28 @@ def profile():
         db.session.commit()
         flash('Profile Updated successfully', 'success')
 
-    return render_template('profile.html', version=version)
+    return render_template('profile.html', version=version, form=form)
+
+
+@app.route('/profile/picture', methods=['POST'])
+@login_required
+def upload_file():
+    if request.method == 'POST':
+        # check if the post request has the file part
+        if 'file' not in request.files:
+            flash('No file part', 'warning')
+            return redirect(url_for("profile"))
+        file = request.files['file']
+        # if user does not select file, browser also
+        # submit a empty part without filename
+        if file.filename == '':
+            flash('No selected file', 'warning')
+            return redirect(url_for("profile"))
+        if file and allowed_file(file.filename):
+            filename = secure_filename(file.filename)
+            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+            return redirect(url_for("profile"))
+
 
 
 @app.route("/monitoring", methods=['GET'])
