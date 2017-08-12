@@ -283,7 +283,7 @@ class CreateUserForm(FlaskForm):
         validators.EqualTo('verify_password', message='Passwords must match')
     ])
     verify_password = PasswordField('verify_password')
-    role = BooleanField('role')
+    role = StringField('role')
 
 
 @identity_loaded.connect_via(app)
