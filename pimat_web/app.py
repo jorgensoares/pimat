@@ -243,9 +243,15 @@ class LoginForm(FlaskForm):
     password = StringField('password', validators=[DataRequired()])
 
 
-class PasswordForgot(FlaskForm):
+class PasswordForgotForm(FlaskForm):
     username = StringField('username', validators=[DataRequired()])
 
+
+class PasswordResetForm(FlaskForm):
+    username = StringField('username', validators=[DataRequired()])
+    new_password = StringField('new_password', validators=[DataRequired()])
+    verify_new_password = StringField('verify_new_password', validators=[DataRequired()])
+    token = StringField('token', validators=[DataRequired()])
 
 
 @login_manager.user_loader
@@ -664,9 +670,9 @@ def password_change():
 
 @app.route("/password_forgot", methods=['GET', 'POST'])
 def password_forgot():
-    form = PasswordForgot()
+    form = PasswordForgotForm()
 
-    if request.method == 'POST' and form.validate_on_submit():
+    if form.validate_on_submit():
         user_details = User.query.filter(User.username == form.username.data).first()
 
         if user_details:
@@ -701,11 +707,13 @@ def password_forgot():
 
 @app.route("/password_reset", methods=['GET', 'POST'])
 def password_reset():
-    if request.method == 'POST':
-        input_user = request.form.get("username")
-        new_password = request.form.get("new_password")
-        verify_new_password = request.form.get("verify_new_password")
-        token = request.form.get("token")
+    form = PasswordResetForm()
+
+    if form.validate_on_submit():
+        input_user = form.username.data
+        new_password = form.new_password.data
+        verify_new_password = form.verify_new_password.data
+        token = form.token.data
 
         s = Serializer(app.config['SECRET_KEY'])
         try:
@@ -713,11 +721,11 @@ def password_reset():
 
         except SignatureExpired:
             flash('Expired Token', 'danger')
-            return render_template('password_reset_form.html', version=version)
+            return render_template('password_reset_form.html', version=version, form=form)
 
         except BadSignature:
             flash('Invalid Token', 'danger')
-            return render_template('password_reset_form.html', version=version)
+            return render_template('password_reset_form.html', version=version, form=form)
 
         user = User.query.filter(User.id == data['id']).first()
 
@@ -740,13 +748,21 @@ def password_reset():
 
             else:
                 flash('Passwords dont Match!', 'danger')
-                return render_template('password_reset_form.html', version=version)
+                return render_template('password_reset_form.html', version=version, form=form)
 
         else:
             flash('Invalid user', 'danger')
-            return render_template('password_reset_form.html', version=version)
+            return render_template('password_reset_form.html', version=version, form=form)
 
-    return render_template('password_reset_form.html', version=version)
+    else:
+        for field, errors in form.errors.items():
+            for error in errors:
+                flash(u"Error in the %s field - %s" % (
+                    getattr(form, field).label.text,
+                    error
+                ), 'warning')
+
+    return render_template('password_reset_form.html', version=version, form=form)
 
 
 @app.errorhandler(404)
