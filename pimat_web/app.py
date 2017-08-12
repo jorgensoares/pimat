@@ -34,7 +34,6 @@ csrf = CSRFProtect(app)
 api = Api(app, decorators=[csrf.exempt])
 mail = Mail()
 
-
 app.secret_key = 'super secret string'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:zaq12wsx@localhost/pimat'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
