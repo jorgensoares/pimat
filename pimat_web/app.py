@@ -10,11 +10,15 @@ from version import __version__
 from flask_restful import fields
 from flask_login import *
 import configparser
+
 import logging
 import signal
 import sys
 import requests
 import json
+from flask_wtf import Form
+from wtforms import StringField
+from wtforms.validators import DataRequired
 
 version = __version__
 
@@ -33,7 +37,7 @@ app.secret_key = 'super secret string'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:zaq12wsx@localhost/pimat'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_ECHO'] = False
-app.config['MAIL_SERVER']='mail.ocloud.cz'
+app.config['MAIL_SERVER'] = 'mail.ocloud.cz'
 app.config['MAIL_PORT'] = 587
 app.config['MAIL_USERNAME'] = 'teste@ocloud.cz'
 app.config['MAIL_PASSWORD'] = 'zaq12wsx'
@@ -48,7 +52,6 @@ db = SQLAlchemy(app)
 login_manager = LoginManager()
 login_manager.init_app(app)
 mail.init_app(app)
-
 
 schedules_fields = {
     'start_time': fields.String,
@@ -74,7 +77,6 @@ def sigterm_handler(_signo, _stack_frame):
 
 
 class SensorsAPI(Resource):
-
     def __init__(self):
         self.reqparse = reqparse.RequestParser()
         self.reqparse.add_argument('timestamp', type=str, required=True, location='json')
@@ -97,14 +99,12 @@ class SensorsAPI(Resource):
 
 
 class SchedulesAPI(Resource):
-
     def get(self):
         schedules = Schedules.query.order_by(Schedules.relay.asc()).all()
         return {'schedules': [marshal(schedule, schedules_fields) for schedule in schedules]}, 200
 
 
 class RelayLoggerAPI(Resource):
-
     def __init__(self):
         self.reqparse = reqparse.RequestParser()
         self.reqparse.add_argument('timestamp', type=str, required=True, location='json')
@@ -119,7 +119,7 @@ class RelayLoggerAPI(Resource):
     def post(self):
         args = self.reqparse.parse_args()
         action = RelayLogger(args['timestamp'], args['relay'], args['pin'], args['action'], args['value'], args['type'],
-                              args['source'])
+                             args['source'])
         db.session.add(action)
         db.session.commit()
 
@@ -127,7 +127,6 @@ class RelayLoggerAPI(Resource):
 
 
 class User(db.Model):
-
     __tablename__ = 'users'
 
     id = db.Column(db.Integer, primary_key=True)
@@ -154,9 +153,9 @@ class User(db.Model):
         try:
             data = s.loads(token)
         except SignatureExpired:
-            return None # valid token, but expired
+            return None  # valid token, but expired
         except BadSignature:
-            return None # invalid token
+            return None  # invalid token
         user = User.query.get(data['username'])
         return user
 
@@ -175,7 +174,6 @@ class User(db.Model):
 
 
 class Sensors(db.Model):
-
     __tablename__ = 'sensors'
 
     id = db.Column('id', db.Integer, primary_key=True)
@@ -188,7 +186,7 @@ class Sensors(db.Model):
     altitude = db.Column(db.Float)
     source = db.Column(db.String(100))
 
-    def __init__(self, timestamp, temperature1, temperature2, humidity, light1, pressure, altitude,  source):
+    def __init__(self, timestamp, temperature1, temperature2, humidity, light1, pressure, altitude, source):
         self.timestamp = timestamp
         self.temperature2 = temperature2
         self.temperature1 = temperature1
@@ -200,7 +198,6 @@ class Sensors(db.Model):
 
 
 class Schedules(db.Model):
-
     __tablename__ = 'schedules'
 
     id = db.Column('id', db.Integer, primary_key=True)
@@ -219,7 +216,6 @@ class Schedules(db.Model):
 
 
 class RelayLogger(db.Model):
-
     __tablename__ = 'relay_logger'
 
     id = db.Column('id', db.Integer, primary_key=True)
@@ -239,6 +235,11 @@ class RelayLogger(db.Model):
         self.value = value
         self.type = type
         self.source = source
+
+
+class UpdateAppForm(Form):
+    username = StringField('app_name', validators=[DataRequired()])
+    password = StringField('schedule', validators=[DataRequired()])
 
 
 @login_manager.user_loader
@@ -262,7 +263,9 @@ def index():
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
-    if request.method == 'POST' and request.form.get("username") and request.form.get("password"):
+    form = UpdateAppForm()
+
+    if request.method == 'POST' and form.validate_on_submit():
         user = User.query.filter_by(username=request.form.get("username")).first()
         if user:
             if check_password_hash(user.password, request.form.get("password")):
@@ -273,13 +276,20 @@ def login():
 
             else:
                 flash('Wrong Password', 'danger')
-                return render_template("login.html")
+                return render_template("login.html", form=form)
         else:
             flash('User not found!', 'warning')
-            return render_template("login.html")
+            return render_template("login.html", form=form)
 
     else:
-        return render_template("login.html")
+        for field, errors in form.errors.items():
+            for error in errors:
+                flash(u"Error in the %s field - %s" % (
+                    getattr(form, field).label.text,
+                    error
+                ))
+
+    return render_template("login.html", form=form)
 
 
 @app.route("/logout", methods=["GET"])
@@ -330,10 +340,10 @@ def dashboard():
     except requests.ConnectionError:
         relay_status['relay4'] = 'N/A'
 
-    sensors_data = Sensors.query.filter(Sensors.timestamp.between(get_previous_date(1), get_now())).\
+    sensors_data = Sensors.query.filter(Sensors.timestamp.between(get_previous_date(1), get_now())). \
         order_by(Sensors.timestamp.asc()).all()
 
-    relay_log = RelayLogger.query.filter(RelayLogger.timestamp.between(get_previous_date(1), get_now())).\
+    relay_log = RelayLogger.query.filter(RelayLogger.timestamp.between(get_previous_date(1), get_now())). \
         order_by(RelayLogger.timestamp.asc()).all()
 
     return render_template('index.html',
@@ -375,7 +385,7 @@ def add_new_schedule(action, schedule_id):
         db.session.commit()
         last = Schedules.query.order_by(Schedules.id.desc()).first()
 
-        json_data=dict()
+        json_data = dict()
         json_data['relay'] = relay
         json_data['start_time'] = str(start_time)
         json_data['stop_time'] = str(stop_time)
@@ -504,7 +514,7 @@ def sensors():
         end_date = '{0} 23:59:59'.format(end_date)
         sensor_column = 'sensors.%s' % sensor
 
-        result = Sensors.query.with_entities(Sensors.timestamp, sensor_column).\
+        result = Sensors.query.with_entities(Sensors.timestamp, sensor_column). \
             filter(Sensors.timestamp.between(start_date, end_date)).all()
 
         return render_template('sensors.html',
@@ -700,7 +710,7 @@ def password_reset():
             if new_password == verify_new_password:
                 user.password = generate_password_hash(new_password)
                 db.session.commit()
-                flash('Password updated successfully!', 'success')
+                flash('Password updated successfully, Please login.', 'success')
 
                 message = '''Hello %s,\n\n This is e-mail is to inform you that you have reset your password successfully. 
                 \nIf this request was not made by you please contact support immediately.\n 
@@ -748,4 +758,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-

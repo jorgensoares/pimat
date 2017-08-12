@@ -34,7 +34,8 @@ setup(
                       'requests',
                       'werkzeug',
                       'itsdangerous',
-                      'Flask-Mail'],
+                      'Flask-Mail',
+                      'Flask-WTF'],
 
     include_package_data=True,
     zip_safe=False,
