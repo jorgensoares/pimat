@@ -250,7 +250,7 @@ class PasswordForgotForm(FlaskForm):
     username = StringField('username', validators=[DataRequired()])
 
     if app.config['RECAPTCHA'] is True:
-        recaptcha = RecaptchaField()
+        recaptcha = RecaptchaField('recaptcha')
 
 
 class PasswordResetForm(FlaskForm):
