@@ -19,8 +19,8 @@ import sys
 import requests
 import json
 from flask_wtf import FlaskForm, RecaptchaField
-from wtforms import StringField, PasswordField
-from wtforms.validators import DataRequired, Email
+from wtforms import StringField, PasswordField, validators
+from wtforms.validators import DataRequired
 
 version = __version__
 
@@ -253,8 +253,11 @@ class PasswordForgotForm(FlaskForm):
 
 class PasswordResetForm(FlaskForm):
     username = StringField('username', validators=[DataRequired()])
-    new_password = PasswordField('new_password', validators=[DataRequired()])
-    verify_new_password = PasswordField('verify_new_password', validators=[DataRequired()])
+    new_password = PasswordField('new_password', [
+        validators.DataRequired(),
+        validators.EqualTo('verify_new_password', message='Passwords must match')
+    ])
+    verify_new_password = PasswordField('verify_new_password')
     token = StringField('token', validators=[DataRequired()])
 
     if app.config['RECAPTCHA'] is True:
@@ -263,9 +266,11 @@ class PasswordResetForm(FlaskForm):
 
 class PasswordChangeForm(FlaskForm):
     username = StringField('username', validators=[DataRequired()])
-    new_password = PasswordField('new_password', validators=[DataRequired()])
-    verify_new_password = PasswordField('verify_new_password', validators=[DataRequired()])
-    token = StringField('token', validators=[DataRequired()])
+    new_password = PasswordField('new_password', [
+        validators.DataRequired(),
+        validators.EqualTo('verify_new_password', message='Passwords must match')
+    ])
+    verify_new_password = PasswordField('verify_new_password')
 
 
 class CreateUserForm(FlaskForm):
@@ -273,8 +278,11 @@ class CreateUserForm(FlaskForm):
     last_name = StringField('last_name', validators=[DataRequired()])
     username = StringField('username', validators=[DataRequired()])
     email = StringField('email', validators=[DataRequired()])
-    password = PasswordField('password', validators=[DataRequired()])
-    verify_password = PasswordField('verify_password', validators=[DataRequired()])
+    password = PasswordField('new_password', [
+        validators.DataRequired(),
+        validators.EqualTo('verify_new_password', message='Passwords must match')
+    ])
+    verify_new_password = PasswordField('verify_new_password')
     role = StringField('role')
 
 
