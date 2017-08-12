@@ -259,6 +259,16 @@ class PasswordResetForm(FlaskForm):
     verify_new_password = StringField('verify_new_password', validators=[DataRequired()])
     token = StringField('token', validators=[DataRequired()])
 
+    if app.config['RECAPTCHA'] is True:
+        recaptcha = RecaptchaField('recaptcha')
+
+
+class PasswordChangeForm(FlaskForm):
+    username = StringField('username', validators=[DataRequired()])
+    new_password = StringField('new_password', validators=[DataRequired()])
+    verify_new_password = StringField('verify_new_password', validators=[DataRequired()])
+    token = StringField('token', validators=[DataRequired()])
+
 
 @login_manager.user_loader
 def user_loader(user_id):
