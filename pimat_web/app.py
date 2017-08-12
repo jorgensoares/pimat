@@ -10,7 +10,7 @@ from version import __version__
 from flask_restful import fields
 from flask_login import *
 import configparser
-
+from flask_wtf.csrf import CSRFProtect
 import logging
 import signal
 import sys
@@ -32,6 +32,7 @@ file_handler = logging.FileHandler('/var/log/pimat-web.log')
 app = Flask(__name__)
 api = Api(app)
 mail = Mail()
+csrf = CSRFProtect(app)
 
 app.secret_key = 'super secret string'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:zaq12wsx@localhost/pimat'
