@@ -17,9 +17,9 @@ import signal
 import sys
 import requests
 import json
-from models import User, Sensors, Schedules, RelayLogger
-from forms import LoginForm, PasswordForgotForm,PasswordResetForm, PasswordChangeForm, CreateUserForm
-from api import SchedulesAPI, SensorsAPI, RelayLoggerAPI
+from pimat_web.models import User, Sensors, Schedules, RelayLogger
+from pimat_web.forms import LoginForm, PasswordForgotForm,PasswordResetForm, PasswordChangeForm, CreateUserForm
+from pimat_web.api import SchedulesAPI, SensorsAPI, RelayLoggerAPI
 version = __version__
 
 
@@ -143,14 +143,10 @@ def login():
 @login_required
 def logout():
     logout_user()
-
-    # Remove session keys set by Flask-Principal
     for key in ('identity.name', 'identity.auth_type'):
         session.pop(key, None)
 
-    # Tell Flask-Principal the user is anonymous
     identity_changed.send(current_app._get_current_object(), identity=AnonymousIdentity())
-
     return redirect(url_for("index"))
 
 
@@ -158,7 +154,6 @@ def logout():
 @login_required
 def dashboard():
     relay_status = dict()
-
     try:
         response = requests.get('http://localhost:4001/api/relay/{0}'.format(relay_config['pins']['relay1']),
                                 timeout=0.5)

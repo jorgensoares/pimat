@@ -9,6 +9,7 @@ schedules_fields = {
     'id': fields.String
 }
 
+
 class SensorsAPI(Resource):
     def __init__(self):
         self.reqparse = reqparse.RequestParser()
