@@ -238,9 +238,14 @@ class RelayLogger(db.Model):
         self.source = source
 
 
-class UpdateAppForm(FlaskForm):
+class LoginForm(FlaskForm):
     username = StringField('username', validators=[DataRequired()])
     password = StringField('password', validators=[DataRequired()])
+
+
+class PasswordForgot(FlaskForm):
+    username = StringField('username', validators=[DataRequired()])
+
 
 
 @login_manager.user_loader
@@ -264,12 +269,12 @@ def index():
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
-    form = UpdateAppForm()
+    form = LoginForm()
 
     if request.method == 'POST' and form.validate_on_submit():
-        user = User.query.filter_by(username=request.form.get("username")).first()
+        user = User.query.filter_by(username=form.username.data).first()
         if user:
-            if check_password_hash(user.password, request.form.get("password")):
+            if check_password_hash(user.password, form.password.data):
                 login_user(user, remember=True)
                 flash('Welcome {0} {1}'.format(user.first_name, user.last_name), 'success')
 
@@ -288,7 +293,7 @@ def login():
                 flash(u"Error in the %s field - %s" % (
                     getattr(form, field).label.text,
                     error
-                ))
+                ), 'warning')
 
     return render_template("login.html", form=form)
 
@@ -659,11 +664,12 @@ def password_change():
 
 @app.route("/password_forgot", methods=['GET', 'POST'])
 def password_forgot():
-    if request.method == 'POST':
-        user = request.form.get("username")
+    form = PasswordForgot()
 
-        if user:
-            user_details = User.query.filter(User.username == user).first()
+    if request.method == 'POST' and form.validate_on_submit():
+        user_details = User.query.filter(User.username == form.username.data).first()
+
+        if user_details:
             s = Serializer(app.config['SECRET_KEY'], expires_in=600)
             token = s.dumps({'id': user_details.id})
 
@@ -675,14 +681,22 @@ def password_forgot():
                           body=message,
                           subject=subject)
             mail.send(msg)
-
+    
             flash('Please verify you mailbox!', 'success')
             return redirect(url_for("password_reset"))
 
         else:
-            return render_template('password_forgot.html', version=version)
+            return render_template('password_forgot.html', version=version, form=form)
 
-    return render_template('password_forgot.html', version=version)
+    else:
+        for field, errors in form.errors.items():
+            for error in errors:
+                flash(u"Error in the %s field - %s" % (
+                    getattr(form, field).label.text,
+                    error
+                ), 'warning')
+
+    return render_template('password_forgot.html', version=version, form=form)
 
 
 @app.route("/password_reset", methods=['GET', 'POST'])
