@@ -30,7 +30,7 @@ app = Flask(__name__)
 
 app.config['SERVER_IP'] = '10.14.11.252'
 app.config['LOG'] = '/var/log/pimat-web.log'
-app.config['UPLOAD_FOLDER'] = 'static/images'
+app.config['UPLOAD_FOLDER'] = '/opt/pimat/pimat_web/static/images'
 app.config['RELAY_CONFIG'] = '/opt/pimat/relays.ini'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:zaq12wsx@localhost/pimat'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
@@ -675,6 +675,7 @@ def upload_file():
         if file and allowed_file(file.filename):
             filename = secure_filename(file.filename)
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+
             return redirect(url_for("profile"))
 
 
