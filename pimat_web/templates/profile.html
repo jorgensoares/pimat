@@ -29,7 +29,74 @@
 </head>
 <body class="hold-transition skin-blue sidebar-mini">
 <div class="wrapper">
-  {% include "header.html" %}
+
+  <header class="main-header">
+
+    <!-- Logo -->
+    <a href="index2.html" class="logo">
+      <!-- mini logo for sidebar mini 50x50 pixels -->
+      <span class="logo-mini"><b>pi</b>M</span>
+      <!-- logo for regular state and mobile devices -->
+      <span class="logo-lg"><b>pi</b>MAT</span>
+    </a>
+
+    <!-- Header Navbar: style can be found in header.less -->
+    <nav class="navbar navbar-static-top">
+      <!-- Sidebar toggle button-->
+      <a href="#" class="sidebar-toggle" data-toggle="push-menu" role="button">
+        <span class="sr-only">Toggle navigation</span>
+      </a>
+      <!-- Navbar Right Menu -->
+      <div class="navbar-custom-menu">
+        <ul class="nav navbar-nav">
+
+          <!-- User Account: style can be found in dropdown.less -->
+          <li class="dropdown user user-menu">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+              <img src="/static/images/jorge.png" class="user-image" alt="User Image">
+              <span class="hidden-xs">{{ current_user.username }}</span>
+            </a>
+            <ul class="dropdown-menu">
+              <!-- User image -->
+              <li class="user-header">
+                <img src="/static/images/jorge.png" class="img-circle" alt="User Image">
+                <p>
+                  {{ current_user.first_name }} {{ current_user.last_name }}
+                  <small>{{ current_user.username }}</small>
+                </p>
+              </li>
+              <!-- Menu Body -->
+              <li class="user-body">
+                <div class="row">
+                  <div class="col-xs-4 text-center">
+                    <a href="#">Settings</a>
+                  </div>
+                  <div class="col-xs-4 text-center">
+                    <a href="/profile">Profile</a>
+                  </div>
+                  <div class="col-xs-4 text-center">
+                    <a href="/users">Users</a>
+                  </div>
+                </div>
+                <!-- /.row -->
+              </li>
+              <!-- Menu Footer-->
+              <li class="user-footer">
+                <div class="pull-left">
+                  <a href="#" class="btn btn-default btn-flat">Change Password</a>
+                </div>
+                <div class="pull-right">
+                  <a href="/logout" class="btn btn-default btn-flat">Sign out</a>
+                </div>
+              </li>
+            </ul>
+          </li>
+          <!-- Control Sidebar Toggle Button -->
+        </ul>
+      </div>
+
+    </nav>
+  </header>
   <!-- Left side column. contains the logo and sidebar -->
   <aside class="main-sidebar">
     <!-- sidebar: style can be found in sidebar.less -->
@@ -40,7 +107,6 @@
         <li><a href="/"><i class="fa fa fa-cogs"></i> <span>Dashboard</span></a></li>
         <li><a href="/sensors"><i class="fa fa-line-chart"></i> <span>Sensors</span></a></li>
         <li><a href="/camera"><i class="fa fa-cc"></i> <span>Cameras</span></a></li>
-        <li><a href="/monitoring"><i class="fa fa-tachometer"></i> <span>Monitoring</span></a></li>
         <li><a href="/logs"><i class="fa fa-file-text-o"></i> <span>Logs</span></a></li>
         <li><a href="https://wiki.ocloud.cz/doku.php" target="_blank"><i class="fa fa-book"></i> <span>Documentation</span></a></li>
       </ul>
@@ -60,7 +126,17 @@
 
     <!-- Main content -->
     <section class="content">
-
+      {% with messages = get_flashed_messages() %}
+        {% if messages %}
+          <div>
+            {% for category, message in get_flashed_messages(with_categories=true) %}
+              <div class="alert alert-{{category}}">
+                {{ message | safe }}
+              </div>
+            {% endfor %}
+          </div>
+        {% endif %}
+      {% endwith %}
       <!-- Default box -->
       <div class="row">
         <div class="col-md-3">
@@ -88,59 +164,66 @@
               <h3 class="box-title">Update Details</h3>
             </div>
             <!-- /.box-header -->
-            <div class="box-body">
-              <div class="row">
-                <div class="col-md-6">
-                  <fieldset disabled>
+            <form action="/profile" method="post">
+              <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+              <div class="box-body">
+                <div class="row">
+                  <div class="col-md-6">
+                    <fieldset disabled>
+                      <div class="form-group">
+                        <label for="username">Username</label>
+                        <input type="text" class="form-control" id="username" name="username" value="{{ current_user.username }}">
+                      </div>
+                    </fieldset>
                     <div class="form-group">
-                      <label for="username">Username</label>
-                      <input type="text" class="form-control" id="username" value="{{ current_user.username }}">
+                      <label for="first_name">First Name</label>
+                      <input type="email" class="form-control" id="first_name" name="first_name" value="{{ current_user.first_name }}">
                     </div>
-                  </fieldset>
-                  <div class="form-group">
-                    <label for="firtsName">First Name</label>
-                    <input type="email" class="form-control" id="firtsName" value="{{ current_user.first_name }}">
-                  </div>
-                  <div class="form-group">
-                    <label for="email">Email</label>
-                    <input type="email" class="form-control" id="email" value="{{ current_user.email }}">
-                  </div>
-                </div>
-                <!-- /.col -->
-                <div class="col-md-6">
-                  <fieldset disabled>
                     <div class="form-group">
-                      <label for="role">Role</label>
-                      <input type="text" class="form-control" id="role" value="admin">
+                      <label for="email">Email</label>
+                      <input type="email" class="form-control" id="email" name="email" value="{{ current_user.email }}">
                     </div>
-                  </fieldset>
-                  <div class="form-group">
-                    <label for="lastName">Last Name</label>
-                    <input type="text" class="form-control" id="lastName" value="{{ current_user.last_name }}">
-                  </div>
-                  <div class="form-group">
-                    <div class="checkbox">
-                      <label>
-                        <input type="checkbox"> Receive E-Mail Alerts
-                      </label>
+                    <div class="form-group">
+                      <div class="checkbox">
+                        <label>
+                          <input type="checkbox" name="email_alerts" value="yes"> Receive E-Mail Alerts
+                        </label>
+                      </div>
                     </div>
-                  </div>
-                  <div class="form-group">
-                    <div class="checkbox">
-                      <label>
-                        <input type="checkbox"> Receive SMS Alerts
-                      </label>
+                    <div class="form-group">
+                      <div class="checkbox">
+                        <label>
+                          <input type="checkbox" name="sms_alerts" value="yes"> Receive SMS Alerts
+                        </label>
+                      </div>
                     </div>
                   </div>
+                  <!-- /.col -->
+                  <div class="col-md-6">
+                    <fieldset disabled>
+                      <div class="form-group">
+                        <label for="role">Role</label>
+                        <input type="text" class="form-control" id="role" name="role" value="{{ current_user.role }}">
+                      </div>
+                    </fieldset>
+                    <div class="form-group">
+                      <label for="last_name">Last Name</label>
+                      <input type="text" class="form-control" id="last_name" name="last_name" value="{{ current_user.last_name }}">
+                    </div>
+                    <div class="form-group">
+                      <label for="phone">Phone Number</label>
+                      <input type="tel" class="form-control" id="phone" name="phone" value="{{ current_user.phone }}">
+                    </div>
+                  </div>
+                  <!-- /.col -->
                 </div>
-                <!-- /.col -->
+                <!-- /.row -->
               </div>
-              <!-- /.row -->
-            </div>
-            <!-- /.box-body -->
-            <div class="box-footer">
-              <button type="submit" class="btn btn-primary pull-right">Submit</button>
-            </div>
+              <!-- /.box-body -->
+              <div class="box-footer">
+                <button type="submit" class="btn btn-primary pull-right">Submit</button>
+              </div>
+            </form>
           </div>
           <!-- /.nav-tabs-custom -->
         </div>

@@ -284,6 +284,15 @@ class CreateUserForm(FlaskForm):
     role = StringField('role')
 
 
+class UpdateProfileForm(FlaskForm):
+    first_name = StringField('first_name', validators=[DataRequired()])
+    email = StringField('email', validators=[DataRequired()])
+    last_name = StringField('last_name', validators=[DataRequired()])
+    email_alerts = StringField('email_alerts')
+    sms_alerts = StringField('sms_alerts')
+    phone = StringField('phone')
+
+
 @identity_loaded.connect_via(app)
 def on_identity_loaded(sender, identity):
     # Set the identity user object
@@ -614,9 +623,23 @@ def logs():
                            )
 
 
-@app.route("/profile", methods=['GET'])
+@app.route("/profile", methods=['GET', 'POST'])
 @login_required
 def profile():
+    form = UpdateProfileForm()
+
+    if form.validate_on_submit():
+        user = User.query.filter(User.id == current_user.id).first_or_404()
+        user.first_name = form.first_name.data
+        user.last_name = form.last_name.data
+        user.email = form.email.data
+        user.email_alert = form.email_alerts.data
+        user.sms_alert = form.sms_alerts.data
+        user.phone = form.phone.data
+
+        db.session.commit()
+        flash('Profile Updated successfully', 'success')
+
     return render_template('profile.html', version=version)
 
 
