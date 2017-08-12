@@ -134,7 +134,6 @@ class User(db.Model):
     username = db.Column(db.String(80), unique=True)
     password = db.Column(db.String(255))
     email = db.Column(db.String(120))
-    role = db.Column(db.String(50))
 
     def __init__(self, first_name, last_name, username, password, email):
         self.first_name = first_name
