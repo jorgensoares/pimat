@@ -32,7 +32,9 @@ setup(
                       'flask-login',
                       'flask-restful',
                       'requests',
-                      'werkzeug'],
+                      'werkzeug',
+                      'itsdangerous',
+                      'Flask-Mail'],
 
     include_package_data=True,
     zip_safe=False,

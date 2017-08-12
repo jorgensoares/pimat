@@ -1,9 +1,11 @@
 #!/usr/bin/python
+from itsdangerous import (TimedJSONWebSignatureSerializer as Serializer, BadSignature, SignatureExpired)
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask import Flask, request, redirect, render_template, flash, url_for
 from flask_restful import Api, Resource, reqparse, marshal
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime, timedelta
+from flask_mail import Mail, Message
 from version import __version__
 from flask_restful import fields
 from flask_login import *
@@ -25,6 +27,7 @@ file_handler = logging.FileHandler('/var/log/pimat-web.log')
 
 app = Flask(__name__)
 api = Api(app)
+mail = Mail(app)
 app.secret_key = 'super secret string'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:zaq12wsx@localhost/pimat'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
@@ -35,6 +38,15 @@ app.logger.setLevel(logging.INFO)
 db = SQLAlchemy(app)
 login_manager = LoginManager()
 login_manager.init_app(app)
+
+app.config.update(
+    #EMAIL SETTINGS
+    MAIL_SERVER='smtp.gmail.com',
+    MAIL_PORT=465,
+    MAIL_USE_SSL=True,
+    MAIL_USERNAME='you@google.com',
+    MAIL_PASSWORD='GooglePasswordHere'
+    )
 
 schedules_fields = {
     'start_time': fields.String,
@@ -122,6 +134,7 @@ class User(db.Model):
     username = db.Column(db.String(80), unique=True)
     password = db.Column(db.String(255))
     email = db.Column(db.String(120))
+    role = db.Column(db.String(50))
 
     def __init__(self, first_name, last_name, username, password, email):
         self.first_name = first_name
@@ -129,6 +142,22 @@ class User(db.Model):
         self.username = username
         self.password = password
         self.email = email
+
+    def generate_auth_token(self, expiration=600):
+        s = Serializer(app.config['SECRET_KEY'], expires_in=expiration)
+        return s.dumps({'username': self.username})
+
+    @staticmethod
+    def verify_auth_token(token):
+        s = Serializer(app.config['SECRET_KEY'])
+        try:
+            data = s.loads(token)
+        except SignatureExpired:
+            return None # valid token, but expired
+        except BadSignature:
+            return None # invalid token
+        user = User.query.get(data['username'])
+        return user
 
     # Flask-Login integration
     def is_authenticated(self):
@@ -604,6 +633,11 @@ def users():
 @login_required
 def password_change():
     return render_template('password_change.html', version=version)
+
+
+@app.route("/reset_password", methods=['GET', 'POST'])
+def reset_password():
+    return render_template('password_reset.html', version=version)
 
 
 @app.errorhandler(404)
