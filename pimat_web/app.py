@@ -602,7 +602,17 @@ def edit_user(action, user_id):
                     user.password = generate_password_hash(new_password)
                     db.session.commit()
 
-                    flash('Password changed sucessfully, you should logout and login again!', 'success')
+                    message = '''Hello %s,\n\n This is e-mail is to inform you that you have changed your password
+                     successfully. If this request was not made by you please contact support immediately.\n\n 
+                     Thank you.\n Pimat\n\n''' % user.username
+
+                    subject = "Pimat Password Change Notice - %s" % user.username
+                    msg = Message(recipients=[user.email],
+                                  body=message,
+                                  subject=subject)
+                    mail.send(msg)
+
+                    flash('Password changed successfully, you should logout and login again!', 'success')
                     return redirect(url_for("dashboard"))
 
                 else:
@@ -645,11 +655,10 @@ def password_forgot():
             user_details = User.query.filter(User.username == user).first()
             s = Serializer(app.config['SECRET_KEY'], expires_in=600)
             token = s.dumps({'id': user_details.id})
-            print user_details.email
-            print token
 
             message = '''Hello, \n\n To reset your password go to: http://%s/password_reset \n\n Token: \n %s''' % \
                       (pimat_config['pimat']['server_ip'], token)
+
             subject = "Pimat Password Reset - %s" % user_details.username
             msg = Message(recipients=[user_details.email],
                           body=message,
@@ -693,6 +702,15 @@ def password_reset():
                 db.session.commit()
                 flash('Password updated successfully!', 'success')
 
+                message = '''Hello %s,\n\n This is e-mail is to inform you that you have reset your password
+                 successfully. If this request was not made by you please contact support immediately.\n\n 
+                 Thank you.\n Pimat\n\n''' % user.username
+
+                subject = "Pimat Password Reset Notice - %s" % user.username
+                msg = Message(recipients=[user.email],
+                              body=message,
+                              subject=subject)
+                mail.send(msg)
                 return redirect(url_for("login"))
 
             else:
