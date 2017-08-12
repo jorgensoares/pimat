@@ -17,9 +17,9 @@ import signal
 import sys
 import requests
 import json
-from pimat_web.models import User, Sensors, Schedules, RelayLogger
-from pimat_web.forms import LoginForm, PasswordForgotForm,PasswordResetForm, PasswordChangeForm, CreateUserForm
-from pimat_web.api import SchedulesAPI, SensorsAPI, RelayLoggerAPI
+from models import User, Sensors, Schedules, RelayLogger
+from forms import LoginForm, PasswordForgotForm,PasswordResetForm, PasswordChangeForm, CreateUserForm
+from api import SchedulesAPI, SensorsAPI, RelayLoggerAPI
 version = __version__
 
 
