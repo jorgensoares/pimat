@@ -702,9 +702,9 @@ def password_reset():
                 db.session.commit()
                 flash('Password updated successfully!', 'success')
 
-                message = '''Hello %s,\n\n This is e-mail is to inform you that you have reset your password successfully.\n 
-                If this request was not made by you please contact support immediately.\n\n 
-                Thank you.\n Pimat\n\n''' % user.username
+                message = '''Hello %s,\n\n This is e-mail is to inform you that you have reset your password successfully. 
+                \nIf this request was not made by you please contact support immediately.\n 
+                \nThank you.\n Pimat\n\n''' % user.username
 
                 subject = "Pimat Password Reset Notice - %s" % user.username
                 msg = Message(recipients=[user.email],
