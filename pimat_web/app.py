@@ -648,7 +648,8 @@ def password_forgot():
             print user_details.email
             print token
 
-            message = r'To reset your password go to http://%s/password_reset \n Token: \n %s' % (pimat_config['pimat']['server_ip'], token)
+            message = '''Hello, \n To reset your password go to http://%s/password_reset \n Token: \n %s''' % \
+                      (pimat_config['pimat']['server_ip'], token)
             subject = "Pimat Password Reset - %s" % user_details.username
             msg = Message(recipients=[user_details.email],
                           body=message,
