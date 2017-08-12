@@ -154,8 +154,8 @@
 
               <form method=post action="/profile/picture" enctype=multipart/form-data>
                 <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
-                <p><input type=file class="btn btn-primary btn-block" name=file>
-                 <button type="submit" class="btn btn-primary pull-right">Submit</button>
+                <p><input type=file name=file>
+                <button type="submit" class="btn btn-primary pull-right"><b>Change Picture</b></button>
                </form>
             </div>
             <!-- /.box-body -->
