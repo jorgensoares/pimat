@@ -661,23 +661,19 @@ def profile():
 @app.route('/profile/picture', methods=['POST'])
 @login_required
 def upload_file():
-    if request.method == 'POST':
-        # check if the post request has the file part
-        if 'file' not in request.files:
-            flash('No file part', 'warning')
-            return redirect(url_for("profile"))
-        file = request.files['file']
-        # if user does not select file, browser also
-        # submit a empty part without filename
-        if file.filename == '':
-            flash('No selected file', 'warning')
-            return redirect(url_for("profile"))
-        if file and allowed_file(file.filename):
-            secure_filename(file.filename)
-            file.save(os.path.join(app.config['UPLOAD_FOLDER'], current_user.username + '.png'))
+    # check if the post request has the file part
+    if 'file' not in request.files:
+        flash('No file part', 'warning')
+        return redirect(url_for("profile"))
 
-            return redirect(url_for("profile"))
+    file = request.files['file']
+    if file.filename == '':
+        flash('No selected file', 'warning')
+        return redirect(url_for("profile"))
+    if file and allowed_file(file.filename):
+        file.save(os.path.join(app.config['UPLOAD_FOLDER'], current_user.username + '.png'))
 
+        return redirect(url_for("profile"))
 
 
 @app.route("/monitoring", methods=['GET'])
