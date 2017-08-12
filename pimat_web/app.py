@@ -690,6 +690,7 @@ def password_reset():
             if new_password == verify_new_password:
                 user.password = generate_password_hash(new_password)
                 db.session.commit()
+                flash('Password updated successfully!', 'success')
 
                 return redirect(url_for("login"))
 
