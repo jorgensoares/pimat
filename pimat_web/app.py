@@ -19,7 +19,8 @@ import json
 from flask_wtf import FlaskForm, RecaptchaField
 from wtforms import StringField
 from wtforms.validators import DataRequired
-
+from flask_admin import Admin
+from flask_admin.contrib.sqla import ModelView
 version = __version__
 
 relay_config = configparser.ConfigParser()
@@ -32,6 +33,7 @@ file_handler = logging.FileHandler('/var/log/pimat-web.log')
 app = Flask(__name__)
 csrf = CSRFProtect(app)
 api = Api(app, decorators=[csrf.exempt])
+admin = Admin(app, name='pimat', template_mode='bootstrap3')
 mail = Mail()
 
 app.secret_key = 'super secret string'
@@ -56,6 +58,7 @@ db = SQLAlchemy(app)
 login_manager = LoginManager()
 login_manager.init_app(app)
 mail.init_app(app)
+
 
 schedules_fields = {
     'start_time': fields.String,
@@ -787,6 +790,8 @@ def not_found(error):
     return render_template('error.html', error=error, version=version)
 
 
+admin.add_view(ModelView(User, db.session))
+admin.add_view(ModelView(Schedules, db.session))
 api.add_resource(SensorsAPI, '/api/sensors')
 api.add_resource(SchedulesAPI, '/api/schedules')
 api.add_resource(RelayLoggerAPI, '/api/v1/relay/logger')

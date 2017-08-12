@@ -35,7 +35,8 @@ setup(
                       'werkzeug',
                       'itsdangerous',
                       'Flask-Mail',
-                      'Flask-WTF'],
+                      'Flask-WTF',
+                      'Flask-Admin'],
 
     include_package_data=True,
     zip_safe=False,
