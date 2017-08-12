@@ -4,12 +4,11 @@ from flask_principal import Principal, Identity, AnonymousIdentity, identity_cha
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer, BadSignature, SignatureExpired
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask import Flask, request, redirect, render_template, flash, url_for, current_app, session
-from flask_restful import Api, Resource, reqparse, marshal
+from flask_restful import Api
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime, timedelta
 from flask_mail import Mail, Message
 from version import __version__
-from flask_restful import fields
 from flask_login import *
 import configparser
 from flask_wtf.csrf import CSRFProtect
@@ -18,10 +17,9 @@ import signal
 import sys
 import requests
 import json
-from flask_wtf import FlaskForm, RecaptchaField
-from wtforms import StringField, PasswordField, BooleanField, validators
-from wtforms.validators import DataRequired
-
+from models import User, Sensors, Schedules, RelayLogger
+from forms import LoginForm, PasswordForgotForm,PasswordResetForm, PasswordChangeForm, CreateUserForm
+from api import SchedulesAPI, SensorsAPI, RelayLoggerAPI
 version = __version__
 
 
@@ -33,6 +31,7 @@ pimat_config.read('/opt/pimat/config.ini')
 file_handler = logging.FileHandler('/var/log/pimat-web.log')
 
 app = Flask(__name__)
+
 csrf = CSRFProtect(app)
 api = Api(app, decorators=[csrf.exempt])
 mail = Mail()
@@ -53,22 +52,13 @@ app.config['RECAPTCHA'] = False
 app.config['RECAPTCHA_PUBLIC_KEY'] = '6LcwqywUAAAAANqGKZdPMGUmBZ3nKwRadazZS2OZ'
 app.config['RECAPTCHA_PRIVATE_KEY'] = '6LcwqywUAAAAAGB9HhvMq3C_JOfCYLBliH2-un7U'
 
+db = SQLAlchemy(app)
 admin_permission = Permission(RoleNeed('admin'))
 app.logger.addHandler(file_handler)
 app.logger.setLevel(logging.INFO)
-
-db = SQLAlchemy(app)
 login_manager = LoginManager()
 login_manager.init_app(app)
 mail.init_app(app)
-
-
-schedules_fields = {
-    'start_time': fields.String,
-    'stop_time': fields.String,
-    'relay': fields.String,
-    'id': fields.String
-}
 
 
 def get_previous_date(days):
@@ -86,217 +76,14 @@ def sigterm_handler(_signo, _stack_frame):
     sys.exit(0)
 
 
-class SensorsAPI(Resource):
-    def __init__(self):
-        self.reqparse = reqparse.RequestParser()
-        self.reqparse.add_argument('timestamp', type=str, required=True, location='json')
-        self.reqparse.add_argument('temperature1', type=float, default="", location='json')
-        self.reqparse.add_argument('temperature2', type=float, default="", location='json')
-        self.reqparse.add_argument('humidity', type=float, default="", location='json')
-        self.reqparse.add_argument('light1', type=float, default="", location='json')
-        self.reqparse.add_argument('pressure', type=float, default="", location='json')
-        self.reqparse.add_argument('altitude', type=float, default="", location='json')
-        self.reqparse.add_argument('source', type=str, required=True, location='json')
-        super(SensorsAPI, self).__init__()
-
-    def post(self):
-        args = self.reqparse.parse_args()
-        reading = Sensors(args['timestamp'], args['temperature1'], args['temperature2'], args['humidity'],
-                          args['light1'], args['pressure'], args['altitude'], args['source'])
-        db.session.add(reading)
-        db.session.commit()
-        return {'status': 'success'}, 201
-
-
-class SchedulesAPI(Resource):
-    def get(self):
-        schedules = Schedules.query.order_by(Schedules.relay.asc()).all()
-        return {'schedules': [marshal(schedule, schedules_fields) for schedule in schedules]}, 200
-
-
-class RelayLoggerAPI(Resource):
-    def __init__(self):
-        self.reqparse = reqparse.RequestParser()
-        self.reqparse.add_argument('timestamp', type=str, required=True, location='json')
-        self.reqparse.add_argument('relay', type=str, required=True, default="", location='json')
-        self.reqparse.add_argument('pin', type=int, required=True, default="", location='json')
-        self.reqparse.add_argument('action', type=str, required=True, default="", location='json')
-        self.reqparse.add_argument('value', type=str, required=True, default="", location='json')
-        self.reqparse.add_argument('type', type=str, default="", location='json')
-        self.reqparse.add_argument('source', type=str, required=True, default="", location='json')
-        super(RelayLoggerAPI, self).__init__()
-
-    def post(self):
-        args = self.reqparse.parse_args()
-        action = RelayLogger(args['timestamp'], args['relay'], args['pin'], args['action'], args['value'], args['type'],
-                             args['source'])
-        db.session.add(action)
-        db.session.commit()
-
-        return {'status': 'success'}, 201
-
-
-class User(db.Model):
-    __tablename__ = 'users'
-
-    id = db.Column(db.Integer, primary_key=True)
-    first_name = db.Column(db.String(100))
-    last_name = db.Column(db.String(100))
-    username = db.Column(db.String(80), unique=True)
-    password = db.Column(db.String(255))
-    email = db.Column(db.String(120))
-    role = db.Column(db.String(10))
-    phone = db.Column(db.String(12))
-    email_alert = db.Column(db.String(3))
-    sms_alert = db.Column(db.String(3))
-    last_login = db.Column(db.DateTime)
-    login_attempts = db.Column(db.String(2))
-
-    def __init__(self, first_name, last_name, username, password, email, role='user', phone=None):
-        self.first_name = first_name
-        self.last_name = last_name
-        self.username = username
-        self.password = password
-        self.email = email
-        self.role = role
-        self.phone = phone
-
-    # Flask-Login integration
-    def is_authenticated(self):
-        return True
-
-    def is_active(self):
-        return True
-
-    def is_anonymous(self):
-        return False
-
-    def get_id(self):
-        return self.id
-
-
-class Sensors(db.Model):
-    __tablename__ = 'sensors'
-
-    id = db.Column('id', db.Integer, primary_key=True)
-    timestamp = db.Column(db.DateTime)
-    temperature1 = db.Column(db.Float)
-    temperature2 = db.Column(db.Float)
-    humidity = db.Column(db.Float)
-    light1 = db.Column(db.Float)
-    pressure = db.Column(db.Float)
-    altitude = db.Column(db.Float)
-    source = db.Column(db.String(100))
-
-    def __init__(self, timestamp, temperature1, temperature2, humidity, light1, pressure, altitude, source):
-        self.timestamp = timestamp
-        self.temperature2 = temperature2
-        self.temperature1 = temperature1
-        self.humidity = humidity
-        self.light1 = light1
-        self.pressure = pressure
-        self.altitude = altitude
-        self.source = source
-
-
-class Schedules(db.Model):
-    __tablename__ = 'schedules'
-
-    id = db.Column('id', db.Integer, primary_key=True)
-    relay = db.Column(db.String(10))
-    switch = db.Column(db.String(50))
-    start_time = db.Column(db.String(5))
-    stop_time = db.Column(db.String(5))
-    enabled = db.Column(db.String(10))
-
-    def __init__(self, relay, switch, start_time, stop_time, enabled):
-        self.relay = relay
-        self.switch = switch
-        self.start_time = start_time
-        self.stop_time = stop_time
-        self.enabled = enabled
-
-
-class RelayLogger(db.Model):
-    __tablename__ = 'relay_logger'
-
-    id = db.Column('id', db.Integer, primary_key=True)
-    timestamp = db.Column(db.DateTime)
-    relay = db.Column(db.String(50))
-    pin = db.Column(db.String(2))
-    action = db.Column(db.String(10))
-    value = db.Column(db.String(10))
-    type = db.Column(db.String(20))
-    source = db.Column(db.String(100))
-
-    def __init__(self, timestamp, relay, pin, action, value, type, source):
-        self.timestamp = timestamp
-        self.relay = relay
-        self.pin = pin
-        self.action = action
-        self.value = value
-        self.type = type
-        self.source = source
-
-
-class LoginForm(FlaskForm):
-    username = StringField('username', validators=[DataRequired()])
-    password = PasswordField('password', validators=[DataRequired()])
-
-
-class PasswordForgotForm(FlaskForm):
-    username = StringField('username', validators=[DataRequired()])
-
-    if app.config['RECAPTCHA'] is True:
-        recaptcha = RecaptchaField('recaptcha')
-
-
-class PasswordResetForm(FlaskForm):
-    username = StringField('username', validators=[DataRequired()])
-    new_password = PasswordField('new_password', [
-        validators.DataRequired(),
-        validators.EqualTo('verify_new_password', message='Passwords must match')
-    ])
-    verify_new_password = PasswordField('verify_new_password')
-    token = StringField('token', validators=[DataRequired()])
-
-    if app.config['RECAPTCHA'] is True:
-        recaptcha = RecaptchaField('recaptcha')
-
-
-class PasswordChangeForm(FlaskForm):
-    username = StringField('username', validators=[DataRequired()])
-    new_password = PasswordField('new_password', [
-        validators.DataRequired(),
-        validators.EqualTo('verify_new_password', message='Passwords must match')
-    ])
-    verify_new_password = PasswordField('verify_new_password')
-
-
-class CreateUserForm(FlaskForm):
-    first_name = StringField('first_name', validators=[DataRequired()])
-    last_name = StringField('last_name', validators=[DataRequired()])
-    username = StringField('username', validators=[DataRequired()])
-    email = StringField('email', validators=[DataRequired()])
-    password = PasswordField('new_password', [
-        validators.DataRequired(),
-        validators.EqualTo('verify_password', message='Passwords must match')
-    ])
-    verify_password = PasswordField('verify_password')
-    role = StringField('role')
-
-
 @identity_loaded.connect_via(app)
 def on_identity_loaded(sender, identity):
     # Set the identity user object
     identity.user = current_user
 
-    # Add the UserNeed to the identity
     if hasattr(current_user, 'id'):
         identity.provides.add(UserNeed(current_user.id))
 
-    # Assuming the User model has a list of roles, update the
-    # identity with the roles that the user provides
     if hasattr(current_user, 'role'):
         identity.provides.add(RoleNeed(current_user.role))
 
