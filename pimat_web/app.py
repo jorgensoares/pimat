@@ -41,11 +41,11 @@ login_manager.init_app(app)
 
 app.config.update(
     #EMAIL SETTINGS
-    MAIL_SERVER='smtp.gmail.com',
-    MAIL_PORT=465,
+    MAIL_SERVER='mail.ocloud.cz',
+    MAIL_PORT=587,
     MAIL_USE_SSL=True,
-    MAIL_USERNAME='you@google.com',
-    MAIL_PASSWORD='GooglePasswordHere'
+    MAIL_USERNAME='teste@ocloud.cz',
+    MAIL_PASSWORD='zaq12wsx'
     )
 
 schedules_fields = {
@@ -634,7 +634,7 @@ def password_change():
     return render_template('password_change.html', version=version)
 
 
-@app.route("/reset_password", methods=['GET', 'POST'])
+@app.route("/password_reset", methods=['GET', 'POST'])
 def reset_password():
     if request.method == 'POST':
         user = request.form.get("username")
@@ -645,7 +645,18 @@ def reset_password():
             token = s.dumps({'username': user_details.username})
             print user_details.email
             print token
-                        
+
+            message = 'To reset you password go to http://%s/password_reset?token=%s' % (pimat_config['pimat']['server_ip'], token)
+            subject = "Pimat Password Reset - %s" % user_details.username
+            msg = Message(recipients=[user_details.email],
+                          body=message,
+                          subject=subject)
+            mail.send(msg)
+
+        if request.method == 'GET' and request.args.get('token'):
+            print token
+            return render_template('password_reset.html', version=version)
+
         else:
             return render_template('password_reset.html', version=version)
 
