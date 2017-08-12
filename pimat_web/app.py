@@ -39,13 +39,12 @@ db = SQLAlchemy(app)
 login_manager = LoginManager()
 login_manager.init_app(app)
 
-app.config.update(
-    #EMAIL SETTINGS
-    MAIL_SERVER='mail.ocloud.cz',
-    MAIL_PORT=25,
-    MAIL_USERNAME='teste@ocloud.cz',
-    MAIL_PASSWORD='zaq12wsx'
-    )
+app.config['MAIL_SERVER']='mail.ocloud.cz'
+app.config['MAIL_PORT'] = 587
+app.config['MAIL_USERNAME'] = 'teste@ocloud.cz'
+app.config['MAIL_PASSWORD'] = 'zaq12wsx'
+app.config['MAIL_USE_TLS'] = False
+app.config['MAIL_USE_SSL'] = True
 
 schedules_fields = {
     'start_time': fields.String,
