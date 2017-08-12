@@ -36,7 +36,7 @@ setup(
                       'itsdangerous',
                       'Flask-Mail',
                       'Flask-WTF',
-                      'Flask-Admin'],
+                      'Flask-Principal'],
 
     include_package_data=True,
     zip_safe=False,

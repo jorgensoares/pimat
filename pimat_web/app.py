@@ -1,7 +1,9 @@
 #!/usr/bin/python
-from itsdangerous import (TimedJSONWebSignatureSerializer as Serializer, BadSignature, SignatureExpired)
+from flask_principal import Principal, Identity, AnonymousIdentity, identity_changed, identity_loaded, RoleNeed, \
+    UserNeed, Permission
+from itsdangerous import TimedJSONWebSignatureSerializer as Serializer, BadSignature, SignatureExpired
 from werkzeug.security import generate_password_hash, check_password_hash
-from flask import Flask, request, redirect, render_template, flash, url_for
+from flask import Flask, request, redirect, render_template, flash, url_for, current_app, session
 from flask_restful import Api, Resource, reqparse, marshal
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime, timedelta
@@ -17,11 +19,13 @@ import sys
 import requests
 import json
 from flask_wtf import FlaskForm, RecaptchaField
-from wtforms import StringField
+from wtforms import StringField, PasswordField
 from wtforms.validators import DataRequired
 from flask_admin import Admin
 from flask_admin.contrib.sqla import ModelView
+
 version = __version__
+
 
 relay_config = configparser.ConfigParser()
 relay_config.read('/opt/pimat/relays.ini')
@@ -35,6 +39,7 @@ csrf = CSRFProtect(app)
 api = Api(app, decorators=[csrf.exempt])
 admin = Admin(app, name='pimat', template_mode='bootstrap3')
 mail = Mail()
+Principal(app)
 
 app.secret_key = 'super secret string'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:zaq12wsx@localhost/pimat'
@@ -59,6 +64,7 @@ login_manager = LoginManager()
 login_manager.init_app(app)
 mail.init_app(app)
 
+admin_permission = Permission(RoleNeed('admin'))
 
 schedules_fields = {
     'start_time': fields.String,
@@ -142,29 +148,21 @@ class User(db.Model):
     username = db.Column(db.String(80), unique=True)
     password = db.Column(db.String(255))
     email = db.Column(db.String(120))
+    role = db.Column(db.String(10))
+    phone = db.Column(db.String(12))
+    email_alert = db.Column(db.String(3))
+    sms_alert = db.Column(db.String(3))
+    last_login = db.Column(db.DateTime)
+    login_attempts = db.Column(db.String(2))
 
-    def __init__(self, first_name, last_name, username, password, email):
+    def __init__(self, first_name, last_name, username, password, email, role='user', phone=None):
         self.first_name = first_name
         self.last_name = last_name
         self.username = username
         self.password = password
         self.email = email
-
-    def generate_auth_token(self, expiration=600):
-        s = Serializer(app.config['SECRET_KEY'], expires_in=expiration)
-        return s.dumps({'username': self.username})
-
-    @staticmethod
-    def verify_auth_token(token):
-        s = Serializer(app.config['SECRET_KEY'])
-        try:
-            data = s.loads(token)
-        except SignatureExpired:
-            return None  # valid token, but expired
-        except BadSignature:
-            return None  # invalid token
-        user = User.query.get(data['username'])
-        return user
+        self.role = role
+        self.phone = phone
 
     # Flask-Login integration
     def is_authenticated(self):
@@ -246,7 +244,7 @@ class RelayLogger(db.Model):
 
 class LoginForm(FlaskForm):
     username = StringField('username', validators=[DataRequired()])
-    password = StringField('password', validators=[DataRequired()])
+    password = PasswordField('password', validators=[DataRequired()])
 
 
 class PasswordForgotForm(FlaskForm):
@@ -258,8 +256,8 @@ class PasswordForgotForm(FlaskForm):
 
 class PasswordResetForm(FlaskForm):
     username = StringField('username', validators=[DataRequired()])
-    new_password = StringField('new_password', validators=[DataRequired()])
-    verify_new_password = StringField('verify_new_password', validators=[DataRequired()])
+    new_password = PasswordField('new_password', validators=[DataRequired()])
+    verify_new_password = PasswordField('verify_new_password', validators=[DataRequired()])
     token = StringField('token', validators=[DataRequired()])
 
     if app.config['RECAPTCHA'] is True:
@@ -268,9 +266,25 @@ class PasswordResetForm(FlaskForm):
 
 class PasswordChangeForm(FlaskForm):
     username = StringField('username', validators=[DataRequired()])
-    new_password = StringField('new_password', validators=[DataRequired()])
-    verify_new_password = StringField('verify_new_password', validators=[DataRequired()])
+    new_password = PasswordField('new_password', validators=[DataRequired()])
+    verify_new_password = PasswordField('verify_new_password', validators=[DataRequired()])
     token = StringField('token', validators=[DataRequired()])
+
+
+@identity_loaded.connect_via(app)
+def on_identity_loaded(sender, identity):
+    # Set the identity user object
+    identity.user = current_user
+
+    # Add the UserNeed to the identity
+    if hasattr(current_user, 'id'):
+        identity.provides.add(UserNeed(current_user.id))
+
+    # Assuming the User model has a list of roles, update the
+    # identity with the roles that the user provides
+    if hasattr(current_user, 'role'):
+        for role in current_user.role:
+            identity.provides.add(RoleNeed(role.name))
 
 
 @login_manager.user_loader
@@ -301,6 +315,7 @@ def login():
         if user:
             if check_password_hash(user.password, form.password.data):
                 login_user(user, remember=True)
+                identity_changed.send(current_app._get_current_object(), identity=Identity(user.id))
                 flash('Welcome {0} {1}'.format(user.first_name, user.last_name), 'success')
 
                 return redirect(url_for("index"))
@@ -327,6 +342,14 @@ def login():
 @login_required
 def logout():
     logout_user()
+
+    # Remove session keys set by Flask-Principal
+    for key in ('identity.name', 'identity.auth_type'):
+        session.pop(key, None)
+
+    # Tell Flask-Principal the user is anonymous
+    identity_changed.send(current_app._get_current_object(), identity=AnonymousIdentity())
+
     return redirect(url_for("index"))
 
 
