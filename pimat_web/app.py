@@ -660,7 +660,31 @@ def edit_user(action, user_id):
 
         return url_for("users")
 
-    elif request.method == 'POST' and action == 'password_change':
+    else:
+        for field, errors in form.errors.items():
+            for error in errors:
+                flash(u"Error in the %s field - %s" % (
+                    getattr(form, field).label.text,
+                    error
+                ), 'warning')
+
+    return render_template('user_create.html', version=version, form=form)
+
+
+@app.route("/users", methods=['GET'])
+@admin_permission.require()
+@login_required
+def users():
+    return render_template('users.html',
+                           version=version,
+                           users=User.query.order_by(User.id.asc()).all()
+                           )
+
+
+@app.route("/password_change", methods=['GET'])
+@login_required
+def password_change():
+    if request.method == 'POST' and action == 'password_change':
         current_password = request.form.get("current_password")
         new_password = request.form.get("new_password")
         verify_new_password = request.form.get("verify_new_password")
@@ -697,23 +721,6 @@ def edit_user(action, user_id):
             flash('All fields are mandatory!', 'danger')
             return render_template('password_change.html', version=version)
 
-    else:
-        return render_template('user_create.html', version=version, form=form)
-
-
-@app.route("/users", methods=['GET'])
-@admin_permission.require()
-@login_required
-def users():
-    return render_template('users.html',
-                           version=version,
-                           users=User.query.order_by(User.id.asc()).all()
-                           )
-
-
-@app.route("/password_change", methods=['GET'])
-@login_required
-def password_change():
     return render_template('password_change.html', version=version)
 
 
