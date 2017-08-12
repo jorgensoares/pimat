@@ -16,7 +16,7 @@ import signal
 import sys
 import requests
 import json
-from flask_wtf import FlaskForm
+from flask_wtf import FlaskForm, RecaptchaField
 from wtforms import StringField
 from wtforms.validators import DataRequired
 
@@ -45,6 +45,8 @@ app.config['MAIL_PASSWORD'] = 'zaq12wsx'
 app.config['MAIL_USE_TLS'] = True
 app.config['MAIL_USE_SSL'] = False
 app.config['MAIL_DEFAULT_SENDER'] = 'teste@ocloud.cz'
+app.config['RECAPTCHA_PUBLIC_KEY'] = '6LcwqywUAAAAANqGKZdPMGUmBZ3nKwRadazZS2OZ'
+app.config['RECAPTCHA_PRIVATE_KEY'] = '6LcwqywUAAAAAGB9HhvMq3C_JOfCYLBliH2-un7U'
 
 app.logger.addHandler(file_handler)
 app.logger.setLevel(logging.INFO)
@@ -245,6 +247,7 @@ class LoginForm(FlaskForm):
 
 class PasswordForgotForm(FlaskForm):
     username = StringField('username', validators=[DataRequired()])
+    recaptcha = RecaptchaField()
 
 
 class PasswordResetForm(FlaskForm):
