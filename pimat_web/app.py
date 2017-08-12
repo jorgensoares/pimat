@@ -45,6 +45,7 @@ app.config['MAIL_PASSWORD'] = 'zaq12wsx'
 app.config['MAIL_USE_TLS'] = True
 app.config['MAIL_USE_SSL'] = False
 app.config['MAIL_DEFAULT_SENDER'] = 'teste@ocloud.cz'
+app.config['RECAPTCHA'] = False
 app.config['RECAPTCHA_PUBLIC_KEY'] = '6LcwqywUAAAAANqGKZdPMGUmBZ3nKwRadazZS2OZ'
 app.config['RECAPTCHA_PRIVATE_KEY'] = '6LcwqywUAAAAAGB9HhvMq3C_JOfCYLBliH2-un7U'
 
@@ -247,7 +248,9 @@ class LoginForm(FlaskForm):
 
 class PasswordForgotForm(FlaskForm):
     username = StringField('username', validators=[DataRequired()])
-    recaptcha = RecaptchaField()
+
+    if app.config['RECAPTCHA'] is True:
+        recaptcha = RecaptchaField()
 
 
 class PasswordResetForm(FlaskForm):
@@ -255,7 +258,6 @@ class PasswordResetForm(FlaskForm):
     new_password = StringField('new_password', validators=[DataRequired()])
     verify_new_password = StringField('verify_new_password', validators=[DataRequired()])
     token = StringField('token', validators=[DataRequired()])
-
 
 
 @login_manager.user_loader
