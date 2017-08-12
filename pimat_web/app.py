@@ -30,7 +30,7 @@ app = Flask(__name__)
 
 app.config['SERVER_IP'] = '10.14.11.252'
 app.config['LOG'] = '/var/log/pimat-web.log'
-app.config['UPLOAD_FOLDER'] = '/tmp'
+app.config['UPLOAD_FOLDER'] = 'static/images'
 app.config['RELAY_CONFIG'] = '/opt/pimat/relays.ini'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:zaq12wsx@localhost/pimat'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
@@ -46,7 +46,7 @@ app.config['RECAPTCHA'] = False
 app.config['RECAPTCHA_PUBLIC_KEY'] = '6LcwqywUAAAAANqGKZdPMGUmBZ3nKwRadazZS2OZ'
 app.config['RECAPTCHA_PRIVATE_KEY'] = '6LcwqywUAAAAAGB9HhvMq3C_JOfCYLBliH2-un7U'
 app.secret_key = 'super secret string'
-ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'])
+ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg', 'gif'])
 
 csrf = CSRFProtect(app)
 api = Api(app, decorators=[csrf.exempt])
