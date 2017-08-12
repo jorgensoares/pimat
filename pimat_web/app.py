@@ -673,8 +673,8 @@ def upload_file():
             flash('No selected file', 'warning')
             return redirect(url_for("profile"))
         if file and allowed_file(file.filename):
-            filename = secure_filename(file.filename)
-            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+            secure_filename(file.filename)
+            file.save(os.path.join(app.config['UPLOAD_FOLDER'], current_user.username + '.png'))
 
             return redirect(url_for("profile"))
 
