@@ -19,7 +19,7 @@ import sys
 import requests
 import json
 from flask_wtf import FlaskForm, RecaptchaField
-from wtforms import StringField, PasswordField, validators
+from wtforms import StringField, PasswordField, BooleanField, validators
 from wtforms.validators import DataRequired
 
 version = __version__
@@ -282,8 +282,8 @@ class CreateUserForm(FlaskForm):
         validators.DataRequired(),
         validators.EqualTo('verify_new_password', message='Passwords must match')
     ])
-    verify_new_password = PasswordField('verify_new_password')
-    role = StringField('role')
+    verify_password = PasswordField('verify_password')
+    role = BooleanField('role')
 
 
 @identity_loaded.connect_via(app)
@@ -637,22 +637,21 @@ def edit_user(action, user_id):
     form = CreateUserForm()
 
     if action == 'create' and form.validate_on_submit():
+        role = form.role.data
+        if role == '':
+            role = 'user'
+
         if User.query.filter(User.username == form.username.data).all():
             flash('User already exists!', 'danger')
             return render_template('user_create.html', version=version)
 
-        if form.password.data == form.verify_password.data:
-            hashed_password = generate_password_hash(form.password.data)
-            user = User(form.first_name.data, form.last_name.data, form.username.data, hashed_password, form.email.data,
-                        form.role.data)
-            db.session.add(user)
-            db.session.commit()
+        hashed_password = generate_password_hash(form.password.data)
+        user = User(form.first_name.data, form.last_name.data, form.username.data, hashed_password, form.email.data,
+                    role)
+        db.session.add(user)
+        db.session.commit()
 
-            return redirect(url_for("users"))
-
-        else:
-            flash('Passwords dont match, please try again!', 'danger')
-            return render_template('user_create.html', version=version, form=form)
+        return redirect(url_for("users"))
 
     elif request.method == 'POST' and action == 'delete' and user_id:
         User.query.filter(User.id == user_id).delete()
@@ -678,7 +677,7 @@ def users():
                            )
 
 
-@app.route("/password_change", methods=['GET'])
+@app.route("/password_change", methods=['GET', 'POST'])
 @login_required
 def password_change():
     if request.method == 'POST':
@@ -750,10 +749,7 @@ def password_forgot():
     else:
         for field, errors in form.errors.items():
             for error in errors:
-                flash(u"Error in the %s field - %s" % (
-                    getattr(form, field).label.text,
-                    error
-                ), 'warning')
+                flash(error, 'warning')
 
     return render_template('password_forgot.html', version=version, form=form)
 
@@ -765,7 +761,6 @@ def password_reset():
     if form.validate_on_submit():
         input_user = form.username.data
         new_password = form.new_password.data
-        verify_new_password = form.verify_new_password.data
         token = form.token.data
 
         s = Serializer(app.config['SECRET_KEY'])
@@ -783,25 +778,20 @@ def password_reset():
         user = User.query.filter(User.id == data['id']).first()
 
         if input_user == user.username:
-            if new_password == verify_new_password:
-                user.password = generate_password_hash(new_password)
-                db.session.commit()
-                flash('Password updated successfully, Please login.', 'success')
+            user.password = generate_password_hash(new_password)
+            db.session.commit()
+            flash('Password updated successfully, Please login.', 'success')
 
-                message = '''Hello %s,\n\n This is e-mail is to inform you that you have reset your password successfully. 
-                \nIf this request was not made by you please contact support immediately.\n 
-                \nThank you.\n Pimat\n\n''' % user.username
+            message = '''Hello %s,\n\n This is e-mail is to inform you that you have reset your password successfully. 
+            \nIf this request was not made by you please contact support immediately.\n 
+            \nThank you.\n Pimat\n\n''' % user.username
 
-                subject = "Pimat Password Reset Notice - %s" % user.username
-                msg = Message(recipients=[user.email],
-                              body=message,
-                              subject=subject)
-                mail.send(msg)
-                return redirect(url_for("login"))
-
-            else:
-                flash('Passwords dont Match!', 'danger')
-                return render_template('password_reset_form.html', version=version, form=form)
+            subject = "Pimat Password Reset Notice - %s" % user.username
+            msg = Message(recipients=[user.email],
+                          body=message,
+                          subject=subject)
+            mail.send(msg)
+            return redirect(url_for("login"))
 
         else:
             flash('Invalid user', 'danger')
@@ -810,10 +800,7 @@ def password_reset():
     else:
         for field, errors in form.errors.items():
             for error in errors:
-                flash(u"Error in the %s field - %s" % (
-                    getattr(form, field).label.text,
-                    error
-                ), 'warning')
+                flash(error, 'warning')
 
     return render_template('password_reset_form.html', version=version, form=form)
 
