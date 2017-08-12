@@ -691,6 +691,8 @@ def password_reset():
                 user.password = generate_password_hash(new_password)
                 db.session.commit()
 
+                return redirect(url_for("login"))
+
             else:
                 flash('Passwords dont Match!', 'danger')
                 return render_template('password_reset_form.html', version=version)
