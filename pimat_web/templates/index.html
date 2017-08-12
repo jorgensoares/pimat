@@ -65,13 +65,17 @@
               <li class="user-body">
                 <div class="row">
                   <div class="col-xs-4 text-center">
-                    <a href="/settings">Settings</a>
+                    {% if current_user.role == 'admin'%}
+                      <a href="/settings">Settings</a>
+                    {% endif %}
                   </div>
                   <div class="col-xs-4 text-center">
                     <a href="/profile">Profile</a>
                   </div>
                   <div class="col-xs-4 text-center">
-                    <a href="/users">Users</a>
+                    {% if current_user.role == 'admin'%}
+                      <a href="/users">Users</a>
+                    {% endif %}
                   </div>
                 </div>
                 <!-- /.row -->
