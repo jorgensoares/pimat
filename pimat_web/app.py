@@ -324,6 +324,9 @@ def login():
         if user:
             if check_password_hash(user.password, form.password.data):
                 login_user(user, remember=True)
+                user.last_login = get_now()
+                user.login_attempts = 0
+                db.session.commit()
                 identity_changed.send(current_app._get_current_object(), identity=Identity(user.id))
                 flash('Welcome {0} {1}'.format(user.first_name, user.last_name), 'success')
 
@@ -331,6 +334,10 @@ def login():
 
             else:
                 flash('Wrong Password', 'danger')
+                failed_attempts = int(user.login_attempt)
+                failed_attempts += 1
+                user.login_attempts = failed_attempts
+                db.session.commit()
                 return render_template("login.html", form=form)
         else:
             flash('User not found!', 'warning')
