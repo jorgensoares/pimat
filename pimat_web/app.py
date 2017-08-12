@@ -636,6 +636,19 @@ def password_change():
 
 @app.route("/reset_password", methods=['GET', 'POST'])
 def reset_password():
+    if request.method == 'POST':
+        user = request.form.get("username")
+
+        if user:
+            user_details = User.query.filter(User.username == user).first()
+            s = Serializer(app.config['SECRET_KEY'], expires_in=600)
+            token = s.dumps({'username': user_details.username})
+            print user_details.email
+            print token
+                        
+        else:
+            return render_template('password_reset.html', version=version)
+
     return render_template('password_reset.html', version=version)
 
 
