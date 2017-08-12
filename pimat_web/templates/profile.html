@@ -154,7 +154,10 @@
 
               <form method=post action="/profile/picture" enctype=multipart/form-data>
                 <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
-                <p><input type=file name=file>
+                <label class="custom-file">
+                  <input type="file" id="file" name=file class="custom-file-input">
+                  <span class="custom-file-control"></span>
+                </label>
                 <button type="submit" class="btn btn-primary btn-block"><b>Change Picture</b></button>
                </form>
             </div>
@@ -267,6 +270,15 @@
 <script src="/static/dist/js/adminlte.min.js"></script>
 <!-- SlimScroll -->
 <script src="/static/bower_components/jquery-slimscroll/jquery.slimscroll.min.js"></script>
-
+<script>
+  $custom-file-text: (
+  placeholder: (
+    en: "Choose Picture"
+  ),
+  button-label: (
+    en: "Browse"
+  )
+);
+</script>
 </body>
 </html>
