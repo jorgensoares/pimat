@@ -146,6 +146,7 @@
             <p class="login-box-msg">Create User Form</p>
 
             <form action="/user/create/new" method="post">
+              <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
               <div class="form-group has-feedback">
                 <input type="text" class="form-control" name="first_name" placeholder="First name" required>
                 <span class="glyphicon glyphicon-user form-control-feedback"></span>

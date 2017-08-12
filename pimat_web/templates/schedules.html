@@ -153,6 +153,7 @@
             {% else %}
                 <form class="form-schedule" action="/schedule/edit/{{ schedule.id }}" method="post">
             {% endif %}
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
             <div class="col-md-3">
               {% if schedule == None %}
                 <div class="form-group">
