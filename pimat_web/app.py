@@ -21,8 +21,6 @@ import json
 from flask_wtf import FlaskForm, RecaptchaField
 from wtforms import StringField, PasswordField
 from wtforms.validators import DataRequired
-from flask_admin import Admin
-from flask_admin.contrib.sqla import ModelView
 
 version = __version__
 
@@ -37,7 +35,6 @@ file_handler = logging.FileHandler('/var/log/pimat-web.log')
 app = Flask(__name__)
 csrf = CSRFProtect(app)
 api = Api(app, decorators=[csrf.exempt])
-admin = Admin(app, name='pimat', template_mode='bootstrap3')
 mail = Mail()
 Principal(app)
 
@@ -56,6 +53,7 @@ app.config['RECAPTCHA'] = True
 app.config['RECAPTCHA_PUBLIC_KEY'] = '6LcwqywUAAAAANqGKZdPMGUmBZ3nKwRadazZS2OZ'
 app.config['RECAPTCHA_PRIVATE_KEY'] = '6LcwqywUAAAAAGB9HhvMq3C_JOfCYLBliH2-un7U'
 
+admin_permission = Permission(RoleNeed('admini'))
 app.logger.addHandler(file_handler)
 app.logger.setLevel(logging.INFO)
 
@@ -64,7 +62,6 @@ login_manager = LoginManager()
 login_manager.init_app(app)
 mail.init_app(app)
 
-admin_permission = Permission(RoleNeed('admin'))
 
 schedules_fields = {
     'start_time': fields.String,
@@ -814,8 +811,6 @@ def not_found(error):
     return render_template('error.html', error=error, version=version)
 
 
-admin.add_view(ModelView(User, db.session))
-admin.add_view(ModelView(Schedules, db.session))
 api.add_resource(SensorsAPI, '/api/sensors')
 api.add_resource(SchedulesAPI, '/api/schedules')
 api.add_resource(RelayLoggerAPI, '/api/v1/relay/logger')
