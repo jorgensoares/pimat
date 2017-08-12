@@ -42,10 +42,9 @@ login_manager.init_app(app)
 app.config.update(
     #EMAIL SETTINGS
     MAIL_SERVER='mail.ocloud.cz',
-    MAIL_PORT=587,
-    MAIL_USE_TLS=True,
-    MAIL_USERNAME='jorge@ocloud.cz',
-    MAIL_PASSWORD='Bx7ikKl2'
+    MAIL_PORT=25,
+    MAIL_USERNAME='teste@ocloud.cz',
+    MAIL_PASSWORD='zaq12wsx'
     )
 
 schedules_fields = {
