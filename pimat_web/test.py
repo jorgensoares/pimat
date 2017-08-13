@@ -2,6 +2,8 @@
 from subprocess import PIPE, Popen
 import psutil
 import os
+import socket
+import time
 
 from datetime import datetime, timedelta
 
@@ -26,7 +28,7 @@ def get_cpu_temperature():
 def get_uname():
     process = Popen(['/bin/uname', '-srn'], stdout=PIPE)
     output, _error = process.communicate()
-    return output
+    return output.strip()
 
 
 def main():
@@ -37,17 +39,24 @@ def main():
     load = os.getloadavg()
     total_proccesses = len(psutil.pids())
     uname = get_uname()
-
+    hostname = socket.gethostname()
     boot_time_seconds = (datetime.now()-boot_time).total_seconds()
+    address = psutil.net_if_addrs()
+    timezone = time.tzname[time.daylight]
+
+    print 'Hostname: {0}'.format(hostname)
+    print 'IP: {0}'.format(address['eth0'][0].address)
+    print 'Timezone: {0}'.format(timezone)
     print 'Boot time: {0}'.format(display_time(boot_time_seconds))
     print 'Temp: {0}'.format(cpu_temperature)
     print 'CPU usage: {0}'.format(cpu_usage)
-    print 'CPU frequency: {0}'.format(cpu_details.max)
+    print 'CPU frequency: {0}'.format(cpu_details.current)
     print 'Load 1min: {0}'.format(load[0])
     print 'Load 5min: {0}'.format(load[1])
     print 'Load 15min: {0}'.format(load[2])
     print 'Total proccesses: {0}'.format(total_proccesses)
     print 'Kernel Version: {0}'.format(uname)
+
 
     ram = psutil.virtual_memory()
     ram_total = ram.total / 2**20       # MiB.
