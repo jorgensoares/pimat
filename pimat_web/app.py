@@ -23,6 +23,7 @@ from flask_wtf import FlaskForm, RecaptchaField
 from wtforms.validators import DataRequired
 from werkzeug.utils import secure_filename
 import os
+from forms import User
 
 version = __version__
 
@@ -143,7 +144,7 @@ class RelayLoggerAPI(Resource):
         return {'status': 'success'}, 201
 
 
-from forms import User
+
 
 class Sensors(db.Model):
     __tablename__ = 'sensors'
