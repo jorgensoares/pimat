@@ -60,6 +60,7 @@ admin_permission = Permission(RoleNeed('admin'))
 login_manager = LoginManager()
 login_manager.init_app(app)
 mail.init_app(app)
+db.create_all()
 
 
 def get_previous_date(days):
@@ -619,9 +620,7 @@ api.add_resource(RelayLoggerAPI, '/api/v1/relay/logger')
 
 
 def main():
-    db.init_app(app)
     signal.signal(signal.SIGTERM, sigterm_handler)
-    db.create_all()
     app.run(host='0.0.0.0',
             port=80,
             threaded=True,
