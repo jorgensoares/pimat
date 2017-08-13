@@ -72,7 +72,7 @@ def get_previous_date(days):
 
 def get_now():
     # get the current date and time as a string
-    return datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    return datetime.now()
 
 
 def sigterm_handler(_signo, _stack_frame):
@@ -673,13 +673,13 @@ def upload_file():
     if file and allowed_file(file.filename):
         file.save(os.path.join(app.config['UPLOAD_FOLDER'], current_user.username + '.png'))
 
-        return redirect(url_for("profile"))
+    return redirect(url_for("profile"))
 
 
 @app.route("/monitoring", methods=['GET'])
 @login_required
 def monitoring():
-    return render_template('monitoring.html', ip=app.config['SERVER_IP'], version=version)
+    return render_template('monitoring_new.html', ip=app.config['SERVER_IP'], version=version)
 
 
 @app.route("/user/<action>/<user_id>", methods=['GET', 'POST'])
