@@ -60,7 +60,7 @@ admin_permission = Permission(RoleNeed('admin'))
 login_manager = LoginManager()
 login_manager.init_app(app)
 mail.init_app(app)
-db.create_all()
+#db.create_all()
 
 
 def get_previous_date(days):
