@@ -1,7 +1,7 @@
 from flask_wtf import FlaskForm, RecaptchaField, validators
 from wtforms import StringField, PasswordField, validators
 from wtforms.validators import DataRequired
-from app import app
+#from app import app
 
 
 class LoginForm(FlaskForm):
