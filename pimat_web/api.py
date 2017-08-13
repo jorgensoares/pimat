@@ -1,5 +1,5 @@
 from flask_restful import Resource, reqparse, marshal, fields
-from pimat_web.app import db, Sensors, Schedules, RelayLogger
+from pimat_web.models import db, Sensors, Schedules, RelayLogger, Monitoring
 
 schedules_fields = {
     'start_time': fields.String,
@@ -53,6 +53,65 @@ class RelayLoggerAPI(Resource):
         args = self.reqparse.parse_args()
         action = RelayLogger(args['timestamp'], args['relay'], args['pin'], args['action'], args['value'], args['type'],
                              args['source'])
+        db.session.add(action)
+        db.session.commit()
+
+        return {'status': 'success'}, 201
+
+
+class MonitoringAPI(Resource):
+    def __init__(self):
+        self.reqparse = reqparse.RequestParser()
+        self.reqparse.add_argument('timestamp', type=str, required=True, location='json')
+        self.reqparse.add_argument('hostname', type=str, required=True, default="", location='json')
+        self.reqparse.add_argument('ip_eth0', type=str, default="", location='json')
+        self.reqparse.add_argument('ip_wlan0', type=str, default="", location='json')
+        self.reqparse.add_argument('timezone', type=str, default="", location='json')
+        self.reqparse.add_argument('boot_time', type=str, default="", location='json')
+        self.reqparse.add_argument('cpu_temp', type=float, default="", location='json')
+        self.reqparse.add_argument('cpu_usage', type=float, default="", location='json')
+        self.reqparse.add_argument('cpu_frequency', type=float, default="", location='json')
+        self.reqparse.add_argument('load_1', type=float, default="", location='json')
+        self.reqparse.add_argument('load_5', type=float, default="", location='json')
+        self.reqparse.add_argument('load_15', type=float, default="", location='json')
+        self.reqparse.add_argument('total_proc', type=int, default="", location='json')
+        self.reqparse.add_argument('ram_total', type=int, default="", location='json')
+        self.reqparse.add_argument('ram_free', type=int, default="", location='json')
+        self.reqparse.add_argument('ram_used', type=int, default="", location='json')
+        self.reqparse.add_argument('ram_used_percent', type=float, default="", location='json')
+        self.reqparse.add_argument('swap_total', type=int, default="", location='json')
+        self.reqparse.add_argument('swap_free', type=int, default="", location='json')
+        self.reqparse.add_argument('swap_used', type=int, default="", location='json')
+        self.reqparse.add_argument('swap_used_percent', type=float, default="", location='json')
+        self.reqparse.add_argument('disk_total', type=int, default="", location='json')
+        self.reqparse.add_argument('disk_used', type=int, default="", location='json')
+        self.reqparse.add_argument('disk_free', type=int, default="", location='json')
+        self.reqparse.add_argument('disk_used_percent', type=float, default="", location='json')
+        self.reqparse.add_argument('disk_total_boot', type=int, default="", location='json')
+        self.reqparse.add_argument('disk_used_boot', type=int, default="", location='json')
+        self.reqparse.add_argument('disk_free_boot', type=int, default="", location='json')
+        self.reqparse.add_argument('disk_used_percent_boot', type=float, default="", location='json')
+        self.reqparse.add_argument('eth0_received', type=int, default="", location='json')
+        self.reqparse.add_argument('eth0_sent', type=int, default="", location='json')
+        self.reqparse.add_argument('wlan0_received', type=int, default="", location='json')
+        self.reqparse.add_argument('wlan0_sent', type=int, default="", location='json')
+        self.reqparse.add_argument('lo_received', type=int, default="", location='json')
+        self.reqparse.add_argument('lo_sent', type=int, default="", location='json')
+        self.reqparse.add_argument('kernel', type=str, default="", location='json')
+        self.reqparse.add_argument('source', type=str, default="", location='json')
+        super(MonitoringAPI, self).__init__()
+
+    def post(self):
+        args = self.reqparse.parse_args()
+        action = Monitoring(args['timestamp'], args['hostname'], args['ip_eth0'], args['ip_wlan0'], args['timezone'],
+                            args['boot_time'], args['cpu_temp'], args['cpu_usage'], args['cpu_frequency'],
+                            args['load_1'], args['load_5'], args['load_15'], args['total_proc'], args['ram_total'],
+                            args['ram_free'], args['ram_used'], args['ram_used_percent'], args['swap_total'],
+                            args['swap_free'], args['swap_used'], args['swap_used_percent'], args['disk_total'],
+                            args['disk_used'], args['disk_free'], args['disk_used_percent'],args['disk_total_boot'],
+                            args['disk_used_boot'], args['disk_free_boot'], args['disk_used_percent_boot'],
+                            args['eth0_received'], args['eth0_sent'], args['wlan0_received'], args['wlan0_sent'],
+                            args['lo_received'], args['lo_sent'], args['kernel'], args['source'])
         db.session.add(action)
         db.session.commit()
 

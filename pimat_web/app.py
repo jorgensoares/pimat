@@ -49,18 +49,19 @@ csrf = CSRFProtect(app)
 api = Api(app, decorators=[csrf.exempt])
 mail = Mail()
 Principal(app)
-
-relay_config = configparser.ConfigParser()
-relay_config.read(app.config['RELAY_CONFIG'])
 file_handler = logging.FileHandler(app.config['LOG'])
 app.logger.addHandler(file_handler)
 app.logger.setLevel(logging.INFO)
-
 admin_permission = Permission(RoleNeed('admin'))
 login_manager = LoginManager()
 login_manager.init_app(app)
 mail.init_app(app)
 #db.create_all()
+relay_config = configparser.ConfigParser()
+relay_config.read(app.config['RELAY_CONFIG'])
+api.add_resource(SensorsAPI, '/api/sensors')
+api.add_resource(SchedulesAPI, '/api/schedules')
+api.add_resource(RelayLoggerAPI, '/api/v1/relay/logger')
 
 
 def get_previous_date(days):
@@ -83,15 +84,12 @@ def allowed_file(filename):
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 
-
 @identity_loaded.connect_via(app)
 def on_identity_loaded(sender, identity):
     # Set the identity user object
     identity.user = current_user
-
     if hasattr(current_user, 'id'):
         identity.provides.add(UserNeed(current_user.id))
-
     if hasattr(current_user, 'role'):
         identity.provides.add(RoleNeed(current_user.role))
 
@@ -116,7 +114,6 @@ def not_found(error):
 def index():
     if current_user.is_authenticated:
         return redirect(url_for("dashboard"))
-
     else:
         return render_template("login.html")
 
@@ -124,7 +121,6 @@ def index():
 @app.route("/login", methods=["GET", "POST"])
 def login():
     form = LoginForm()
-
     if request.method == 'POST' and form.validate_on_submit():
         user = User.query.filter_by(username=form.username.data).first()
         if user:
@@ -135,9 +131,7 @@ def login():
                 db.session.commit()
                 identity_changed.send(current_app._get_current_object(), identity=Identity(user.id))
                 flash('Welcome {0} {1}'.format(user.first_name, user.last_name), 'success')
-
                 return redirect(url_for("index"))
-
             else:
                 flash('Wrong Password', 'danger')
                 failed_attempts = int(user.login_attempts)
@@ -148,14 +142,10 @@ def login():
         else:
             flash('User not found!', 'warning')
             return render_template("login.html", form=form)
-
     else:
         for field, errors in form.errors.items():
             for error in errors:
-                flash(u"Error in the %s field - %s" % (
-                    getattr(form, field).label.text,
-                    error
-                ), 'warning')
+                flash(error, 'warning')
 
     return render_template("login.html", form=form)
 
@@ -166,7 +156,6 @@ def logout():
     logout_user()
     for key in ('identity.name', 'identity.auth_type'):
         session.pop(key, None)
-
     identity_changed.send(current_app._get_current_object(), identity=AnonymousIdentity())
     return redirect(url_for("index"))
 
@@ -248,18 +237,14 @@ def add_new_schedule(action, schedule_id):
         db.session.add(schedule)
         db.session.commit()
         last = Schedules.query.order_by(Schedules.id.desc()).first()
-
         json_data = dict()
         json_data['relay'] = relay
         json_data['start_time'] = str(start_time)
         json_data['stop_time'] = str(stop_time)
-
         response = requests.post('http://localhost:4001/api/schedules/{}'.format(last.id), data=json.dumps(json_data),
                                  headers={'content-type': 'application/json'}, timeout=2)
-
         if response.status_code == 201:
             return redirect(url_for("dashboard"))
-
         else:
             Schedules.query.filter(Schedules.id == last.id).delete()
             db.session.commit()
@@ -267,19 +252,16 @@ def add_new_schedule(action, schedule_id):
 
     elif request.method == 'POST' and action == 'delete':
         response = requests.delete('http://localhost:4001/api/schedules/{}'.format(schedule_id), timeout=2)
-
         if response.status_code == 200:
             Schedules.query.filter(Schedules.id == schedule_id).delete()
             db.session.commit()
             return url_for('dashboard')
-
         else:
             return 404
 
     elif request.method == 'POST' and action == 'switch':
         schedule = Schedules.query.filter(Schedules.id == schedule_id).first()
         json_data = dict()
-
         if schedule.enabled == 'enable':
             json_data['action'] = 'disable'
             response = requests.put('http://localhost:4001/api/schedules/{}'.format(schedule_id),
@@ -287,13 +269,11 @@ def add_new_schedule(action, schedule_id):
                                     headers={'content-type': 'application/json'},
                                     timeout=2
                                     )
-
             if response.status_code == 200:
                 schedule.enabled = 'disable'
                 db.session.commit()
             else:
                 return 404
-
         else:
             json_data['action'] = 'enable'
             response = requests.put('http://localhost:4001/api/schedules/{}'.format(schedule_id),
@@ -301,13 +281,11 @@ def add_new_schedule(action, schedule_id):
                                     headers={'content-type': 'application/json'},
                                     timeout=2
                                     )
-
             if response.status_code == 200:
                 schedule.enabled = 'enable'
                 db.session.commit()
             else:
                 return 404
-
         return url_for('dashboard')
 
     elif request.method == 'POST' and action == 'edit':
@@ -323,13 +301,11 @@ def add_new_schedule(action, schedule_id):
         json_data['action'] = 'edit'
         json_data['start_time'] = str(start_time)
         json_data['stop_time'] = str(stop_time)
-
         response = requests.put('http://localhost:4001/api/schedules/{}'.format(schedule_id),
                                 data=json.dumps(json_data),
                                 headers={'content-type': 'application/json'},
                                 timeout=2
                                 )
-
         if response.status_code == 200:
             schedule.start_time = start_time
             schedule.stop_time = stop_time
@@ -341,7 +317,6 @@ def add_new_schedule(action, schedule_id):
     elif request.method == 'GET' and action == 'edit':
         schedule = Schedules.query.filter(Schedules.id == schedule_id).first()
         return render_template('schedules.html', version=version, schedule=schedule)
-
     else:
         return render_template('schedules.html', version=version, schedule=None)
 
@@ -358,12 +333,10 @@ def switch_relay(action, relay):
                                 headers={'content-type': 'application/json'},
                                 timeout=2
                                 )
-
         if response.status_code == 200:
             return url_for('dashboard')
         else:
             return 404
-
     else:
         return render_template('error.html', error="wrong request")
 
@@ -377,7 +350,6 @@ def sensors():
         start_date, end_date = request.args.get("dates").split(' - ')
         end_date = '{0} 23:59:59'.format(end_date)
         sensor_column = 'sensors.%s' % sensor
-
         result = Sensors.query.with_entities(Sensors.timestamp, sensor_column). \
             filter(Sensors.timestamp.between(start_date, end_date)).all()
 
@@ -386,7 +358,6 @@ def sensors():
                                result=result,
                                sensor=sensor,
                                dates=request.args.get("dates"))
-
     else:
         return render_template('sensors.html', version=version)
 
@@ -402,7 +373,6 @@ def camera():
 def logs():
     with open("/var/log/pimat/pimat-server.log", "r") as f:
         pimat_server_log = f.read()
-
     with open("/var/log/pimat/pimat-web.log", "r") as f:
         pimat_web_log = f.read()
 
@@ -426,7 +396,6 @@ def profile():
         user.email_alert = form.email_alerts.data
         user.sms_alert = form.sms_alerts.data
         user.phone = form.phone.data
-
         db.session.commit()
         flash('Profile Updated successfully', 'success')
 
@@ -462,7 +431,6 @@ def monitoring():
 @login_required
 def edit_user(action, user_id):
     form = CreateUserForm()
-
     if action == 'create' and form.validate_on_submit():
         role = form.role.data
         if role == '':
@@ -477,15 +445,12 @@ def edit_user(action, user_id):
                     role)
         db.session.add(user)
         db.session.commit()
-
         return redirect(url_for("users"))
 
     elif request.method == 'POST' and action == 'delete' and user_id:
         User.query.filter(User.id == user_id).delete()
         db.session.commit()
-
         return url_for("users")
-
     else:
         for field, errors in form.errors.items():
             for error in errors:
@@ -614,11 +579,6 @@ def password_reset():
     return render_template('password_reset_form.html', version=version, form=form)
 
 
-api.add_resource(SensorsAPI, '/api/sensors')
-api.add_resource(SchedulesAPI, '/api/schedules')
-api.add_resource(RelayLoggerAPI, '/api/v1/relay/logger')
-
-
 def main():
     signal.signal(signal.SIGTERM, sigterm_handler)
     app.run(host='0.0.0.0',
@@ -627,7 +587,6 @@ def main():
             debug=True,
             use_reloader=False
             )
-
 
 if __name__ == "__main__":
     main()

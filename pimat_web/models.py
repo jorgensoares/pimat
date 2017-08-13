@@ -103,3 +103,91 @@ class RelayLogger(db.Model):
         self.value = value
         self.type = type
         self.source = source
+
+
+class Monitoring(db.Model):
+    __tablename__ = 'monitoring'
+
+    id = db.Column(db.Integer, primary_key=True)
+    timestamp = db.Column(db.DateTime)
+    hostname = db.Column(db.String(50), unique=True)
+    ip_eth0 = db.Column(db.String(16))
+    ip_wlan0 = db.Column(db.String(16))
+    timezone = db.Column(db.String(5))
+    boot_time = db.Column(db.Float)
+    cpu_temp = db.Column(db.Float)
+    cpu_usage = db.Column(db.Float)
+    cpu_frequency = db.Column(db.Float)
+    load_1 = db.Column(db.Float)
+    load_5 = db.Column(db.Float)
+    load_15 = db.Column(db.Float)
+    total_proc = db.Column(db.Integer)
+    ram_total = db.Column(db.Integer)
+    ram_free = db.Column(db.Integer)
+    ram_used = db.Column(db.Integer)
+    ram_used_percent = db.Column(db.Float)
+    swap_total = db.Column(db.Integer)
+    swap_free = db.Column(db.Integer)
+    swap_used = db.Column(db.Integer)
+    swap_used_percent = db.Column(db.Float)
+    disk_total = db.Column(db.Integer)
+    disk_used = db.Column(db.Integer)
+    disk_free = db.Column(db.Integer)
+    disk_used_percent = db.Column(db.Float)
+    disk_total_boot = db.Column(db.Integer)
+    disk_used_boot = db.Column(db.Integer)
+    disk_free_boot = db.Column(db.Integer)
+    disk_used_percent_boot = db.Column(db.Float)
+    eth0_received = db.Column(db.Integer)
+    eth0_sent = db.Column(db.Integer)
+    wlan0_received = db.Column(db.Integer)
+    wlan0_sent = db.Column(db.Integer)
+    lo_received = db.Column(db.Integer)
+    lo_sent = db.Column(db.Integer)
+    kernel = db.Column(db.String(50))
+    source = db.Column(db.String(50))
+
+    def __init__(self, timestamp, hostname, ip_eth0, ip_wlan0, timezone, boot_time, cpu_temp, cpu_usage, cpu_frequency,
+                 load_1, load_5, load_15, total_proc, ram_total, ram_free, ram_used,ram_used_percent, swap_total,
+                 swap_free, swap_used, swap_used_percent, disk_total, disk_used, disk_free, disk_used_percent,
+                 disk_total_boot, disk_used_boot, disk_free_boot, disk_used_percent_boot, eth0_received, eth0_sent,
+                 wlan0_received, wlan0_sent, lo_received, lo_sent, kernel, source):
+
+        self.timestamp = timestamp
+        self.hostname = hostname
+        self.ip_eth0 = ip_eth0
+        self.ip_wlan0 = ip_wlan0
+        self.timezone = timezone
+        self.boot_time = boot_time
+        self.cpu_temp = cpu_temp
+        self.cpu_usage = cpu_usage
+        self.cpu_frequency = cpu_frequency
+        self.load_1 = load_1
+        self.load_5 = load_5
+        self.load_15 = load_15
+        self.total_proc = total_proc
+        self.ram_total = ram_total
+        self.ram_free = ram_free
+        self.ram_used = ram_used
+        self.ram_used_percent = ram_used_percent
+        self.swap_total = swap_total
+        self.swap_free = swap_free
+        self.swap_used = swap_used
+        self.swap_used_percent = swap_used_percent
+        self.disk_total = disk_total
+        self.disk_used = disk_used
+        self.disk_free = disk_free
+        self.disk_used_percent = disk_used_percent
+        self.disk_total_boot = disk_total_boot
+        self.disk_used_boot = disk_used_boot
+        self.disk_free_boot = disk_free_boot
+        self.disk_used_percent_boot = disk_used_percent_boot
+        self.eth0_received = eth0_received
+        self.eth0_sent = eth0_sent
+        self.wlan0_received = wlan0_received
+        self.wlan0_sent = wlan0_sent
+        self.lo_received = lo_received
+        self.lo_sent = lo_sent
+        self.kernel = kernel
+        self.source = source
+
