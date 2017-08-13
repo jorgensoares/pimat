@@ -1,5 +1,5 @@
 from flask_restful import Resource, reqparse, marshal, fields
-from pimat_web.app import db, Sensors, Schedules, RelayLogger, Monitoring
+from pimat_web.app import db, Sensors, Schedules, RelayLogger
 
 schedules_fields = {
     'start_time': fields.String,
