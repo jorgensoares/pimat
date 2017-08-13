@@ -825,7 +825,7 @@ api.add_resource(RelayLoggerAPI, '/api/v1/relay/logger')
 
 def main():
     signal.signal(signal.SIGTERM, sigterm_handler)
-    db.create_all()
+    #db.create_all()
     app.run(host='0.0.0.0',
             port=80,
             threaded=True,
