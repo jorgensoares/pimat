@@ -17,11 +17,16 @@ def get_now():
     return datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
 
 
-
 def get_cpu_temperature():
     process = Popen(['/opt/vc/bin/vcgencmd', 'measure_temp'], stdout=PIPE)
     output, _error = process.communicate()
     return float(output[output.index('=') + 1:output.rindex("'")])
+
+
+def get_uname():
+    process = Popen(['/bin/uname', '-srn'], stdout=PIPE)
+    output, _error = process.communicate()
+    return output
 
 
 def main():
@@ -30,6 +35,8 @@ def main():
     cpu_details = psutil.cpu_freq()
     boot_time = datetime.fromtimestamp(psutil.boot_time())
     load = os.getloadavg()
+    total_proccesses = len(psutil.pids())
+    uname = get_uname()
 
     boot_time_seconds = (datetime.now()-boot_time).total_seconds()
     print 'Boot time: {0}'.format(display_time(boot_time_seconds))
@@ -39,6 +46,8 @@ def main():
     print 'Load 1min: {0}'.format(load[0])
     print 'Load 5min: {0}'.format(load[1])
     print 'Load 15min: {0}'.format(load[2])
+    print 'Total proccesses: {0}'.format(total_proccesses)
+    print 'Kernel Version: {0}'.format(uname)
 
     ram = psutil.virtual_memory()
     ram_total = ram.total / 2**20       # MiB.
@@ -50,6 +59,17 @@ def main():
     print 'Ram USed: {0}'.format(ram_used)
     print 'Ram Free: {0}'.format(ram_free)
     print 'Ram Percent used: {0}'.format(ram_percent_used)
+
+    swap = psutil.swap_memory()
+    swap_total = swap.total / 2**20       # MiB.
+    swap_used = swap.used / 2**20
+    swap_free = swap.free / 2**20
+    swap_percent_used = swap.percent
+
+    print 'Total Swap: {0}'.format(swap_total)
+    print 'Sawp USed: {0}'.format(swap_used)
+    print 'Swao Free: {0}'.format(swap_free)
+    print 'Swap Percent used: {0}'.format(swap_percent_used)
 
     disk = psutil.disk_usage('/')
     disk_total = disk.total / 2**30     # GiB.
@@ -66,9 +86,14 @@ def main():
     eth0_received = eth0['eth0'].bytes_recv
     eth0_sent = eth0['eth0'].bytes_sent
 
+    lo_received = eth0['lo'].bytes_recv
+    lo_sent = eth0['lo'].bytes_sent
+
     print 'eth0_received: {0}'.format(eth0_received)
     print 'eth0_sent: {0}'.format(eth0_sent)
 
+    print 'lo_received: {0}'.format(lo_received)
+    print 'lo_sent: {0}'.format(lo_sent)
 
 if __name__ == '__main__':
     main()
