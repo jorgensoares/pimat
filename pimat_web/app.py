@@ -19,7 +19,7 @@ import json
 import os
 from forms import LoginForm, PasswordForgotForm, PasswordResetForm, CreateUserForm, UpdateProfileForm
 from api import SensorsAPI, SchedulesAPI, RelayLoggerAPI
-from models import db, User, Sensors, Schedules, RelayLogger
+from models import db, User, Sensors, Schedules, RelayLogger, Monitoring
 version = __version__
 
 app = Flask(__name__)
