@@ -17,9 +17,9 @@ import sys
 import requests
 import json
 import os
-from pimat_web.forms import LoginForm, PasswordForgotForm, PasswordResetForm, CreateUserForm, UpdateProfileForm
-from pimat_web.api import SensorsAPI, SchedulesAPI, RelayLoggerAPI
-from pimat_web.models import db, User, Sensors, Schedules, RelayLogger
+from forms import LoginForm, PasswordForgotForm, PasswordResetForm, CreateUserForm, UpdateProfileForm
+from api import SensorsAPI, SchedulesAPI, RelayLoggerAPI
+from models import db, User, Sensors, Schedules, RelayLogger
 version = __version__
 
 app = Flask(__name__)
