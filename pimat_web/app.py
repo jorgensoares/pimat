@@ -19,11 +19,14 @@ import json
 import os
 from forms import LoginForm, PasswordForgotForm, PasswordResetForm, CreateUserForm, UpdateProfileForm
 from api import SensorsAPI, SchedulesAPI, RelayLoggerAPI
-from models import db, User, Sensors, Schedules, RelayLogger
+from flask_sqlalchemy import SQLAlchemy
+
+
 
 version = __version__
 
 app = Flask(__name__)
+db = SQLAlchemy(app)
 
 app.config['SERVER_IP'] = '10.14.11.252'
 app.config['LOG'] = '/var/log/pimat-web.log'
