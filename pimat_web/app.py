@@ -20,13 +20,9 @@ import os
 from forms import LoginForm, PasswordForgotForm, PasswordResetForm, CreateUserForm, UpdateProfileForm
 from api import SensorsAPI, SchedulesAPI, RelayLoggerAPI
 from flask_sqlalchemy import SQLAlchemy
-
-
-
 version = __version__
 
 app = Flask(__name__)
-db = SQLAlchemy(app)
 
 app.config['SERVER_IP'] = '10.14.11.252'
 app.config['LOG'] = '/var/log/pimat-web.log'
@@ -48,6 +44,7 @@ app.config['RECAPTCHA_PRIVATE_KEY'] = '6LcwqywUAAAAAGB9HhvMq3C_JOfCYLBliH2-un7U'
 app.secret_key = 'super secret string'
 ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg', 'gif'])
 
+db = SQLAlchemy(app)
 csrf = CSRFProtect(app)
 api = Api(app, decorators=[csrf.exempt])
 mail = Mail()
