@@ -6,7 +6,6 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from flask import Flask, request, redirect, render_template, flash, url_for, current_app, session
 from flask_restful import Api
 from datetime import datetime, timedelta
-from flask_sqlalchemy import SQLAlchemy
 from flask_mail import Mail, Message
 from version import __version__
 from flask_login import *
@@ -20,7 +19,7 @@ import json
 import os
 from forms import LoginForm, PasswordForgotForm, PasswordResetForm, CreateUserForm, UpdateProfileForm
 from api import SensorsAPI, SchedulesAPI, RelayLoggerAPI
-from models import User, Sensors, Schedules, RelayLogger
+from models import db, User, Sensors, Schedules, RelayLogger
 version = __version__
 
 app = Flask(__name__)
@@ -45,7 +44,7 @@ app.config['RECAPTCHA_PRIVATE_KEY'] = '6LcwqywUAAAAAGB9HhvMq3C_JOfCYLBliH2-un7U'
 app.secret_key = 'super secret string'
 ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg', 'gif'])
 
-db = SQLAlchemy(app)
+db.init_app(app)
 csrf = CSRFProtect(app)
 api = Api(app, decorators=[csrf.exempt])
 mail = Mail()
@@ -180,34 +179,27 @@ def dashboard():
                                 timeout=0.5)
         status = json.loads(response.content)
         relay_status['relay1'] = status['status']
-
     except requests.ConnectionError:
         relay_status['relay1'] = 'N/A'
-
     try:
         response = requests.get('http://localhost:4001/api/relay/{0}'.format(relay_config['pins']['relay2']),
                                 timeout=0.5)
         status = json.loads(response.content)
         relay_status['relay2'] = status['status']
-
     except requests.ConnectionError:
         relay_status['relay2'] = 'N/A'
-
     try:
         response = requests.get('http://localhost:4001/api/relay/{0}'.format(relay_config['pins']['relay3']),
                                 timeout=0.5)
         status = json.loads(response.content)
         relay_status['relay3'] = status['status']
-
     except requests.ConnectionError:
         relay_status['relay3'] = 'N/A'
-
     try:
         response = requests.get('http://localhost:4001/api/relay/{0}'.format(relay_config['pins']['relay4']),
                                 timeout=0.5)
         status = json.loads(response.content)
         relay_status['relay4'] = status['status']
-
     except requests.ConnectionError:
         relay_status['relay4'] = 'N/A'
 
@@ -538,15 +530,12 @@ def password_change():
 
                     flash('Password changed successfully, you should logout and login again!', 'success')
                     return redirect(url_for("dashboard"))
-
                 else:
                     flash('Passwords dont Match!', 'danger')
                     return render_template('password_change.html', version=version)
-
             else:
                 flash('Wrong Current Password', 'danger')
                 return render_template('password_change.html', version=version)
-
         else:
             flash('All fields are mandatory!', 'danger')
             return render_template('password_change.html', version=version)
@@ -560,26 +549,20 @@ def password_forgot():
 
     if form.validate_on_submit():
         user_details = User.query.filter(User.username == form.username.data).first()
-
         if user_details:
             s = Serializer(app.config['SECRET_KEY'], expires_in=600)
             token = s.dumps({'id': user_details.id})
-
             message = '''Hello, \n\n To reset your password go to: http://%s/password_reset \n\n Token: \n %s''' % \
                       (app.config['SERVER_IP'], token)
-
             subject = "Pimat Password Reset - %s" % user_details.username
             msg = Message(recipients=[user_details.email],
                           body=message,
                           subject=subject)
             mail.send(msg)
-
             flash('Please verify you mailbox!', 'success')
             return redirect(url_for("password_reset"))
-
         else:
             return render_template('password_forgot.html', version=version, form=form)
-
     else:
         for field, errors in form.errors.items():
             for error in errors:
@@ -596,22 +579,17 @@ def password_reset():
         s = Serializer(app.config['SECRET_KEY'])
         try:
             data = s.loads(form.token.data)
-
         except SignatureExpired:
             flash('Expired Token', 'danger')
             return render_template('password_reset_form.html', version=version, form=form)
-
         except BadSignature:
             flash('Invalid Token', 'danger')
             return render_template('password_reset_form.html', version=version, form=form)
 
         user = User.query.filter(User.id == data['id']).first()
-
         if form.username.data == user.username:
             user.password = generate_password_hash(form.new_password.data)
             db.session.commit()
-            flash('Password updated successfully, Please login.', 'success')
-
             message = '''Hello %s,\n\n This is e-mail is to inform you that you have reset your password successfully. 
             \nIf this request was not made by you please contact support immediately.\n 
             \nThank you.\n Pimat\n\n''' % user.username
@@ -621,13 +599,12 @@ def password_reset():
                           body=message,
                           subject=subject)
             mail.send(msg)
-
+            flash('Password updated successfully, Please login.', 'success')
             return redirect(url_for("login"))
 
         else:
             flash('Invalid user', 'danger')
             return render_template('password_reset_form.html', version=version, form=form)
-
     else:
         for field, errors in form.errors.items():
             for error in errors:

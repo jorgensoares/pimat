@@ -1,4 +1,6 @@
-from pimat_web.app import db
+from flask_sqlalchemy import SQLAlchemy
+
+db = SQLAlchemy()
 
 
 class User(db.Model):
