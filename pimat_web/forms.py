@@ -1,7 +1,7 @@
 from flask_wtf import FlaskForm, RecaptchaField, validators
 from wtforms import StringField, PasswordField, validators
 from wtforms.validators import DataRequired
-import pimat_web
+
 
 
 class LoginForm(FlaskForm):
@@ -12,8 +12,8 @@ class LoginForm(FlaskForm):
 class PasswordForgotForm(FlaskForm):
     username = StringField('username', validators=[DataRequired()])
 
-    if pimat_web.app.config['RECAPTCHA'] is True:
-        recaptcha = RecaptchaField('recaptcha')
+
+    recaptcha = RecaptchaField('recaptcha')
 
 
 class PasswordResetForm(FlaskForm):
@@ -25,8 +25,8 @@ class PasswordResetForm(FlaskForm):
     verify_new_password = PasswordField('verify_new_password')
     token = StringField('token', validators=[DataRequired()])
 
-    if pimat_web.config['RECAPTCHA'] is True:
-        recaptcha = RecaptchaField('recaptcha')
+
+    recaptcha = RecaptchaField('recaptcha')
 
 
 class CreateUserForm(FlaskForm):
