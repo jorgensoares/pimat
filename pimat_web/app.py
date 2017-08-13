@@ -6,6 +6,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from flask import Flask, request, redirect, render_template, flash, url_for, current_app, session
 from flask_restful import Api
 from datetime import datetime, timedelta
+from flask_sqlalchemy import SQLAlchemy
 from flask_mail import Mail, Message
 from version import __version__
 from flask_login import *
@@ -19,7 +20,7 @@ import json
 import os
 from forms import LoginForm, PasswordForgotForm, PasswordResetForm, CreateUserForm, UpdateProfileForm
 from api import SensorsAPI, SchedulesAPI, RelayLoggerAPI
-from flask_sqlalchemy import SQLAlchemy
+from models import User, Sensors, Schedules, RelayLogger
 version = __version__
 
 app = Flask(__name__)
