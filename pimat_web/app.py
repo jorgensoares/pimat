@@ -10,6 +10,7 @@ from api import SensorsAPI, SchedulesAPI, RelayLoggerAPI, MonitoringAPI
 from models import db, User, Sensors, Schedules, RelayLogger, Monitoring
 from flask_wtf.csrf import CSRFProtect
 from flask_mail import Mail, Message
+from config import config
 from version import __version__
 from flask_restful import Api
 from flask_login import *
@@ -556,7 +557,7 @@ def password_reset():
 @admin_permission.require()
 @login_required
 def settings():
-    return render_template('settings.html', version=version )
+    return render_template('settings.html', config=config, version=version )
 
 
 def main():
