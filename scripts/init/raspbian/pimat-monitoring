@@ -5,8 +5,8 @@
 
 ### BEGIN INIT INFO
 # Provides:          pimat-monitoring
-# Required-Start:    $remote_fs $network +pimat-web
-# Required-Stop:     $remote_fs $network
+# Required-Start:    $network +pimat-web
+# Required-Stop:     $network
 # Default-Start:     2 3 4 5
 # Default-Stop:      0 1 6
 # Short-Description: init script for pimat monitoring
