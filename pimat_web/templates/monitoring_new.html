@@ -211,7 +211,7 @@
               <p><b>IP wlan0: </b> {{ last_reading.ip_wlan0 }}</p>
               <p><b>Timezone: </b> {{ last_reading.timezone }}</p>
               <p><b>CPU Frequency: </b> {{ last_reading.cpu_frequency }} Mhz</p>
-              <p><b>Uptime: </b>  3 days, 7 hours, 17 min, 43 sec</p>
+              <p><b>Uptime: </b>  {{ last_reading.boot_time }}</p>
               <p><b>Kernel version: </b> {{ last_reading.kernel }}</p>
               <p><b>Last Check: </b>  {{ last_reading.timestamp }}</p>
             </div>

@@ -441,6 +441,14 @@ def monitoring():
 
         return '{0} {1}'.format(f, suffixes[i])
 
+    def convert_timestamp(timestamp):
+        boot_time = datetime.fromtimestamp(timestamp)
+        seconds = (datetime.now() - boot_time).total_seconds()
+        sec = timedelta(seconds=int(seconds))
+        d = datetime(1, 1, 1) + sec
+
+        return "%d days, %d hours, %d min, %d sec" % (d.day - 1, d.hour, d.minute, d.second)
+
     last_reading = Monitoring.query.order_by(Monitoring.timestamp.desc()).first()
     last_reading.disk_total = convert_bytes(int(last_reading.disk_total))
     last_reading.disk_used = convert_bytes(int(last_reading.disk_used))
@@ -460,6 +468,7 @@ def monitoring():
     last_reading.wlan0_sent = convert_bytes(int(last_reading.wlan0_sent))
     last_reading.lo_received = convert_bytes(int(last_reading.lo_received))
     last_reading.lo_sent = convert_bytes(int(last_reading.lo_sent))
+    last_reading.boot_time = convert_timestamp(last_reading.boot_time)
 
     return render_template('monitoring_new.html',
                            last_reading=last_reading,
