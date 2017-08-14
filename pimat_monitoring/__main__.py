@@ -122,7 +122,7 @@ def main():
                 server_log.error('bad request or wrong request data sent to server')
                 break
 
-        time.sleep(30)
+        time.sleep(300)
 
 
 if __name__ == '__main__':

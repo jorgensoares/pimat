@@ -14,7 +14,7 @@
 ### END INIT INFO
 
 PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
-NAME=pimat-server
+NAME=pimat-sensors
 DAEMON=/usr/local/bin/pimat-sensors
 DAEMONARGS=""
 PIDFILE=/var/run/$NAME.pid
