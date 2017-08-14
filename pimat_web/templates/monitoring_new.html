@@ -116,7 +116,7 @@
             <div class="box-body">
               <p>
                 <b>Total Memory: </b> {{ last_reading.ram_total }} &nbsp;
-                <b>Used Memory: </b> { last_reading.ram_used }}&nbsp;
+                <b>Used Memory: </b> {{ last_reading.ram_used }}&nbsp;
                 <b>&nbsp;Available  </b> {{ last_reading.ram_free }}&nbsp;
               </p>
               <div class="progress">
@@ -126,7 +126,7 @@
               </div>
               <p>
                 <b>Total Swap: </b> {{ last_reading.swap_total }} &nbsp;
-                <b>Used Swap: </b> { last_reading.swap_used }}&nbsp;
+                <b>Used Swap: </b> {{ last_reading.swap_used }}&nbsp;
                 <b>&nbsp;Available  </b> {{ last_reading.swap_free }}&nbsp;
               </p>
               <div class="progress">
@@ -191,9 +191,9 @@
                   </thead>
                   <tbody>
                     <tr>
-                      <td>0.67</td>
-                      <td>0.1</td>
-                      <td>0.23</td>
+                      <td>{{ last_reading.load_1 }}</td>
+                      <td>{{ last_reading.load_5 }}</td>
+                      <td>{{ last_reading.load_15 }}</td>
                     </tr>
                   </tbody>
                 </table>
@@ -206,14 +206,14 @@
               <span class="glyphicon glyphicon-modal-window pull-right"></span>
             </div>
             <div class="box-body">
-              <p><b>Hostname: </b> osmc</p>
-              <p><b>IP eth0: </b> 10.14.11.252</p>
-              <p><b>IP wlan0: </b></p>
-              <p><b>Timezone: </b> WEST</p>
-              <p><b>CPU Frequency: </b> 900 Mhz</p>
+              <p><b>Hostname: </b> {{ last_reading.hostname }}</p>
+              <p><b>IP eth0: </b> {{ last_reading.ip_eth0 }}</p>
+              <p><b>IP wlan0: </b> {{ last_reading.ip_wlan0 }}</p>
+              <p><b>Timezone: </b> {{ last_reading.timezone }}</p>
+              <p><b>CPU Frequency: </b> {{ last_reading.cpu_frequency }} Mhz</p>
               <p><b>Uptime: </b>  3 days, 7 hours, 17 min, 43 sec</p>
-              <p><b>Kernel version: </b> Linux osmc 4.4.27-5-osmc</p>
-              <p><b>Last Check: </b>  Sun Aug 13 03:50:54 WEST 2017</p>
+              <p><b>Kernel version: </b> {{ last_reading.kernel }}</p>
+              <p><b>Last Check: </b>  {{ last_reading.timestamp }}</p>
             </div>
           </div>
 
@@ -235,18 +235,18 @@
                   <tbody>
                     <tr>
                       <td>eth0</td>
-                      <td>3.6 GB</td>
-                      <td>500 MB</td>
+                      <td>{{ last_reading.eth0_sent }}</td>
+                      <td>{{ last_reading.eth0_received }}</td>
                     </tr>
                     <tr>
                       <td>wlan0</td>
-                      <td>0</td>
-                      <td>0</td>
+                      <td>{{ last_reading.wlan0_sent }}</td>
+                      <td>{{ last_reading.wlan0_received }}</td>
                     </tr>
                     <tr>
                       <td>lo</td>
-                      <td>1.3 Mb</td>
-                      <td>128 B</td>
+                      <td>{{ last_reading.lo_sent }}</td>
+                      <td>{{ last_reading.lo_received }}</td>
                     </tr>
                   </tbody>
                 </table>

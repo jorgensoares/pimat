@@ -454,7 +454,13 @@ def monitoring():
     last_reading.swap_total = convert_bytes(int(last_reading.swap_total))
     last_reading.swap_used = convert_bytes(int(last_reading.swap_used))
     last_reading.swap_free = convert_bytes(int(last_reading.swap_free))
-    
+    last_reading.eth0_received = convert_bytes(int(last_reading.eth0_received))
+    last_reading.eth0_sent = convert_bytes(int(last_reading.eth0_sent))
+    last_reading.wlan0_received = convert_bytes(int(last_reading.wlan0_received))
+    last_reading.wlan0_sent = convert_bytes(int(last_reading.wlan0_sent))
+    last_reading.lo_received = convert_bytes(int(last_reading.lo_received))
+    last_reading.lo_sent = convert_bytes(int(last_reading.lo_sent))
+
     return render_template('monitoring_new.html',
                            last_reading=last_reading,
                            version=version)
