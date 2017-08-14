@@ -67,7 +67,7 @@ class MonitoringAPI(Resource):
         self.reqparse.add_argument('ip_eth0', type=str, default="", location='json')
         self.reqparse.add_argument('ip_wlan0', type=str, default="", location='json')
         self.reqparse.add_argument('timezone', type=str, default="", location='json')
-        self.reqparse.add_argument('boot_time', type=str, default="", location='json')
+        self.reqparse.add_argument('boot_time', type=float, default="", location='json')
         self.reqparse.add_argument('cpu_temp', type=float, default="", location='json')
         self.reqparse.add_argument('cpu_usage', type=float, default="", location='json')
         self.reqparse.add_argument('cpu_frequency', type=float, default="", location='json')
