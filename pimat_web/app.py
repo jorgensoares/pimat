@@ -427,8 +427,24 @@ def upload_file():
 @app.route("/monitoring", methods=['GET'])
 @login_required
 def monitoring():
+
+    def convert_bytes(size):
+        suffixes = ['B', 'KB', 'MB', 'GB', 'TB', 'PB']
+        if size == 0:
+            size = '0 B'
+            return size
+        i = 0
+        while size >= 1024 and i < len(suffixes) - 1:
+            size /= 1024.
+            i += 1
+        f = ('%.2f' % size).rstrip('0').rstrip('.')
+
+        return '{0} {1}'.format(f, suffixes[i])
+
     last_reading = Monitoring.query.order_by(Monitoring.timestamp.desc()).first()
-    last_reading.disk_total = int(last_reading.disk_total) / 2**30
+    last_reading.disk_total = convert_bytes(int(last_reading.disk_total))
+    last_reading.disk_used = convert_bytes(int(last_reading.disk_used))
+    last_reading.disk_free = convert_bytes(int(last_reading.disk_free))
 
     return render_template('monitoring_new.html',
                            last_reading=last_reading,
