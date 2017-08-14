@@ -445,6 +445,9 @@ def monitoring():
     last_reading.disk_total = convert_bytes(int(last_reading.disk_total))
     last_reading.disk_used = convert_bytes(int(last_reading.disk_used))
     last_reading.disk_free = convert_bytes(int(last_reading.disk_free))
+    last_reading.disk_total_boot = convert_bytes(int(last_reading.disk_total_boot))
+    last_reading.disk_used_boot = convert_bytes(int(last_reading.disk_used_boot))
+    last_reading.disk_free_boot = convert_bytes(int(last_reading.disk_free_boot))
 
     return render_template('monitoring_new.html',
                            last_reading=last_reading,
