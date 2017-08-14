@@ -122,6 +122,18 @@
                     </div>
                   </div>
                   <div class="form-group row">
+                    <label for="rf433_rcpt_pin" class="col-sm-2 col-form-label">Rf433 Receptor Pin</label>
+                    <div class="col-sm-10">
+                      <input type="number" class="form-control" id="rf433_rcpt_pin" placeholder="Pin">
+                    </div>
+                  </div>
+                  <div class="form-group row">
+                    <label for="rf433_emit_pin" class="col-sm-2 col-form-label">Rf433 Emitter Pin</label>
+                    <div class="col-sm-10">
+                      <input type="number" class="form-control" id="rf433_emit_pin" placeholder="Pin">
+                    </div>
+                  </div>
+                  <div class="form-group row">
                     <label for="recaptcha_public_key" class="col-sm-2 col-form-label">Recaptcha Pub. Key </label>
                     <div class="col-sm-10">
                       <input type="password" class="form-control" id="recaptcha_public_key" placeholder="Recaptcha Public Key">
@@ -173,7 +185,7 @@
                   <div class="form-group row">
                     <label for="db_server" class="col-sm-2 col-form-label"> Server</label>
                     <div class="col-sm-10">
-                      <input type="text" class="form-control" id="db_server" placeholder="Server URL or IP">
+                      <input type="text" class="form-control" id="db_server" placeholder="Server URL or IP, SQLite use path to db file">
                     </div>
                   </div>
                   <div class="form-group row">
