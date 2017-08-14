@@ -3,6 +3,7 @@ import configparser
 from subprocess import call, check_output
 import sys
 import datetime
+import time
 import json
 import requests
 
@@ -11,6 +12,7 @@ pimat_api_endpoint = 'http://localhost/api/v1/relay/logger'
 relay_file = '/opt/pimat/relays.ini'
 relay_config = configparser.ConfigParser()
 relay_config.read(relay_file)
+
 
 def get_now():
     # get the current date and time as a string
@@ -47,7 +49,6 @@ class Relays(object):
         self.relay = relay
         self.pin = pin
 
-
     def start(self):
         call(['gpio', 'mode', self.pin, 'out'])
         call(['gpio', 'write', self.pin, '0'])
@@ -64,8 +65,14 @@ class Relays(object):
         json_data['value'] = '1'
         json_data['source'] = 'pimat-client-1'
 
-        requests.post(pimat_api_endpoint, data=json.dumps(json_data, default=json_serial),
-                                 headers={'content-type': 'application/json'})
+        retries = 4
+        while retries > 1:
+            retries -= 1
+            try:
+                requests.post(pimat_api_endpoint, data=json.dumps(json_data, default=json_serial),
+                      headers={'content-type': 'application/json'})
+            except requests.ConnectionError:
+                time.sleep(3)
 
         return 'started'
 
@@ -85,8 +92,14 @@ class Relays(object):
         json_data['value'] = '0'
         json_data['source'] = 'pimat-client-1'
 
-        requests.post(pimat_api_endpoint, data=json.dumps(json_data, default=json_serial),
-                                 headers={'content-type': 'application/json'})
+        retries = 4
+        while retries > 1:
+            retries -= 1
+            try:
+                requests.post(pimat_api_endpoint, data=json.dumps(json_data, default=json_serial),
+                              headers={'content-type': 'application/json'})
+            except requests.ConnectionError:
+                time.sleep(3)
 
         return 'stopped'
 
@@ -101,8 +114,6 @@ class Relays(object):
         json_data['value'] = mode
         json_data['source'] = 'pimat-client-1'
 
-        requests.post(pimat_api_endpoint, data=json.dumps(json_data, default=json_serial),
-                                 headers={'content-type': 'application/json'})
         return mode
 
 
@@ -135,6 +146,7 @@ def main():
     else:
         print('Relay ID does not exist must be between 1 and 4')
         sys.exit(1)
+
 
 if __name__ == '__main__':
     main()
