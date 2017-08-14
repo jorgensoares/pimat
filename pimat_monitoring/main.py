@@ -95,8 +95,8 @@ def main():
     status['disk_used_percent_boot'] = disk_boot.percent
     status['eth0_received'] = traffic['eth0'].bytes_recv
     status['eth0_sent'] = traffic['eth0'].bytes_sent
-    status['wlan0_received'] = ''
-    status['wlan0_sent'] = ''
+    status['wlan0_received'] = 0
+    status['wlan0_sent'] = 0
     status['lo_received'] = traffic['lo'].bytes_recv
     status['lo_sent'] = traffic['lo'].bytes_sent
     status['kernel'] = get_uname()
