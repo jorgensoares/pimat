@@ -137,7 +137,7 @@
             </div>
             <!-- /.box-header -->
             <div class="box-body">
-              <p><b>Mount Point: </b> / &nbsp;<b>Available:</b> {{ int(last_reading.disk_total)/ 2**30 }}  G&nbsp;<b>&nbsp;Used:</b> 137 MB  &nbsp;</p>
+              <p><b>Mount Point: </b> / &nbsp;<b>Available:</b> {{ last_reading.disk_total }}  G&nbsp;<b>&nbsp;Used:</b> 137 MB  &nbsp;</p>
               <div class="progress">
                 <div class="progress-bar progress-bar" role="progressbar" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100" style="width: 70%">
                   <span>20% Used</span>

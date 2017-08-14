@@ -427,8 +427,11 @@ def upload_file():
 @app.route("/monitoring", methods=['GET'])
 @login_required
 def monitoring():
+    last_reading = Monitoring.query.order_by(Monitoring.timestamp.desc()).first()
+    last_reading.disk_total = int(last_reading.disk_total) / 2**30
+
     return render_template('monitoring_new.html',
-                           last_reading=Monitoring.query.order_by(Monitoring.timestamp.desc()).first(),
+                           last_reading=last_reading,
                            version=version)
 
 
