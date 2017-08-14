@@ -1,48 +1,29 @@
 #!/usr/bin/python
 from flask_principal import Principal, Identity, AnonymousIdentity, identity_changed, identity_loaded, RoleNeed, \
     UserNeed, Permission
+from functions import get_previous_date, get_now, sigterm_handler, allowed_file, convert_bytes, convert_timestamp
+from forms import LoginForm, PasswordForgotForm, PasswordResetForm, CreateUserForm, UpdateProfileForm
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer, BadSignature, SignatureExpired
-from werkzeug.security import generate_password_hash, check_password_hash
 from flask import Flask, request, redirect, render_template, flash, url_for, current_app, session
-from flask_restful import Api
-from datetime import datetime, timedelta
+from werkzeug.security import generate_password_hash, check_password_hash
+from api import SensorsAPI, SchedulesAPI, RelayLoggerAPI, MonitoringAPI
+from models import db, User, Sensors, Schedules, RelayLogger, Monitoring
+from flask_wtf.csrf import CSRFProtect
 from flask_mail import Mail, Message
 from version import __version__
+from flask_restful import Api
 from flask_login import *
 import configparser
-from flask_wtf.csrf import CSRFProtect
 import logging
 import signal
-import sys
 import requests
 import json
 import os
-from forms import LoginForm, PasswordForgotForm, PasswordResetForm, CreateUserForm, UpdateProfileForm
-from api import SensorsAPI, SchedulesAPI, RelayLoggerAPI, MonitoringAPI
-from models import db, User, Sensors, Schedules, RelayLogger, Monitoring
+
 version = __version__
 
 app = Flask(__name__)
-
-app.config['SERVER_IP'] = '10.14.11.252'
-app.config['LOG'] = '/var/log/pimat-web.log'
-app.config['UPLOAD_FOLDER'] = '/opt/pimat/pimat_web/static/images'
-app.config['RELAY_CONFIG'] = '/opt/pimat/relays.ini'
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:zaq12wsx@localhost/pimat'
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-app.config['SQLALCHEMY_ECHO'] = False
-app.config['MAIL_SERVER'] = 'mail.ocloud.cz'
-app.config['MAIL_PORT'] = 587
-app.config['MAIL_USERNAME'] = 'teste@ocloud.cz'
-app.config['MAIL_PASSWORD'] = 'zaq12wsx'
-app.config['MAIL_USE_TLS'] = True
-app.config['MAIL_USE_SSL'] = False
-app.config['MAIL_DEFAULT_SENDER'] = 'teste@ocloud.cz'
-app.config['RECAPTCHA'] = False
-app.config['RECAPTCHA_PUBLIC_KEY'] = '6LcwqywUAAAAANqGKZdPMGUmBZ3nKwRadazZS2OZ'
-app.config['RECAPTCHA_PRIVATE_KEY'] = '6LcwqywUAAAAAGB9HhvMq3C_JOfCYLBliH2-un7U'
-app.secret_key = 'super secret string'
-ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg', 'gif'])
+app.config.from_object('config')
 
 db.init_app(app)
 csrf = CSRFProtect(app)
@@ -62,26 +43,6 @@ api.add_resource(SensorsAPI, '/api/sensors')
 api.add_resource(SchedulesAPI, '/api/schedules')
 api.add_resource(RelayLoggerAPI, '/api/v1/relay/logger')
 api.add_resource(MonitoringAPI, '/api/v1/monitoring')
-
-
-def get_previous_date(days):
-    return datetime.today() - timedelta(days=days)
-
-
-def get_now():
-    # get the current date and time as a string
-    return datetime.now()
-
-
-def sigterm_handler(_signo, _stack_frame):
-    # When sysvinit sends the TERM signal, cleanup before exiting.
-    print("received signal {}, exiting...".format(_signo))
-    sys.exit(0)
-
-
-def allowed_file(filename):
-    return '.' in filename and \
-           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 
 @identity_loaded.connect_via(app)
@@ -380,11 +341,7 @@ def logs():
     with open("/var/log/pimat/pimat-web.log", "r") as f:
         pimat_web_log = f.read()
 
-    return render_template('logs.html',
-                           version=version,
-                           pimat_server_log=pimat_server_log,
-                           pimat_web_log=pimat_web_log
-                           )
+    return render_template('logs.html', pimat_server_log=pimat_server_log, pimat_web_log=pimat_web_log, version=version)
 
 
 @app.route("/profile", methods=['GET', 'POST'])
@@ -427,28 +384,6 @@ def upload_file():
 @app.route("/monitoring", methods=['GET'])
 @login_required
 def monitoring():
-
-    def convert_bytes(size):
-        suffixes = ['B', 'KB', 'MB', 'GB', 'TB', 'PB']
-        if size == 0:
-            size = '0 B'
-            return size
-        i = 0
-        while size >= 1024 and i < len(suffixes) - 1:
-            size /= 1024.
-            i += 1
-        f = ('%.2f' % size).rstrip('0').rstrip('.')
-
-        return '{0} {1}'.format(f, suffixes[i])
-
-    def convert_timestamp(timestamp):
-        boot_time = datetime.fromtimestamp(timestamp)
-        seconds = (datetime.now() - boot_time).total_seconds()
-        sec = timedelta(seconds=int(seconds))
-        d = datetime(1, 1, 1) + sec
-
-        return "%d days, %d hours, %d min, %d sec" % (d.day - 1, d.hour, d.minute, d.second)
-
     last_reading = Monitoring.query.order_by(Monitoring.timestamp.desc()).first()
     last_reading.disk_total = convert_bytes(int(last_reading.disk_total))
     last_reading.disk_used = convert_bytes(int(last_reading.disk_used))
@@ -470,9 +405,7 @@ def monitoring():
     last_reading.lo_sent = convert_bytes(int(last_reading.lo_sent))
     last_reading.boot_time = convert_timestamp(last_reading.boot_time)
 
-    return render_template('monitoring_new.html',
-                           last_reading=last_reading,
-                           version=version)
+    return render_template('monitoring_new.html', last_reading=last_reading, version=version)
 
 
 @app.route("/user/<action>/<user_id>", methods=['GET', 'POST'])
@@ -512,10 +445,7 @@ def edit_user(action, user_id):
 @admin_permission.require()
 @login_required
 def users():
-    return render_template('users.html',
-                           version=version,
-                           users=User.query.order_by(User.id.asc()).all()
-                           )
+    return render_template('users.html', users=User.query.order_by(User.id.asc()).all(), version=version )
 
 
 @app.route("/password_change", methods=['GET', 'POST'])
@@ -538,9 +468,7 @@ def password_change():
                      \nThank you.\n Pimat\n\n''' % user.username
 
                     subject = "Pimat Password Change Notice - %s" % user.username
-                    msg = Message(recipients=[user.email],
-                                  body=message,
-                                  subject=subject)
+                    msg = Message(recipients=[user.email], body=message, subject=subject)
                     mail.send(msg)
 
                     flash('Password changed successfully, you should logout and login again!', 'success')
@@ -570,9 +498,7 @@ def password_forgot():
             message = '''Hello, \n\n To reset your password go to: http://%s/password_reset \n\n Token: \n %s''' % \
                       (app.config['SERVER_IP'], token)
             subject = "Pimat Password Reset - %s" % user_details.username
-            msg = Message(recipients=[user_details.email],
-                          body=message,
-                          subject=subject)
+            msg = Message(recipients=[user_details.email], body=message, subject=subject)
             mail.send(msg)
             flash('Please verify you mailbox!', 'success')
             return redirect(url_for("password_reset"))
@@ -610,9 +536,7 @@ def password_reset():
             \nThank you.\n Pimat\n\n''' % user.username
 
             subject = "Pimat Password Reset Notice - %s" % user.username
-            msg = Message(recipients=[user.email],
-                          body=message,
-                          subject=subject)
+            msg = Message(recipients=[user.email], body=message, subject=subject)
             mail.send(msg)
             flash('Password updated successfully, Please login.', 'success')
             return redirect(url_for("login"))

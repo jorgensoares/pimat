@@ -1,6 +1,7 @@
 from flask_wtf import FlaskForm, RecaptchaField, validators
 from wtforms import StringField, PasswordField, validators
 from wtforms.validators import DataRequired
+from flask import current_app
 
 
 class LoginForm(FlaskForm):
@@ -11,8 +12,8 @@ class LoginForm(FlaskForm):
 class PasswordForgotForm(FlaskForm):
     username = StringField('username', validators=[DataRequired()])
 
-
-    recaptcha = RecaptchaField('recaptcha')
+    if current_app.config('RECAPTCHA') is True:
+        recaptcha = RecaptchaField('recaptcha')
 
 
 class PasswordResetForm(FlaskForm):
@@ -24,8 +25,8 @@ class PasswordResetForm(FlaskForm):
     verify_new_password = PasswordField('verify_new_password')
     token = StringField('token', validators=[DataRequired()])
 
-
-    recaptcha = RecaptchaField('recaptcha')
+    if current_app.config('RECAPTCHA') is True:
+        recaptcha = RecaptchaField('recaptcha')
 
 
 class CreateUserForm(FlaskForm):
