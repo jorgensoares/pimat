@@ -85,10 +85,10 @@
                 </div>
                 <div class="box-body">
                   <div class="form-group row">
-                    <label for="inputEmail3" class="col-sm-2 col-form-label">Server IP</label>
+                    <label for="inputEmail3" class="col-sm-2 col-form-label">Pimat URL or IP</label>
                     <div class="col-sm-10">
                       <input type="text" class="form-control" id="inputEmail3"
-                             value="{{ config['pimat']['server_ip'] }}" placeholder="IP address">
+                             value="{{ config['pimat']['server_ip'] }}" placeholder="URL or IP address" required>
                     </div>
                   </div>
 
@@ -96,21 +96,21 @@
                     <label for="relay_config" class="col-sm-2 col-form-label">Relay Config file</label>
                     <div class="col-sm-10">
                       <input type="text" class="form-control" id="relay_config"
-                             value="{{ config['pimat']['relay_config'] }}" placeholder="Path to config file">
+                             value="{{ config['pimat']['relay_config'] }}" placeholder="Path to config file" required>
                     </div>
                   </div>
                   <div class="form-group row">
                     <label for="inputPassword3" class="col-sm-2 col-form-label">Pimat Log</label>
                     <div class="col-sm-10">
                       <input type="text" class="form-control" id="inputPassword3"
-                             value="{{ config['pimat']['log'] }}" placeholder="Path to log file">
+                             value="{{ config['pimat']['log'] }}" placeholder="Path to log file" required>
                     </div>
                   </div>
                   <div class="form-group row">
                     <label for="upload_folder" class="col-sm-2 col-form-label">Avatar's Folder</label>
                     <div class="col-sm-10">
                       <input type="text" class="form-control" id="upload_folder"
-                             value="{{ config['pimat']['upload_folder'] }}" placeholder="Path to users avatar folder">
+                             value="{{ config['pimat']['upload_folder'] }}" placeholder="Path to users avatar folder" required>
                     </div>
                   </div>
                   <div class="form-group row">
@@ -210,7 +210,7 @@
                   <div class="form-group row">
                     <label for="db_port" class="col-sm-2 col-form-label"> Port</label>
                     <div class="col-sm-10">
-                      <input type="text" class="form-control" id="db_port"
+                      <input type="number" class="form-control" id="db_port"
                              value="{{ config['pimat']['db_port'] }}" placeholder="Server port">
                     </div>
                   </div>
@@ -273,7 +273,7 @@
                   <div class="form-group row">
                     <label for="mail_port" class="col-sm-2 col-form-label"> Port</label>
                     <div class="col-sm-10">
-                      <input type="text" class="form-control" id="mail_port"
+                      <input type="number" class="form-control" id="mail_port"
                              value="{{ config['pimat']['mail_port'] }}" placeholder="Server Port">
                     </div>
                   </div>
