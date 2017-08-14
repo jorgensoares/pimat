@@ -18,7 +18,7 @@ import requests
 import json
 import os
 from forms import LoginForm, PasswordForgotForm, PasswordResetForm, CreateUserForm, UpdateProfileForm
-from api import SensorsAPI, SchedulesAPI, RelayLoggerAPI
+from api import SensorsAPI, SchedulesAPI, RelayLoggerAPI, MonitoringAPI
 from models import db, User, Sensors, Schedules, RelayLogger
 version = __version__
 
@@ -59,9 +59,11 @@ mail.init_app(app)
 #db.create_all()
 relay_config = configparser.ConfigParser()
 relay_config.read(app.config['RELAY_CONFIG'])
+
 api.add_resource(SensorsAPI, '/api/sensors')
 api.add_resource(SchedulesAPI, '/api/schedules')
 api.add_resource(RelayLoggerAPI, '/api/v1/relay/logger')
+api.add_resource(MonitoringAPI, '/api/v1/monitoring')
 
 
 def get_previous_date(days):
@@ -121,7 +123,7 @@ def index():
 @app.route("/login", methods=["GET", "POST"])
 def login():
     form = LoginForm()
-    if request.method == 'POST' and form.validate_on_submit():
+    if form.validate_on_submit():
         user = User.query.filter_by(username=form.username.data).first()
         if user:
             if check_password_hash(user.password, form.password.data):
@@ -195,7 +197,6 @@ def dashboard():
 
     sensors_data = Sensors.query.filter(Sensors.timestamp.between(get_previous_date(1), get_now())). \
         order_by(Sensors.timestamp.asc()).all()
-
     relay_log = RelayLogger.query.filter(RelayLogger.timestamp.between(get_previous_date(1), get_now())). \
         order_by(RelayLogger.timestamp.asc()).all()
 

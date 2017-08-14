@@ -4,10 +4,20 @@ import psutil
 import os
 import socket
 import time
-
+import logging
+import json
+import requests
 from datetime import datetime, timedelta
 
 source = 'pimat-server'
+
+server_log = logging.getLogger()
+handler = logging.FileHandler('/var/log/pimat/pimat-server.log')
+formatter = logging.Formatter('[%(levelname)s] [%(asctime)-15s] [PID: %(process)d] [%(name)s] %(message)s')
+handler.setFormatter(formatter)
+server_log.addHandler(handler)
+server_log.setLevel(logging.DEBUG)
+
 
 def display_time(seconds):
     sec = timedelta(seconds=int(seconds))
@@ -17,7 +27,7 @@ def display_time(seconds):
 
 def get_now():
     # get the current date and time as a string
-    return datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    return datetime.now().strftime('%Y-%m-%d %H:%M:%S')
 
 
 def get_cpu_temperature():
@@ -30,6 +40,18 @@ def get_uname():
     process = Popen(['/bin/uname', '-srn'], stdout=PIPE)
     output, _error = process.communicate()
     return output.strip()
+
+
+def json_serial(obj):
+    """JSON serializer for objects not serializable by default json code"""
+    # yyyy-MM-dd'T'HH:mm:ss.SSS    strict_date_hour_minute_second_millis
+    if isinstance(obj, datetime):
+        tz_string = "Z"
+        serial = "%s.%03d" % (
+            obj.strftime("%Y-%m-%dT%H:%M:%S"),
+            int(obj.microsecond / 1000))
+        return serial
+    raise TypeError("Type not serializable")
 
 
 def main():
@@ -79,8 +101,21 @@ def main():
     status['lo_sent'] = traffic['lo'].bytes_sent
     status['kernel'] = get_uname()
     status['source'] = source
-    
 
+    retries = 3
+    while retries > 1:
+        retries -= 1
+        response = requests.post('http://localhost/api/v1/monitoring',
+                                 data=json.dumps(status, default=json_serial),
+                                 headers={'content-type': 'application/json'})
+
+        if response.status_code == 201:
+            server_log.info('Last reading was posted to http://10.14.11.252/api/sensors')
+            break
+
+        if response.status_code == 400:
+            server_log.error('bad request or wrong request data sent to server')
+            break
 
 if __name__ == '__main__':
     main()

@@ -1,15 +1,17 @@
 #!/bin/sh
 #
-# init script for pimat-web
+# init script for pimat-all
 #
 
 ### BEGIN INIT INFO
-# Provides:          pimat-web
+# Provides:          pimat-all
 # Required-Start:    $remote_fs $network
 # Required-Stop:     $remote_fs $network
+# Should-Start:      pimat-realy-api pimat-sensors
+# Should-Stop:       pimat-realy-api pimat-sensors
 # Default-Start:     2 3 4 5
 # Default-Stop:      0 1 6
-# Short-Description: init script for the pimat web
+# Short-Description: init script for the pimat services
 # Description:       Raspberry pi Multi Automation tool server
 ### END INIT INFO
 

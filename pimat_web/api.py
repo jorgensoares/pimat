@@ -1,5 +1,5 @@
 from flask_restful import Resource, reqparse, marshal, fields
-from pimat_web.models import db, Sensors, Schedules, RelayLogger
+from models import db, Sensors, Schedules, RelayLogger, Monitoring
 
 schedules_fields = {
     'start_time': fields.String,
@@ -98,7 +98,7 @@ class MonitoringAPI(Resource):
         self.reqparse.add_argument('lo_received', type=int, default="", location='json')
         self.reqparse.add_argument('lo_sent', type=int, default="", location='json')
         self.reqparse.add_argument('kernel', type=str, default="", location='json')
-        self.reqparse.add_argument('source', type=str, default="", location='json')
+        self.reqparse.add_argument('source', type=str, default="", required=True, location='json')
         super(MonitoringAPI, self).__init__()
 
     def post(self):

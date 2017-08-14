@@ -5,8 +5,8 @@
 
 ### BEGIN INIT INFO
 # Provides:          pimat-relay-api
-# Required-Start:    $remote_fs $syslog $network +pimat-web
-# Required-Stop:     $remote_fs $syslog $network
+# Required-Start:    $remote_fs $network +pimat-web
+# Required-Stop:     $remote_fs $network
 # Default-Start:     2 3 4 5
 # Default-Stop:      0 1 6
 # Short-Description: init script for the pimat relay api
