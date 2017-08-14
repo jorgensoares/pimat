@@ -448,7 +448,13 @@ def monitoring():
     last_reading.disk_total_boot = convert_bytes(int(last_reading.disk_total_boot))
     last_reading.disk_used_boot = convert_bytes(int(last_reading.disk_used_boot))
     last_reading.disk_free_boot = convert_bytes(int(last_reading.disk_free_boot))
-
+    last_reading.ram_total = convert_bytes(int(last_reading.ram_total))
+    last_reading.ram_used = convert_bytes(int(last_reading.ram_used))
+    last_reading.ram_free = convert_bytes(int(last_reading.ram_free))
+    last_reading.swap_total = convert_bytes(int(last_reading.swap_total))
+    last_reading.swap_used = convert_bytes(int(last_reading.swap_used))
+    last_reading.swap_free = convert_bytes(int(last_reading.swap_free))
+    
     return render_template('monitoring_new.html',
                            last_reading=last_reading,
                            version=version)

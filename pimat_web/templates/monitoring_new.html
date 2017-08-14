@@ -114,16 +114,24 @@
             </div>
             <!-- /.box-header -->
             <div class="box-body">
-              <p><b>Total Memory:</b> 733 MB  &nbsp;&nbsp;<b>&nbsp;Used Memory:</b> 137 MB  &nbsp;</p>
+              <p>
+                <b>Total Memory: </b> {{ last_reading.ram_total }} &nbsp;
+                <b>Used Memory: </b> { last_reading.ram_used }}&nbsp;
+                <b>&nbsp;Available  </b> {{ last_reading.ram_free }}&nbsp;
+              </p>
               <div class="progress">
-                <div class="progress-bar progress-bar-green" role="progressbar" aria-valuenow="133" aria-valuemin="0" aria-valuemax="100" style="width: 60%">
-                  <span>20% Complete</span>
+                <div class="progress-bar progress-bar-green" role="progressbar" aria-valuenow="{{ last_reading.ram_used_percent }}" aria-valuemin="0" aria-valuemax="100" style="width: {{ last_reading.ram_used_percent }}%">
+                  <span>{{ last_reading.ram_used_percent }} % Used</span>
                 </div>
               </div>
-              <p><b>Total SWap:</b> 733 MB  &nbsp;<b>&nbsp;Used Memory:</b> 137 MB  &nbsp;</p>
+              <p>
+                <b>Total Swap: </b> {{ last_reading.swap_total }} &nbsp;
+                <b>Used Swap: </b> { last_reading.swap_used }}&nbsp;
+                <b>&nbsp;Available  </b> {{ last_reading.swap_free }}&nbsp;
+              </p>
               <div class="progress">
-                <div class="progress-bar progress-bar-olive" role="progressbar" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100" style="width: 70%">
-                  <span>20% Used</span>
+                <div class="progress-bar progress-bar-olive" role="progressbar" aria-valuenow="{{ last_reading.swap_used_percent }}" aria-valuemin="0" aria-valuemax="100" style="width: {{ last_reading.swap_used_percent }}%">
+                  <span>{{ last_reading.swap_used_percent }} % Used</span>
                 </div>
               </div>
             </div>
