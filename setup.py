@@ -36,7 +36,7 @@ setup(
                       'itsdangerous',
                       'Flask-Mail',
                       'Flask-WTF',
-                      'Flask-Principal'],
+                      'Flask-Principal', 'psutil'],
 
     include_package_data=True,
     zip_safe=False,

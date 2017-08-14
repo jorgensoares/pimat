@@ -115,4 +115,4 @@ class MonitoringAPI(Resource):
         db.session.add(action)
         db.session.commit()
 
-        return {'status': 'success'}, 201
+        return {'status': 'success', 'data': args}, 201

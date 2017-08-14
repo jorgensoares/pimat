@@ -106,6 +106,7 @@ class RelayLogger(db.Model):
 
 
 class Monitoring(db.Model):
+
     __tablename__ = 'monitoring'
 
     id = db.Column(db.Integer, primary_key=True)
