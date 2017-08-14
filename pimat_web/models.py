@@ -110,11 +110,11 @@ class Monitoring(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     timestamp = db.Column(db.DateTime)
-    hostname = db.Column(db.String(50), unique=True)
+    hostname = db.Column(db.String(50))
     ip_eth0 = db.Column(db.String(16))
     ip_wlan0 = db.Column(db.String(16))
     timezone = db.Column(db.String(5))
-    boot_time = db.Column(db.Float)
+    boot_time = db.Column(db.DateTime)
     cpu_temp = db.Column(db.Float)
     cpu_usage = db.Column(db.Float)
     cpu_frequency = db.Column(db.Float)

@@ -19,11 +19,7 @@ server_log.addHandler(handler)
 server_log.setLevel(logging.DEBUG)
 
 
-def display_time(seconds):
-    sec = timedelta(seconds=int(seconds))
-    d = datetime(1,1,1) + sec
 
-    return "%d days, %d hours, %d min, %d sec" % (d.day-1, d.hour, d.minute, d.second)
 
 def get_now():
     # get the current date and time as a string
@@ -69,7 +65,7 @@ def main():
     status['ip_eth0'] = address['eth0'][0].address
     status['ip_wlan0'] = ''
     status['timezone'] = time.tzname[time.daylight]
-    status['boot_time'] = datetime.fromtimestamp(psutil.boot_time())
+    status['boot_time'] = psutil.boot_time()
     status['cpu_temp'] = get_cpu_temperature()
     status['cpu_usage'] = psutil.cpu_percent(interval=1)
     status['cpu_frequency'] = psutil.cpu_freq()
@@ -77,28 +73,28 @@ def main():
     status['load_5'] = load[1]
     status['load_15'] = load[2]
     status['total_proc'] = len(psutil.pids())
-    status['ram_total'] = ram.total
-    status['ram_free'] = ram.free
-    status['ram_used'] = ram.used
-    status['ram_used_percent'] = ram.percent
-    status['swap_total'] = swap.total
-    status['swap_free'] = swap.free
-    status['swap_used'] = swap.used
+    status['ram_total'] = str(ram.total)
+    status['ram_free'] = str(ram.free)
+    status['ram_used'] = str(ram.used)
+    status['ram_used_percent'] = str(ram.percent)
+    status['swap_total'] = str(swap.total)
+    status['swap_free'] = str(swap.free)
+    status['swap_used'] = str(swap.used)
     status['swap_used_percent'] = swap.percent
-    status['disk_total'] = disk.total
-    status['disk_used'] = disk.used
-    status['disk_free'] = disk.free
+    status['disk_total'] = str(disk.total)
+    status['disk_used'] = str(disk.used)
+    status['disk_free'] = str(disk.free)
     status['disk_used_percent'] = disk.percent
-    status['disk_total_boot'] = disk_boot.total
-    status['disk_used_boot'] = disk_boot.used
-    status['disk_free_boot'] = disk_boot.free
+    status['disk_total_boot'] = str(disk_boot.total)
+    status['disk_used_boot'] = str(disk_boot.used)
+    status['disk_free_boot'] = str(disk_boot.free)
     status['disk_used_percent_boot'] = disk_boot.percent
-    status['eth0_received'] = traffic['eth0'].bytes_recv
-    status['eth0_sent'] = traffic['eth0'].bytes_sent
-    status['wlan0_received'] = 0
-    status['wlan0_sent'] = 0
-    status['lo_received'] = traffic['lo'].bytes_recv
-    status['lo_sent'] = traffic['lo'].bytes_sent
+    status['eth0_received'] = str(traffic['eth0'].bytes_recv)
+    status['eth0_sent'] = str(traffic['eth0'].bytes_sent)
+    status['wlan0_received'] = '0'
+    status['wlan0_sent'] = '0'
+    status['lo_received'] = str(traffic['lo'].bytes_recv)
+    status['lo_sent'] = str(traffic['lo'].bytes_sent)
     status['kernel'] = get_uname()
     status['source'] = source
 
