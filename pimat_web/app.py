@@ -445,7 +445,7 @@ def edit_user(action, user_id):
 @admin_permission.require()
 @login_required
 def users():
-    return render_template('users.html', users=User.query.order_by(User.id.asc()).all(), version=version )
+    return render_template('users.html', users=User.query.order_by(User.id.asc()).all(), version=version)
 
 
 @app.route("/password_change", methods=['GET', 'POST'])
@@ -550,6 +550,13 @@ def password_reset():
                 flash(error, 'warning')
 
     return render_template('password_reset_form.html', version=version, form=form)
+
+
+@app.route("/settings", methods=['GET'])
+@admin_permission.require()
+@login_required
+def settings():
+    return render_template('settings.html', version=version )
 
 
 def main():
