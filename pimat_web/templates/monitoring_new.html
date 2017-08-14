@@ -137,10 +137,15 @@
             </div>
             <!-- /.box-header -->
             <div class="box-body">
-              <p><b>Mount Point: </b> / &nbsp;<b>Available:</b> {{ last_reading.disk_total }} <b>&nbsp;Used:</b> {{ last_reading.disk_used }}&nbsp;<b>&nbsp;Free:</b> {{ last_reading.disk_free }}</p>
+              <p>
+                <b>Mount Point: </b> / &nbsp;
+                <b>Total Space:</b> {{ last_reading.disk_total }}
+                <b>&nbsp;Used Space:</b> {{ last_reading.disk_used }}&nbsp;
+                <b>&nbsp;Available:</b> {{ last_reading.disk_free }}
+              </p>
               <div class="progress">
-                <div class="progress-bar progress-bar" role="progressbar" aria-valuenow="{{ last_reading.disk_used_percent }}" aria-valuemin="0" aria-valuemax="100" style="width: 70%">
-                  <span>20% Used</span>
+                <div class="progress-bar progress-bar" role="progressbar" aria-valuenow="{{ last_reading.disk_used_percent }}" aria-valuemin="0" aria-valuemax="100" style="width: {{ last_reading.disk_used_percent }}%">
+                  <span>{{ last_reading.disk_used_percent }}% Used</span>
                 </div>
               </div>
               <p><b>Mount Point: </b> /boot &nbsp;<b>Available:</b> 733 MB  &nbsp;<b>&nbsp;Used:</b> 137 MB  &nbsp;</p>
