@@ -40,7 +40,7 @@ def convert_bytes(size):
 
 def convert_timestamp(timestamp):
     boot_time = datetime.utcfromtimestamp(timestamp)
-    seconds = (boot_time - datetime.utcnow()).total_seconds()
+    seconds = (datetime.utcnow() - boot_time).total_seconds()
     sec = timedelta(seconds=int(seconds))
     d = datetime(1, 1, 1) + sec
 
