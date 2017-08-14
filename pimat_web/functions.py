@@ -1,4 +1,5 @@
 from datetime import datetime, timedelta
+from pytz import timezone
 import sys
 
 ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg', 'gif'])
@@ -39,9 +40,10 @@ def convert_bytes(size):
 
 
 def convert_timestamp(timestamp):
-    boot_time = datetime.fromtimestamp(timestamp)
-    seconds = (datetime.now() - boot_time).total_seconds()
+    boot_time = datetime.utcfromtimestamp(timestamp)
+    seconds = (datetime.now(timezone('UTC')) - boot_time).total_seconds()
     sec = timedelta(seconds=int(seconds))
+
     d = datetime(1, 1, 1) + sec
 
     return "%d days,  %d hours,  %d min,  %d sec" % (d.day - 1, d.hour, d.minute, d.second)

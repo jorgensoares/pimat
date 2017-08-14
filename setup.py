@@ -38,7 +38,7 @@ setup(
                       'Flask-Mail',
                       'Flask-WTF',
                       'Flask-Principal',
-                      'psutil'],
+                      'psutil', 'pytz'],
 
     include_package_data=True,
     zip_safe=False,
