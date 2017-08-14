@@ -24,6 +24,9 @@ sudo nano /boot/config.txt
 sudo i2cdetect -y 1
 
 
+$ sudo cp /opt/pimat/scripts/init/raspbian/pimat-all /etc/init.d/pimat-all
+$ sudo chmod +x /etc/init.d/pimat-all
+$ sudo update-rc.d pimat-all defaults
 
 ### Contribution
 

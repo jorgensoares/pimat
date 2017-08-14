@@ -1,6 +1,7 @@
 from flask_restful import Resource, reqparse, marshal, fields
 from models import db, Sensors, Schedules, RelayLogger, Monitoring
 
+
 schedules_fields = {
     'start_time': fields.String,
     'stop_time': fields.String,
@@ -28,12 +29,14 @@ class SensorsAPI(Resource):
                           args['light1'], args['pressure'], args['altitude'], args['source'])
         db.session.add(reading)
         db.session.commit()
-        return {'status': 'success'}, 201
+
+        return {'status': 'success', 'data': args}, 201
 
 
 class SchedulesAPI(Resource):
     def get(self):
         schedules = Schedules.query.order_by(Schedules.relay.asc()).all()
+
         return {'schedules': [marshal(schedule, schedules_fields) for schedule in schedules]}, 200
 
 
@@ -56,7 +59,7 @@ class RelayLoggerAPI(Resource):
         db.session.add(action)
         db.session.commit()
 
-        return {'status': 'success'}, 201
+        return {'status': 'success', 'data': args}, 201
 
 
 class MonitoringAPI(Resource):

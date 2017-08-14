@@ -19,6 +19,7 @@ setup(
             'pimat-relay = pimat_relays.__main__:main',
             'pimat-relay-api = pimat_relays.api:main',
             'pimat-sensors = pimat_sensors.__main__:main',
+            'pimat-monitoring = pimat_monitoring.__main__:main',
             'pimat-web = pimat_web.app:main'
         ]
     },
@@ -36,7 +37,8 @@ setup(
                       'itsdangerous',
                       'Flask-Mail',
                       'Flask-WTF',
-                      'Flask-Principal', 'psutil'],
+                      'Flask-Principal',
+                      'psutil'],
 
     include_package_data=True,
     zip_safe=False,

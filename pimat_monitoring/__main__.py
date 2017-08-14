@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 from subprocess import PIPE, Popen
+import sys
 import psutil
 import os
 import socket
@@ -8,6 +9,7 @@ import logging
 import json
 import requests
 from datetime import datetime
+import signal
 
 source = 'pimat-server'
 
@@ -36,6 +38,11 @@ def get_uname():
     return output.strip()
 
 
+def sigterm_handler(_signo, _stack_frame):
+    server_log.info("[" + get_now() + "] received signal {}, exiting...".format(_signo))
+    sys.exit(0)
+
+
 def json_serial(obj):
     """JSON serializer for objects not serializable by default json code"""
     # yyyy-MM-dd'T'HH:mm:ss.SSS    strict_date_hour_minute_second_millis
@@ -49,6 +56,8 @@ def json_serial(obj):
 
 
 def main():
+    signal.signal(signal.SIGTERM, sigterm_handler)
+
     while True:
         status = dict()
         address = psutil.net_if_addrs()
@@ -106,7 +115,7 @@ def main():
 
             if response.status_code == 201:
                 server_log.info('Last reading was posted to http://10.14.11.252/api/sensors')
-                print response.content
+                server_log.debug(status)
                 break
 
             if response.status_code == 400:
