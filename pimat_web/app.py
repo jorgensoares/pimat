@@ -19,7 +19,7 @@ import json
 import os
 from forms import LoginForm, PasswordForgotForm, PasswordResetForm, CreateUserForm, UpdateProfileForm
 from api import SensorsAPI, SchedulesAPI, RelayLoggerAPI, MonitoringAPI
-from models import db, User, Sensors, Schedules, RelayLogger
+from models import db, User, Sensors, Schedules, RelayLogger, Monitoring
 version = __version__
 
 app = Flask(__name__)
@@ -427,7 +427,9 @@ def upload_file():
 @app.route("/monitoring", methods=['GET'])
 @login_required
 def monitoring():
-    return render_template('monitoring_new.html', ip=app.config['SERVER_IP'], version=version)
+    return render_template('monitoring_new.html',
+                           last_reading=Monitoring.query.order_by(Monitoring.timestamp.desc()).first(),
+                           version=version)
 
 
 @app.route("/user/<action>/<user_id>", methods=['GET', 'POST'])
