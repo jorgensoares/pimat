@@ -124,8 +124,8 @@ def main():
                     break
 
             except requests.ConnectionError:
-                time.sleep(1)
-                pass
+                time.sleep(3)
+
 
         time.sleep(300)
 

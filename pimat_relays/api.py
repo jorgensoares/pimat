@@ -65,18 +65,25 @@ def boot_sequence():
     retries = 4
     while retries > 1:
         retries -= 1
-        get_schedules = requests.get("http://localhost/api/schedules")
+        try:
+            get_schedules = requests.get("http://localhost/api/schedules")
 
-        if get_schedules.status_code == 200:
-            server_log.info('Schedules received!')
-            break
+            if get_schedules.status_code == 200:
+                server_log.info('Schedules received!')
+                schedules = json.loads(get_schedules.content)
 
-    schedules = json.loads(get_schedules.content)
+                for schedule in schedules['schedules']:
+                    server_log.info('Adding schedule with ID: {0} for {1}'.format(schedule['id'], schedule['relay']))
+                    cron_schedule = Cron(schedule['id'])
+                    cron_schedule.add_schedule(schedule['relay'], schedule['start_time'], schedule['stop_time'])
 
-    for schedule in schedules['schedules']:
-        server_log.info('Adding schedule with ID: {0} for {1}'.format(schedule['id'], schedule['relay']))
-        cron_schedule = Cron(schedule['id'])
-        cron_schedule.add_schedule(schedule['relay'], schedule['start_time'], schedule['stop_time'])
+                break
+
+        except requests.ConnectionError:
+            time.sleep(3)
+
+
+
 
 
 class RelaysAPI(Resource):
