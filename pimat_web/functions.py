@@ -42,7 +42,6 @@ def convert_timestamp(timestamp):
     boot_time = datetime.utcfromtimestamp(timestamp)
     seconds = (boot_time - datetime.utcnow()).total_seconds()
     sec = timedelta(seconds=int(seconds))
-
     d = datetime(1, 1, 1) + sec
 
     return "%d days,  %d hours,  %d min,  %d sec" % (d.day - 1, d.hour, d.minute, d.second)
