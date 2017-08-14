@@ -124,6 +124,7 @@ def main():
                     break
 
             except requests.ConnectionError:
+                server_log.debug('Could not connect to pimat web server')
                 time.sleep(3)
 
 

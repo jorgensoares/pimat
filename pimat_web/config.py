@@ -24,6 +24,7 @@ MAIL_SERVER = config['pimat']['mail_server']
 MAIL_PORT = int(config['pimat']['mail_port'])
 MAIL_USERNAME = config['pimat']['mail_username']
 MAIL_PASSWORD = config['pimat']['mail_password']
+MAIL_DEFAULT_SENDER = config['pimat']['mail_default_sender']
 
 if config['pimat']['mail_use_tls'] == 'True':
     MAIL_USE_TLS = True
@@ -35,7 +36,6 @@ if config['pimat']['mail_use_ssl'] == 'True':
 else:
     MAIL_USE_SSL = False
 
-MAIL_DEFAULT_SENDER = config['pimat']['mail_default_sender']
 
 if config['pimat']['csrf_enabled'] == 'True':
     CSRF_ENABLED = True

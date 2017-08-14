@@ -79,21 +79,25 @@ def main():
                 server_log.info('''Temp1={0:0.1f}* Temp2={1:0.2f}* Humidity={2:0.1f}% Light={3:0.2f} Pressure={4:0.2f}Pa
                                     Altitude={5:0.2f}m'''.format(temperature1, temperature2, humidity, light, pressure,
                                                                  altitude))
-
                 retries = 3
                 while retries > 1:
                     retries -= 1
-                    response = requests.post('http://localhost/api/sensors',
-                                             data=json.dumps(json_data, default=json_serial),
-                                             headers={'content-type': 'application/json'})
+                    try:
+                        response = requests.post('http://localhost/api/sensors',
+                                                 data=json.dumps(json_data, default=json_serial),
+                                                 headers={'content-type': 'application/json'})
 
-                    if response.status_code == 201:
-                        server_log.info('Last reading was posted to http://10.14.11.252/api/sensors')
-                        break
+                        if response.status_code == 201:
+                            server_log.info('Last reading was posted to http://10.14.11.252/api/sensors')
+                            break
 
-                    if response.status_code == 400:
-                        server_log.error('bad request or wrong request data sent to server')
-                        break
+                        if response.status_code == 400:
+                            server_log.error('bad request or wrong request data sent to server')
+                            break
+
+                    except requests.ConnectionError:
+                        server_log.debug('Could not connect to pimat web server')
+                        time.sleep(2)
 
             else:
                 server_log.error('Failed to get reading. Try again!')
