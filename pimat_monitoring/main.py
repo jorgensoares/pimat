@@ -98,6 +98,8 @@ def main():
     status['kernel'] = get_uname()
     status['source'] = source
 
+    print json.dumps(status, default=json_serial)
+
     retries = 3
     while retries > 1:
         retries -= 1
