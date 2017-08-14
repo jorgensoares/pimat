@@ -106,21 +106,26 @@ def main():
         status['kernel'] = get_uname()
         status['source'] = source
 
-        retries = 3
+        retries = 4
         while retries > 1:
             retries -= 1
-            response = requests.post('http://localhost/api/v1/monitoring',
-                                     data=json.dumps(status, default=json_serial),
-                                     headers={'content-type': 'application/json'})
+            try:
+                response = requests.post('http://localhost/api/v1/monitoring',
+                                         data=json.dumps(status, default=json_serial),
+                                         headers={'content-type': 'application/json'})
 
-            if response.status_code == 201:
-                server_log.info('Last reading was posted to http://10.14.11.252/api/sensors')
-                server_log.debug(status)
-                break
+                if response.status_code == 201:
+                    server_log.info('Last reading was posted to http://10.14.11.252/api/sensors')
+                    server_log.debug(status)
+                    break
 
-            if response.status_code == 400:
-                server_log.error('bad request or wrong request data sent to server')
-                break
+                if response.status_code == 400:
+                    server_log.error('bad request or wrong request data sent to server')
+                    break
+
+            except requests.ConnectionError:
+                time.sleep(1)
+                pass
 
         time.sleep(300)
 
