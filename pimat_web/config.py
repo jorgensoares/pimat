@@ -1,19 +1,24 @@
-SERVER_IP = '10.14.11.252'
-LOG = '/var/log/pimat-web.log'
-UPLOAD_FOLDER = '/opt/pimat/pimat_web/static/images'
-RELAY_CONFIG= '/opt/pimat/relays.ini'
-SQLALCHEMY_DATABASE_URI = 'mysql://root:zaq12wsx@localhost/pimat'
-SQLALCHEMY_TRACK_MODIFICATIONS = False
-SQLALCHEMY_ECHO = False
-MAIL_SERVER = 'mail.ocloud.cz'
-MAIL_PORT = 587
-MAIL_USERNAME = 'teste@ocloud.cz'
-MAIL_PASSWORD = 'zaq12wsx'
-MAIL_USE_TLS = True
-MAIL_USE_SSL = False
-MAIL_DEFAULT_SENDER = 'teste@ocloud.cz'
-CSRF_ENABLED = True
-RECAPTCHA = False
-RECAPTCHA_PUBLIC_KEY = '6LcwqywUAAAAANqGKZdPMGUmBZ3nKwRadazZS2OZ'
-RECAPTCHA_PRIVATE_KEY = '6LcwqywUAAAAAGB9HhvMq3C_JOfCYLBliH2-un7U'
-SECRET_KEY = 'super secret string'
+import configparser
+config = configparser.ConfigParser()
+config.read('/opt/pimat/config.ini')
+
+
+SERVER_IP = config['pimat']['server_ip']
+LOG = config['pimat']['log']
+UPLOAD_FOLDER = config['pimat']['upload_folder']
+RELAY_CONFIG= config['pimat']['relay_config']
+SQLALCHEMY_DATABASE_URI = config['pimat']['sqlalchemy_database_uri']
+SQLALCHEMY_TRACK_MODIFICATIONS = config['pimat']['sqlalchemy_track_modifications']
+SQLALCHEMY_ECHO = config['pimat']['sqlalchemy_echo']
+MAIL_SERVER = config['pimat']['mail_server']
+MAIL_PORT = int(config['pimat']['mail_port'])
+MAIL_USERNAME = config['pimat']['mail_username']
+MAIL_PASSWORD = config['pimat']['mail_password']
+MAIL_USE_TLS = config['pimat']['mail_use_tls']
+MAIL_USE_SSL = config['pimat']['mail_use_ssl']
+MAIL_DEFAULT_SENDER = config['pimat']['mail_default_sender']
+CSRF_ENABLED = config['pimat']['csrf_enabled']
+RECAPTCHA = config['pimat']['recaptcha']
+RECAPTCHA_PUBLIC_KEY = config['pimat']['recaptcha_public_key']
+RECAPTCHA_PRIVATE_KEY = config['pimat']['recaptcha_private_key']
+SECRET_KEY = config['pimat']['secret_key']
