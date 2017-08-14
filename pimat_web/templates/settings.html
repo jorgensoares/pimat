@@ -80,6 +80,9 @@
           <div class="row">
             <div class="col-md-6">
               <div class="box">
+                <div class="box-header with-border">
+                  <h3 class="box-title">Pimat Settings</h3>
+                </div>
                 <div class="box-body">
                   <div class="form-group row">
                     <label for="inputEmail3" class="col-sm-2 col-form-label">Server IP</label>
@@ -88,7 +91,13 @@
                     </div>
                   </div>
                   <div class="form-group row">
-                    <label for="relay_config" class="col-sm-2 col-form-label">Relay Config gile</label>
+                    <label for="inputEmail4" class="col-sm-2 col-form-label">Database link</label>
+                    <div class="col-sm-10">
+                      <input type="text" class="form-control" id="inputEmail4" placeholder="Email">
+                    </div>
+                  </div>
+                  <div class="form-group row">
+                    <label for="relay_config" class="col-sm-2 col-form-label">Relay Config file</label>
                     <div class="col-sm-10">
                       <input type="text" class="form-control" id="relay_config" placeholder="Password">
                     </div>
@@ -100,7 +109,7 @@
                     </div>
                   </div>
                   <div class="form-group row">
-                    <label for="upload_folder" class="col-sm-2 col-form-label">User Avatar Folder</label>
+                    <label for="upload_folder" class="col-sm-2 col-form-label">Avatar's Folder</label>
                     <div class="col-sm-10">
                       <input type="text" class="form-control" id="upload_folder" placeholder="Password">
                     </div>
@@ -150,33 +159,36 @@
             <!-- /.col -->
             <div class="col-md-6">
               <div class="box">
+                <div class="box-header with-border">
+                  <h3 class="box-title">Email Settings</h3>
+                </div>
                 <div class="box-body">
                   <div class="form-group row">
-                    <label for="inputEmail4" class="col-sm-2 col-form-label">Database link</label>
-                    <div class="col-sm-10">
-                      <input type="text" class="form-control" id="inputEmail4" placeholder="Email">
-                    </div>
-                  </div>
-                  <div class="form-group row">
-                    <label for="inputPassword5" class="col-sm-2 col-form-label">Email Server</label>
+                    <label for="inputPassword5" class="col-sm-2 col-form-label"> Server</label>
                     <div class="col-sm-10">
                       <input type="text" class="form-control" id="inputPassword5" placeholder="Password">
                     </div>
                   </div>
                   <div class="form-group row">
-                    <label for="mail_username" class="col-sm-2 col-form-label">Email Username</label>
+                    <label for="mail_port" class="col-sm-2 col-form-label"> Port</label>
+                    <div class="col-sm-10">
+                      <input type="text" class="form-control" id="mail_port" placeholder="Password">
+                    </div>
+                  </div>
+                  <div class="form-group row">
+                    <label for="mail_username" class="col-sm-2 col-form-label"> Username</label>
                     <div class="col-sm-10">
                       <input type="text" class="form-control" id="mail_username" placeholder="Password">
                     </div>
                   </div>
                   <div class="form-group row">
-                    <label for="mail_default_sender" class="col-sm-2 col-form-label">Email Sender</label>
+                    <label for="mail_default_sender" class="col-sm-2 col-form-label"> Sender</label>
                     <div class="col-sm-10">
                       <input type="text" class="form-control" id="mail_default_sender" placeholder="Password">
                     </div>
                   </div>
                   <div class="form-group row">
-                    <label for="mail_password" class="col-sm-2 col-form-label">Email Password</label>
+                    <label for="mail_password" class="col-sm-2 col-form-label"> Password</label>
                     <div class="col-sm-10">
                       <input type="password" class="form-control" id="mail_password" placeholder="Password">
                     </div>
@@ -185,34 +197,18 @@
                     <div class="col-sm-10">
                       <div class="form-check">
                         <label class="form-check-label">
-                          <input class="form-check-input" type="radio" name="gridRadios" id="gridRadios4" value="option1" checked>
-                          Option one is this and that&mdash;be sure to include why it's great
+                          <input class="form-check-input" type="radio" name="gridRadios" id="gridRadios4" value="option1" >
+                          Use SSL
                         </label>
                       </div>
                       <div class="form-check">
                         <label class="form-check-label">
-                          <input class="form-check-input" type="radio" name="gridRadios" id="gridRadios5" value="option2">
-                          Option two can be something else and selecting it will deselect option one
-                        </label>
-                      </div>
-                      <div class="form-check disabled">
-                        <label class="form-check-label">
-                          <input class="form-check-input" type="radio" name="gridRadios" id="gridRadios6" value="option3" disabled>
-                          Option three is disabled
+                          <input class="form-check-input" type="radio" name="gridRadios" id="gridRadios5" value="option2" checked>
+                          Use TLS
                         </label>
                       </div>
                     </div>
                   </fieldset>
-                  <div class="form-group row">
-                    <label class="col-sm-2">Checkbox</label>
-                    <div class="col-sm-10">
-                      <div class="form-check">
-                        <label class="form-check-label">
-                          <input class="form-check-input" type="checkbox"> Check me out
-                        </label>
-                      </div>
-                    </div>
-                  </div>
                 </div>
                 <!-- /.box-body -->
               </div>
