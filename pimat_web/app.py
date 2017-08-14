@@ -56,10 +56,8 @@ admin_permission = Permission(RoleNeed('admin'))
 login_manager = LoginManager()
 login_manager.init_app(app)
 mail.init_app(app)
-#db.create_all()
 relay_config = configparser.ConfigParser()
 relay_config.read(app.config['RELAY_CONFIG'])
-
 api.add_resource(SensorsAPI, '/api/sensors')
 api.add_resource(SchedulesAPI, '/api/schedules')
 api.add_resource(RelayLoggerAPI, '/api/v1/relay/logger')
@@ -110,6 +108,11 @@ def unauthorized_handler():
 @login_required
 def not_found(error):
     return render_template('error.html', error=error, version=version)
+
+
+@app.before_first_request
+def create_db():
+    db.create_all()
 
 
 @app.route("/")
