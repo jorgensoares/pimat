@@ -235,6 +235,7 @@ def relays():
                            clients=clients,
                            )
 
+
 @app.route("/schedule/<action>/<schedule_id>", methods=['POST', 'GET'])
 @login_required
 def add_new_schedule(action, schedule_id):

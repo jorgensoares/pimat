@@ -282,6 +282,18 @@
                     </select>
                   </div>
                   <div class="form-group">
+                    <label class="mr-sm-2" for="db_type">Dashboard Graph Client &nbsp;&nbsp;</label>
+                    <select class="custom-select mb-2 mr-sm-2 mb-sm-0" id="dashboard_relays_client" name="dashboard_client"  required>
+                      {% for client in clients %}
+                        {% if config['dashboard']['relay_client'] == client %}
+                          <option value="{{ client }}" selected>{{ client }}</option>
+                        {% else %}
+                         <option value="{{ client }}">{{ client }}</option>
+                        {% endif %}
+                      {% endfor %}
+                    </select>
+                  </div>
+                  <div class="form-group">
                     <label class="mr-sm-2" for="db_type">Number of Relays&nbsp;&nbsp;</label>
                     <select class="custom-select mb-2 mr-sm-2 mb-sm-0" id="number_relays" name="number_relays"  required>
                       <option value="4" selected>4</option>
