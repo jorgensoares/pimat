@@ -97,59 +97,61 @@
       {% endif %}
     {% endwith %}
       <!-- Info boxes -->
-      <div class="row">
-        <div class="col-md-3 col-sm-6 col-xs-12">
-          <div class="info-box">
-            <span class="info-box-icon bg-yellow"><i class="fa fa-lightbulb-o"></i></span>
+      {% if config['dashboard']['relays'] == 'True' %}
+        <div class="row">
+          <div class="col-md-3 col-sm-6 col-xs-12">
+            <div class="info-box">
+              <span class="info-box-icon bg-yellow"><i class="fa fa-lightbulb-o"></i></span>
 
-            <div class="info-box-content">
-              <span class="info-box-text">Lights</span>
-              <span class="info-box-number">{{ status.relay1 }}</span>
+              <div class="info-box-content">
+                <span class="info-box-text">Lights</span>
+                <span class="info-box-number">{{ status.relay1 }}</span>
+              </div>
+              <!-- /.info-box-content -->
             </div>
-            <!-- /.info-box-content -->
+            <!-- /.info-box -->
           </div>
-          <!-- /.info-box -->
-        </div>
-        <!-- /.col -->
-        <div class="col-md-3 col-sm-6 col-xs-12">
-          <div class="info-box">
-            <span class="info-box-icon bg-navy"><i class="fa fa-snowflake-o"></i></span>
-            <div class="info-box-content">
-              <span class="info-box-text">Exhaust</span>
-              <span class="info-box-number">{{ status.relay2 }}</span>
+          <!-- /.col -->
+          <div class="col-md-3 col-sm-6 col-xs-12">
+            <div class="info-box">
+              <span class="info-box-icon bg-navy"><i class="fa fa-snowflake-o"></i></span>
+              <div class="info-box-content">
+                <span class="info-box-text">Exhaust</span>
+                <span class="info-box-number">{{ status.relay2 }}</span>
+              </div>
+              <!-- /.info-box-content -->
             </div>
-            <!-- /.info-box-content -->
+            <!-- /.info-box -->
           </div>
-          <!-- /.info-box -->
-        </div>
-        <!-- /.col -->
-        <!-- fix for small devices only -->
-        <div class="clearfix visible-sm-block"></div>
-        <div class="col-md-3 col-sm-6 col-xs-12">
-          <div class="info-box">
-            <span class="info-box-icon bg-green"><i class="fa fa-refresh"></i></span>
-            <div class="info-box-content">
-              <span class="info-box-text">Fan</span>
-              <span class="info-box-number">{{ status.relay3 }}</span>
+          <!-- /.col -->
+          <!-- fix for small devices only -->
+          <div class="clearfix visible-sm-block"></div>
+          <div class="col-md-3 col-sm-6 col-xs-12">
+            <div class="info-box">
+              <span class="info-box-icon bg-green"><i class="fa fa-refresh"></i></span>
+              <div class="info-box-content">
+                <span class="info-box-text">Fan</span>
+                <span class="info-box-number">{{ status.relay3 }}</span>
+              </div>
+              <!-- /.info-box-content -->
             </div>
-            <!-- /.info-box-content -->
+            <!-- /.info-box -->
           </div>
-          <!-- /.info-box -->
-        </div>
-        <!-- /.col -->
-        <div class="col-md-3 col-sm-6 col-xs-12">
-          <div class="info-box">
-            <span class="info-box-icon bg-aqua"><i class="fa fa-shower"></i></span>
-            <div class="info-box-content">
-              <span class="info-box-text">Water Pump</span>
-              <span class="info-box-number">{{ status.relay4 }}</span>
+          <!-- /.col -->
+          <div class="col-md-3 col-sm-6 col-xs-12">
+            <div class="info-box">
+              <span class="info-box-icon bg-aqua"><i class="fa fa-shower"></i></span>
+              <div class="info-box-content">
+                <span class="info-box-text">Water Pump</span>
+                <span class="info-box-number">{{ status.relay4 }}</span>
+              </div>
+              <!-- /.info-box-content -->
             </div>
-            <!-- /.info-box-content -->
+            <!-- /.info-box -->
           </div>
-          <!-- /.info-box -->
+          <!-- /.col -->
         </div>
-        <!-- /.col -->
-      </div>
+      {% endif %}
       <!-- /.row -->
       <div class="row">
         {% if config['dashboard']['graph'] == 'sensors' %}
@@ -299,168 +301,170 @@
             <!-- /.box-body -->
           </div>
         <!-- TABLE: Schedules -->
-          <div class="box">
-            <div class="box-header with-border">
-              <h3 class="box-title">Schedules</h3>
+          {% if config['dashboard']['relays'] == 'True' %}
+            <div class="box">
+              <div class="box-header with-border">
+                <h3 class="box-title">Schedules</h3>
 
-              <div class="box-tools pull-right">
-                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
-                </button>
-                <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
+                <div class="box-tools pull-right">
+                  <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
+                  </button>
+                  <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
+                </div>
               </div>
-            </div>
-            <!-- /.box-header -->
-            <div class="box-body">
-              <div class="table-responsive">
-                <table class="table no-margin">
-                  <thead>
-                  <tr>
-                    <th>Schedule ID</th>
-                    <th>Relay</th>
-                    <th>Switch</th>
-                    <th>Start time</th>
-                    <th>Stop time</th>
-                    <th>Status</th>
-                    <th></th>
-                    <th></th>
-                    <th></th>
-                  </tr>
-                  </thead>
-                  <tbody>
-                  {% for item in schedules %}
-                  <tr data-record-id="{{ item.id }}">
-                    <td>{{ item.id }}</td>
-                    <td>{{ item.relay }}</td>
-                    <td>{{ item.switch }}</td>
-                    <td>{{ item.start_time }}</td>
-                    <td>{{ item.stop_time }}</td>
-                    {% if item.enabled == 'enable' %}
-                      <td><span class="label label-success">{{ item.enabled }}</span></td>
-                    {% elif item.enabled == 'disable' %}
-                      <td><span class="label label-danger">{{ item.enabled }}</span></td>
-                    {% else %}
-                      <td><span class="label label-default">{{ item.enabled }}</span></td>
-                    {% endif %}
-                    <td><a href="/schedule/edit/{{ item.id }}">Edit</a></td>
-                    <td><a href="#" data-record-id="{{ item.id }}" data-record-title="{{ item.switch }} with schedule ID:{{ item.id }}"
-                           data-toggle="modal" data-target="#confirm-disable">Enable|Disable</a>
-                    </td>
-                    <td><a href="#" data-record-id="{{ item.id }}" data-record-title="{{ item.switch }} with schedule ID:{{ item.id }}"
-                           data-toggle="modal" data-target="#confirm-delete">Delete</a>
-                    </td>
-                  </tr>
-                  {% endfor %}
-                  </tbody>
-                </table>
+              <!-- /.box-header -->
+              <div class="box-body">
+                <div class="table-responsive">
+                  <table class="table no-margin">
+                    <thead>
+                    <tr>
+                      <th>Schedule ID</th>
+                      <th>Relay</th>
+                      <th>Switch</th>
+                      <th>Start time</th>
+                      <th>Stop time</th>
+                      <th>Status</th>
+                      <th></th>
+                      <th></th>
+                      <th></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for item in schedules %}
+                    <tr data-record-id="{{ item.id }}">
+                      <td>{{ item.id }}</td>
+                      <td>{{ item.relay }}</td>
+                      <td>{{ item.switch }}</td>
+                      <td>{{ item.start_time }}</td>
+                      <td>{{ item.stop_time }}</td>
+                      {% if item.enabled == 'enable' %}
+                        <td><span class="label label-success">{{ item.enabled }}</span></td>
+                      {% elif item.enabled == 'disable' %}
+                        <td><span class="label label-danger">{{ item.enabled }}</span></td>
+                      {% else %}
+                        <td><span class="label label-default">{{ item.enabled }}</span></td>
+                      {% endif %}
+                      <td><a href="/schedule/edit/{{ item.id }}">Edit</a></td>
+                      <td><a href="#" data-record-id="{{ item.id }}" data-record-title="{{ item.switch }} with schedule ID:{{ item.id }}"
+                             data-toggle="modal" data-target="#confirm-disable">Enable|Disable</a>
+                      </td>
+                      <td><a href="#" data-record-id="{{ item.id }}" data-record-title="{{ item.switch }} with schedule ID:{{ item.id }}"
+                             data-toggle="modal" data-target="#confirm-delete">Delete</a>
+                      </td>
+                    </tr>
+                    {% endfor %}
+                    </tbody>
+                  </table>
+                </div>
+                <!-- /.table-responsive -->
               </div>
-              <!-- /.table-responsive -->
+              <!-- /.box-body -->
+              <div class="box-footer clearfix">
+                <a href="/schedule/add/new" class="btn btn-sm btn-info btn-flat pull-left">Create new schedule</a>
+              </div>
+              <!-- /.box-footer -->
             </div>
-            <!-- /.box-body -->
-            <div class="box-footer clearfix">
-              <a href="/schedule/add/new" class="btn btn-sm btn-info btn-flat pull-left">Create new schedule</a>
-            </div>
-            <!-- /.box-footer -->
-          </div>
           <!-- /.box -->
              <!-- TABLE: Relay logs -->
-          <div class="box">
-            <div class="box-header with-border">
-              <h3 class="box-title">Relay's Log</h3>
-              <div class="box-tools pull-right">
-                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
-                </button>
-                <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
+            <div class="box">
+              <div class="box-header with-border">
+                <h3 class="box-title">Relay's Log</h3>
+                <div class="box-tools pull-right">
+                  <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
+                  </button>
+                  <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
+                </div>
               </div>
-            </div>
-            <!-- /.box-header -->
-            <div class="box-body">
-              <div class="table-responsive">
-                <table class="table no-margin">
-                  <thead>
-                  <tr>
-                    <th>Log ID</th>
-                    <th>Timestamp</th>
-                    <th>Relay</th>
-                    <th>Pin</th>
-                    <th>Action</th>
-                    <th>Value</th>
-                    <th>Type</th>
-                    <th>Source</th>
-                  </tr>
-                  </thead>
-                  <tbody>
-                  {% for item in relay_log %}
-                      <tr>
-                        <td>{{ item.id }}</td>
-                        <td>{{ item.timestamp }}</td>
-                        <td>{{ item.relay }}</td>
-                        <td>{{ item.pin }}</td>
-                        <td>{{ item.action }}</td>
-                        <td>{{ item.value }}</td>
-                        <td>{{ item.type }}</td>
-                        <td>{{ item.source }}</td>
-                      </tr>
-                  {% endfor %}
-                  </tbody>
-                </table>
+              <!-- /.box-header -->
+              <div class="box-body">
+                <div class="table-responsive">
+                  <table class="table no-margin">
+                    <thead>
+                    <tr>
+                      <th>Log ID</th>
+                      <th>Timestamp</th>
+                      <th>Relay</th>
+                      <th>Pin</th>
+                      <th>Action</th>
+                      <th>Value</th>
+                      <th>Type</th>
+                      <th>Source</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for item in relay_log %}
+                        <tr>
+                          <td>{{ item.id }}</td>
+                          <td>{{ item.timestamp }}</td>
+                          <td>{{ item.relay }}</td>
+                          <td>{{ item.pin }}</td>
+                          <td>{{ item.action }}</td>
+                          <td>{{ item.value }}</td>
+                          <td>{{ item.type }}</td>
+                          <td>{{ item.source }}</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                  </table>
+                </div>
+                <!-- /.table-responsive -->
               </div>
-              <!-- /.table-responsive -->
+              <!-- /.box-body -->
             </div>
-            <!-- /.box-body -->
           </div>
-        </div>
-        <!-- /.col -->
+          <!-- /.col -->
 
-        <div class="col-md-2">
-          <div class="box">
-            <div class="box-header">
-              <h3 class="box-title">Controls</h3>
+          <div class="col-md-2">
+            <div class="box">
+              <div class="box-header">
+                <h3 class="box-title">Controls</h3>
+              </div>
+              <div class="box-body">
+                <!-- Split button -->
+                <p><b>Lights</b> Switch:</p>
+                <div class="margin">
+                  <button class="btn btn-success form-control" data-record-id="relay1" data-record-title="Lights" data-toggle="modal" data-target="#confirm-switch-on">
+                    Lights ON
+                  </button>
+                  <button class="btn btn-danger form-control" data-record-id="relay1" data-record-title="Lights" data-toggle="modal" data-target="#confirm-switch-off">
+                    Lights OFF
+                  </button>
+                </div>
+
+                <p><b>Exhaust</b> Switch:</p>
+                <div class="margin">
+                 <button class="btn btn-success form-control" data-record-id="relay2" data-record-title="Exhaust" data-toggle="modal" data-target="#confirm-switch-on">
+                    Exhaust ON
+                  </button>
+                  <button class="btn btn-danger form-control" data-record-id="relay2" data-record-title="Exhaust" data-toggle="modal" data-target="#confirm-switch-off">
+                    Exhaust OFF
+                  </button>
+                </div>
+
+                <p><b>Fan</b> Switch:</p>
+                <div class="margin">
+                 <button class="btn btn-success form-control" data-record-id="relay3" data-record-title="Fan" data-toggle="modal" data-target="#confirm-switch-on">
+                    Fan ON
+                  </button>
+                  <button class="btn btn-danger form-control" data-record-id="relay3" data-record-title="Fan" data-toggle="modal" data-target="#confirm-switch-off">
+                    Fan OFF
+                  </button>
+                </div>
+
+                <p><b>Water Pump</b> Switch:</p>
+                <div class="margin">
+                 <button class="btn btn-success form-control" data-record-id="relay4" data-record-title="Water Pump" data-toggle="modal" data-target="#confirm-switch-on">
+                    Pump ON
+                  </button>
+                  <button class="btn btn-danger form-control" data-record-id="relay4" data-record-title="Water Pump" data-toggle="modal" data-target="#confirm-switch-off">
+                    Pump OFF
+                  </button>
+                </div>
+              </div>
+              <!-- /.box-body -->
             </div>
-            <div class="box-body">
-              <!-- Split button -->
-              <p><b>Lights</b> Switch:</p>
-              <div class="margin">
-                <button class="btn btn-success form-control" data-record-id="relay1" data-record-title="Lights" data-toggle="modal" data-target="#confirm-switch-on">
-                  Lights ON
-                </button>
-                <button class="btn btn-danger form-control" data-record-id="relay1" data-record-title="Lights" data-toggle="modal" data-target="#confirm-switch-off">
-                  Lights OFF
-                </button>
-              </div>
-
-              <p><b>Exhaust</b> Switch:</p>
-              <div class="margin">
-               <button class="btn btn-success form-control" data-record-id="relay2" data-record-title="Exhaust" data-toggle="modal" data-target="#confirm-switch-on">
-                  Exhaust ON
-                </button>
-                <button class="btn btn-danger form-control" data-record-id="relay2" data-record-title="Exhaust" data-toggle="modal" data-target="#confirm-switch-off">
-                  Exhaust OFF
-                </button>
-              </div>
-
-              <p><b>Fan</b> Switch:</p>
-              <div class="margin">
-               <button class="btn btn-success form-control" data-record-id="relay3" data-record-title="Fan" data-toggle="modal" data-target="#confirm-switch-on">
-                  Fan ON
-                </button>
-                <button class="btn btn-danger form-control" data-record-id="relay3" data-record-title="Fan" data-toggle="modal" data-target="#confirm-switch-off">
-                  Fan OFF
-                </button>
-              </div>
-
-              <p><b>Water Pump</b> Switch:</p>
-              <div class="margin">
-               <button class="btn btn-success form-control" data-record-id="relay4" data-record-title="Water Pump" data-toggle="modal" data-target="#confirm-switch-on">
-                  Pump ON
-                </button>
-                <button class="btn btn-danger form-control" data-record-id="relay4" data-record-title="Water Pump" data-toggle="modal" data-target="#confirm-switch-off">
-                  Pump OFF
-                </button>
-              </div>
-            </div>
-            <!-- /.box-body -->
           </div>
-        </div>
+        {% endif %}
         <!-- /.col -->
       </div>
       <!-- /.row -->
