@@ -312,12 +312,12 @@ def switch_relay(action, relay):
         return render_template('error.html', clients=clients, version=version, error="wrong request")
 
 
-@app.route("/sensors/<client>", methods=['POST', 'GET'])
+@app.route("/sensors", methods=['GET'])
 @login_required
-def sensors(client):
+def sensors():
     clients = pimat_config['clients']
-    if request.args.get('sensor') and request.args.get('dates'):
-
+    if request.args.get('sensor') and request.args.get('dates') and request.args.get('client'):
+        client = request.args.get('client')
         sensor = request.args.get("sensor")
         start_date, end_date = request.args.get("dates").split(' - ')
         end_date = '{0} 23:59:59'.format(end_date)
