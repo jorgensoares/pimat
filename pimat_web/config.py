@@ -1,6 +1,7 @@
 import configparser
+config_file = '/opt/pimat/config.ini'
 config = configparser.ConfigParser()
-config.read('/opt/pimat/config.ini')
+config.read(config_file)
 
 
 SERVER_IP = config['pimat']['server_ip']

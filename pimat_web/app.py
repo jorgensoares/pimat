@@ -2,7 +2,7 @@
 from flask_principal import Principal, Identity, AnonymousIdentity, identity_changed, identity_loaded, RoleNeed, \
     UserNeed, Permission
 from functions import get_previous_date, get_now, sigterm_handler, allowed_file, convert_bytes, convert_timestamp
-from forms import LoginForm, PasswordForgotForm, PasswordResetForm, CreateUserForm, UpdateProfileForm
+from forms import LoginForm, PasswordForgotForm, PasswordResetForm, CreateUserForm, UpdateProfileForm, UpdateSettingsForm
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer, BadSignature, SignatureExpired
 from flask import Flask, request, redirect, render_template, flash, url_for, current_app, session
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -10,7 +10,7 @@ from api import SensorsAPI, SchedulesAPI, RelayLoggerAPI, MonitoringAPI
 from models import db, User, Sensors, Schedules, RelayLogger, Monitoring
 from flask_wtf.csrf import CSRFProtect
 from flask_mail import Mail, Message
-from config import config
+from config import config as pimat_config, config_file
 from version import __version__
 from flask_restful import Api
 from flask_login import *
@@ -553,11 +553,43 @@ def password_reset():
     return render_template('password_reset_form.html', version=version, form=form)
 
 
-@app.route("/settings", methods=['GET'])
+@app.route("/settings", methods=['GET', 'POST'])
 @admin_permission.require()
 @login_required
 def settings():
-    return render_template('settings.html', config=config, version=version )
+    form = UpdateSettingsForm()
+    if form.validate_on_submit():
+        pimat_config.set('pimat', 'server_ip', form.server_ip.data)
+        pimat_config.set('pimat', 'relay_config', form.relay_config.data)
+        pimat_config.set('pimat', 'log', form.log.data)
+        pimat_config.set('pimat', 'upload_folder', form.upload_folder.data)
+        pimat_config.set('pins', 'temp_sensor', form.temp_sensor.data)
+        pimat_config.set('pins', 'ldr_sensor', form.ldr_sensor.data)
+        pimat_config.set('pimat', 'recaptcha_public_key', form.recaptcha_public_key.data)
+        pimat_config.set('pimat', 'recaptcha_private_key', form.recaptcha_private_key.data)
+        pimat_config.set('pimat', 'secret_key', form.secret_key.data)
+        pimat_config.set('pimat', 'debug', form.debug.data)
+        pimat_config.set('pimat', 'recaptcha', form.recaptcha.data)
+        pimat_config.set('pimat', 'db_server', form.db_server.data)
+        pimat_config.set('pimat', 'db_port', form.db_port.data)
+        pimat_config.set('pimat', 'db_username', form.db_username.data)
+        pimat_config.set('pimat', 'db_password', form.db_password.data)
+        pimat_config.set('pimat', 'db_name', form.db_name.data)
+        pimat_config.set('pimat', 'db_type', form.db_type.data)
+        pimat_config.set('pimat', 'mail_server', form.mail_server.data)
+        pimat_config.set('pimat', 'mail_port', form.mail_port.data)
+        pimat_config.set('pimat', 'mail_username', form.mail_username.data)
+        pimat_config.set('pimat', 'mail_default_sender', form.mail_default_sender.data)
+        pimat_config.set('pimat', 'mail_password', form.mail_password.data)
+        pimat_config.set('pimat', 'mail_use_ssl', form.mail_use_ssl.data)
+        pimat_config.set('pimat', 'mail_use_tls', form.mail_use_tls.data)
+
+        with open(config_file, 'w') as ini_file:
+            pimat_config.write(ini_file)
+
+        app.config.from_object('config')
+
+    return render_template('settings.html', config=pimat_config, version=version, form=form)
 
 
 def main():
