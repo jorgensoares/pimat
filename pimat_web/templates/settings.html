@@ -37,8 +37,20 @@
       <!-- sidebar menu: : style can be found in sidebar.less -->
       <ul class="sidebar-menu" data-widget="tree">
         <li class="header">MAIN MENU</li>
-        <li><a href="/"><i class="fa fa fa-cogs"></i> <span>Dashboard</span></a></li>
-        <li><a href="/sensors"><i class="fa fa-line-chart"></i> <span>Sensors</span></a></li>
+        <li><a href="/dashboard"><i class="fa fa fa-cogs"></i> <span>Dashboard</span></a></li>
+        <li class="treeview">
+          <a href="#">
+            <i class="fa fa-line-chart"></i>
+            <span>Statistics</span>
+            <span class="pull-right-container">
+              <i class="fa fa-angle-left pull-right"></i>
+            </span>
+          </a>
+          <ul class="treeview-menu">
+            <li><a href="/sensors"><i class="fa fa-thermometer-half"></i>Sensors</a></li>
+            <li><a href="/monitoring/statistics"><i class="fa fa-tachometer"></i>Monitoring</a></li>
+          </ul>
+        </li>
         <li class="treeview">
           <a href="#">
             <i class="fa fa-tachometer"></i>
@@ -48,8 +60,9 @@
             </span>
           </a>
           <ul class="treeview-menu">
-            <li><a href="/monitoring"><i class="fa fa-circle-o"></i> Pimat</a></li>
-            <li><a href="/monitoring"><i class="fa fa-circle-o"></i> client-1</a></li>
+            {% for client in clients %}
+              <li><a href="/monitoring/{{ client }}"><i class="fa fa-linux"></i>{{ client }}</a></li>
+            {% endfor %}
           </ul>
         </li>
         <li><a href="/camera"><i class="fa fa-cc"></i> <span>Cameras</span></a></li>

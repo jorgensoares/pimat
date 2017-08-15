@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm, RecaptchaField, validators
-from wtforms import StringField, PasswordField, validators, IntegerField
+from wtforms import StringField, PasswordField, validators
 from wtforms.validators import DataRequired
 import configparser
 config = configparser.ConfigParser()
