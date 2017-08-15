@@ -583,6 +583,7 @@ def password_reset():
 def settings():
     form = UpdateSettingsForm()
     clients = pimat_config['clients']
+    cameras = pimat_config['cameras']
 
     if form.validate_on_submit():
         pimat_config.set('pimat', 'server_ip', form.server_ip.data)
@@ -623,7 +624,13 @@ def settings():
             for error in errors:
                 flash(error, 'warning')
 
-    return render_template('settings.html', config=pimat_config, clients=clients, version=version, form=form)
+    return render_template('settings.html',
+                           config=pimat_config,
+                           clients=clients,
+                           cameras=cameras,
+                           version=version,
+                           form=form
+                           )
 
 
 @app.route("/client/delete/<client>", methods=['POST'])
