@@ -368,7 +368,7 @@
                       </thead>
                       <tbody>
                       {% for client in clients %}
-                        <tr>
+                        <tr data-record-id="{{ client }}">
                           <td>{{ client }}</td>
                           <td>{{ clients[client] }}</td>
                           <td><a href="#" data-record-id="{{ client }}" data-record-title="{{ client }}"
