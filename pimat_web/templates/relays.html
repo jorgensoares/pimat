@@ -312,7 +312,82 @@
       </div>
     </section>
     <!-- /.content -->
-  </div>
+    </div>
+        <div class="modal fade" id="confirm-switch-on" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+          <div class="modal-dialog">
+              <div class="modal-content">
+                  <div class="modal-header">
+                      <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                      <h4 class="modal-title" id="myModalLabel1">Confirm Turn ON </h4>
+                  </div>
+                  <div class="modal-body">
+                      <p>You are about to turn ON the <b><i class="title"></i></b> switch.</p>
+                      <p>Do you want to proceed?</p>
+                  </div>
+                  <div class="modal-footer">
+                      <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                      <button type="button" class="btn btn-success btn-ok">Turn ON</button>
+                  </div>
+              </div>
+          </div>
+      </div>
+
+      <div class="modal fade" id="confirm-switch-off" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                    <h4 class="modal-title" id="myModalLabel2">Confirm Turn OFF</h4>
+                </div>
+                <div class="modal-body">
+                    <p>You are about to turn OFF the <b><i class="title"></i></b> switch.</p>
+                    <p>Do you want to proceed?</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-danger btn-ok">Turn OFF</button>
+                </div>
+            </div>
+        </div>
+      </div>
+
+      <div class="modal fade" id="confirm-delete" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                    <h4 class="modal-title" id="myModalLabel">Confirm Delete</h4>
+                </div>
+                <div class="modal-body">
+                    <p>You are about to delete <b><i class="title"></i></b> this procedure is irreversible.</p>
+                    <p>Do you want to proceed?</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-danger btn-ok">Delete</button>
+                </div>
+            </div>
+        </div>
+      </div>
+
+      <div class="modal fade" id="confirm-disable" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                    <h4 class="modal-title" id="myModalLabel3">Confirm Action</h4>
+                </div>
+                <div class="modal-body">
+                    <p>You are about to enable|disable <b><i class="title"></i></b>.</p>
+                    <p>Do you want to proceed?</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-danger btn-ok">Submitt</button>
+                </div>
+            </div>
+        </div>
+      </div>
   <!-- /.content-wrapper -->
   {% include "footer.html" %}
   <!-- Add the sidebar's background. This div must be placed
@@ -332,6 +407,104 @@
 <script src="/static/dist/js/adminlte.min.js"></script>
 <!-- SlimScroll -->
 <script src="/static/bower_components/jquery-slimscroll/jquery.slimscroll.min.js"></script>
+<script>
+    $('#confirm-switch-on').on('click', '.btn-ok', function(e) {
+        var $modalDiv = $(e.delegateTarget);
+        var id = $(this).data('recordId');
+        var csrf_token = "{{ csrf_token() }}";
+        $.ajaxSetup({
+          beforeSend: function(xhr, settings) {
+            if (!/^(GET|HEAD|OPTIONS|TRACE)$/i.test(settings.type) && !this.crossDomain) {
+                xhr.setRequestHeader("X-CSRFToken", csrf_token);
+              }
+            }
+        });
+        $.ajax({url: '/relays/on/' + id, type: 'POST', success: function(){window.location.href = "/"}})
+        // $.post({url: '/relays/on/' + id, success: function(){window.location.href = "/"}}).then()
+        $modalDiv.addClass('loading');
+        setTimeout(function() {
+            $modalDiv.modal('hide').removeClass('loading');
+        }, 1000)
+    });
+    $('#confirm-switch-on').on('show.bs.modal', function(e) {
+        var data = $(e.relatedTarget).data();
+        $('.title', this).text(data.recordTitle);
+        $('.btn-ok', this).data('recordId', data.recordId);
+    });
+
+    $('#confirm-switch-off').on('click', '.btn-ok', function(e) {
+        var $modalDiv = $(e.delegateTarget);
+        var id = $(this).data('recordId');
+        var csrf_token = "{{ csrf_token() }}";
+        $.ajaxSetup({
+          beforeSend: function(xhr, settings) {
+            if (!/^(GET|HEAD|OPTIONS|TRACE)$/i.test(settings.type) && !this.crossDomain) {
+                xhr.setRequestHeader("X-CSRFToken", csrf_token);
+              }
+            }
+        });
+        $.ajax({url: '/relays/off/' + id, type: 'POST', success: function(){window.location.href = "/"}})
+        // $.post({url: '/relays/off/' + id }).then()
+        $modalDiv.addClass('loading');
+        setTimeout(function() {
+            $modalDiv.modal('hide').removeClass('loading');
+        }, 1000)
+    });
+    $('#confirm-switch-off').on('show.bs.modal', function(e) {
+        var data = $(e.relatedTarget).data();
+        $('.title', this).text(data.recordTitle);
+        $('.btn-ok', this).data('recordId', data.recordId);
+    });
+
+    $('#confirm-delete').on('click', '.btn-ok', function(e) {
+        var $modalDiv = $(e.delegateTarget);
+        var id = $(this).data('recordId');
+        var csrf_token = "{{ csrf_token() }}";
+        $.ajaxSetup({
+          beforeSend: function(xhr, settings) {
+            if (!/^(GET|HEAD|OPTIONS|TRACE)$/i.test(settings.type) && !this.crossDomain) {
+                xhr.setRequestHeader("X-CSRFToken", csrf_token);
+              }
+            }
+        });
+        $.ajax({url: '/schedule/delete/' + id, type: 'POST'})
+        // $.post('/schedule/delete/' + id).then()
+        $modalDiv.addClass('loading');
+        $('[data-record-id=' + id + ']').remove();
+        setTimeout(function() {
+            $modalDiv.modal('hide').removeClass('loading');
+        }, 1000)
+    });
+    $('#confirm-delete').on('show.bs.modal', function(e) {
+        var data = $(e.relatedTarget).data();
+        $('.title', this).text(data.recordTitle);
+        $('.btn-ok', this).data('recordId', data.recordId);
+    });
+
+    $('#confirm-disable').on('click', '.btn-ok', function(e) {
+        var $modalDiv = $(e.delegateTarget);
+        var id = $(this).data('recordId');
+        var csrf_token = "{{ csrf_token() }}";
+        $.ajaxSetup({
+          beforeSend: function(xhr, settings) {
+            if (!/^(GET|HEAD|OPTIONS|TRACE)$/i.test(settings.type) && !this.crossDomain) {
+                xhr.setRequestHeader("X-CSRFToken", csrf_token);
+              }
+            }
+        });
+        $.ajax({url: '/schedules/delete/' + id, type: 'POST', success: function(){window.location.href = "/"}})
+        // $.post({url: '/schedule/switch/' + id}).then()
+        $modalDiv.addClass('loading');
+        setTimeout(function() {
+            $modalDiv.modal('hide').removeClass('loading');
+        }, 1000)
+    });
+    $('#confirm-disable').on('show.bs.modal', function(e) {
+        var data = $(e.relatedTarget).data();
+        $('.title', this).text(data.recordTitle);
+        $('.btn-ok', this).data('recordId', data.recordId);
+    });
+</script>
 
 </body>
 </html>
