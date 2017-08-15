@@ -36,7 +36,19 @@
       <ul class="sidebar-menu" data-widget="tree">
         <li class="header">MAIN MENU</li>
         <li class="active"><a href="/dashboard"><i class="fa fa fa-cogs"></i> <span>Dashboard</span></a></li>
-        <li><a href="/sensors"><i class="fa fa-line-chart"></i> <span>Sensors</span></a></li>
+        <li class="treeview">
+          <a href="#">
+            <i class="fa fa-line-chart"></i>
+            <span>Statistics</span>
+            <span class="pull-right-container">
+              <i class="fa fa-angle-left pull-right"></i>
+            </span>
+          </a>
+          <ul class="treeview-menu">
+            <li><a href="/sensors"><i class="fa fa-circle-o"></i>Sensors</a></li>
+            <li><a href="/monitoring/statistics"><i class="fa fa-circle-o"></i>Monitoring</a></li>
+          </ul>
+        </li>
         <li class="treeview">
           <a href="#">
             <i class="fa fa-tachometer"></i>
@@ -46,7 +58,7 @@
             </span>
           </a>
           <ul class="treeview-menu">
-            <li><a href="/monitoring"><i class="fa fa-circle-o"></i> Pimat</a></li>
+            <li><a href="/monitoring"><i class="fa fa-circle-o"></i> pimat</a></li>
             {% for client in clients %}
               <li><a href="/monitoring/{{ client }}"><i class="fa fa-circle-o"></i>{{ client }}</a></li>
             {% endfor %}
