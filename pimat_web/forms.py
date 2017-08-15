@@ -1,5 +1,4 @@
 from flask_wtf import FlaskForm, RecaptchaField, validators
-from scipy.weave.accelerate_tools import Integer
 from wtforms import StringField, PasswordField, validators, IntegerField
 from wtforms.validators import DataRequired
 import configparser
