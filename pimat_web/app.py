@@ -190,6 +190,51 @@ def dashboard():
                            )
 
 
+@app.route("/relays", methods=['GET'])
+@login_required
+def relays():
+    clients = pimat_config['clients']
+    relay_status = dict()
+    try:
+        response = requests.get('http://localhost:4001/api/relay/{0}'.format(relay_config['pins']['relay1']),
+                                timeout=0.5)
+        status = json.loads(response.content)
+        relay_status['relay1'] = status['status']
+    except requests.ConnectionError:
+        relay_status['relay1'] = 'N/A'
+    try:
+        response = requests.get('http://localhost:4001/api/relay/{0}'.format(relay_config['pins']['relay2']),
+                                timeout=0.5)
+        status = json.loads(response.content)
+        relay_status['relay2'] = status['status']
+    except requests.ConnectionError:
+        relay_status['relay2'] = 'N/A'
+    try:
+        response = requests.get('http://localhost:4001/api/relay/{0}'.format(relay_config['pins']['relay3']),
+                                timeout=0.5)
+        status = json.loads(response.content)
+        relay_status['relay3'] = status['status']
+    except requests.ConnectionError:
+        relay_status['relay3'] = 'N/A'
+    try:
+        response = requests.get('http://localhost:4001/api/relay/{0}'.format(relay_config['pins']['relay4']),
+                                timeout=0.5)
+        status = json.loads(response.content)
+        relay_status['relay4'] = status['status']
+    except requests.ConnectionError:
+        relay_status['relay4'] = 'N/A'
+
+    relay_log = RelayLogger.query.filter(RelayLogger.timestamp.between(get_previous_date(1), get_now())). \
+        order_by(RelayLogger.timestamp.asc()).all()
+
+    return render_template('relays.html',
+                           version=version,
+                           status=relay_status,
+                           schedules=Schedules.query.order_by(Schedules.relay.asc()).all(),
+                           relay_log=relay_log,
+                           clients=clients,
+                           )
+
 @app.route("/schedule/<action>/<schedule_id>", methods=['POST', 'GET'])
 @login_required
 def add_new_schedule(action, schedule_id):
