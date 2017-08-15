@@ -64,7 +64,7 @@
           </a>
           <ul class="treeview-menu">
             {% for client_name in clients %}
-              {% if client = client_name %}
+              {% if client == client_name %}
                 <li class="active"><a href="/monitoring/{{ client_name }}"><i class="fa fa-linux"></i>{{ client_name }}</a></li>
               {% else %}
                 <li><a href="/monitoring/{{ client_name }}"><i class="fa fa-linux"></i>{{ client_name }}</a></li>
