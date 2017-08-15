@@ -386,6 +386,7 @@ def profile():
         user.phone = form.phone.data
         db.session.commit()
         flash('Profile Updated successfully', 'success')
+        return redirect(url_for("profile"))
 
     return render_template('profile.html', clients=clients, version=version, form=form)
 
@@ -634,6 +635,7 @@ def settings():
 
         app.config.from_object('config')
         flash('Settings updated successfully! Some settings will only take effect after you restart Pimat.', 'success')
+        return redirect(url_for("settings"))
 
     else:
         for field, errors in form.errors.items():
