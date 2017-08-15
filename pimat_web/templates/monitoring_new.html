@@ -223,7 +223,7 @@
           </div>
           <div class="box">
             <div class="box-header">
-              <h3 class="box-title">System</h3>
+              <h3 class="box-title">System <small>{{ last_reading.kernel }}</small></h3>
               <span class="glyphicon glyphicon-modal-window pull-right"></span>
             </div>
             <div class="box-body">
@@ -233,7 +233,6 @@
               <p><b>Timezone: </b> {{ last_reading.timezone }}</p>
               <p><b>CPU Frequency: </b> {{ last_reading.cpu_frequency }} Mhz</p>
               <p><b>Uptime: </b>  {{ last_reading.boot_time }}</p>
-              <p><b>Kernel version: </b> {{ last_reading.kernel }}</p>
               <p><b>Last Check: </b>  {{ last_reading.timestamp }}</p>
             </div>
           </div>
