@@ -312,9 +312,9 @@ def switch_relay(action, relay):
         return render_template('error.html', clients=clients, version=version, error="wrong request")
 
 
-@app.route("/sensors", methods=['POST', 'GET'])
+@app.route("/sensors/<client>", methods=['POST', 'GET'])
 @login_required
-def sensors():
+def sensors(client):
     clients = pimat_config['clients']
     if request.args.get('sensor') and request.args.get('dates'):
 
@@ -322,7 +322,7 @@ def sensors():
         start_date, end_date = request.args.get("dates").split(' - ')
         end_date = '{0} 23:59:59'.format(end_date)
         sensor_column = 'sensors.%s' % sensor
-        result = Sensors.query.with_entities(Sensors.timestamp, sensor_column). \
+        result = Sensors.query.with_entities(Sensors.timestamp, sensor_column).filter(Sensors.source == client). \
             filter(Sensors.timestamp.between(start_date, end_date)).all()
 
         return render_template('sensors.html',
@@ -516,7 +516,6 @@ def password_change():
 @app.route("/password_forgot", methods=['GET', 'POST'])
 def password_forgot():
     form = PasswordForgotForm()
-
     if form.validate_on_submit():
         user_details = User.query.filter(User.username == form.username.data).first()
         if user_details:
@@ -542,7 +541,6 @@ def password_forgot():
 @app.route("/password_reset", methods=['GET', 'POST'])
 def password_reset():
     form = PasswordResetForm()
-
     if form.validate_on_submit():
         s = Serializer(app.config['SECRET_KEY'])
         try:
@@ -567,7 +565,6 @@ def password_reset():
             mail.send(msg)
             flash('Password updated successfully, Please login.', 'success')
             return redirect(url_for("login"))
-
         else:
             flash('Invalid user', 'danger')
             return render_template('password_reset_form.html', version=version, form=form)

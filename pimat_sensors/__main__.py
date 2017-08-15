@@ -74,7 +74,7 @@ def main():
                 json_data['light1'] = light
                 json_data['pressure'] = pressure
                 json_data['altitude'] = altitude
-                json_data['source'] = 'pimat_server'
+                json_data['source'] = 'pimat-server'
 
                 server_log.info('''Temp1={0:0.1f}* Temp2={1:0.2f}* Humidity={2:0.1f}% Light={3:0.2f} Pressure={4:0.2f}Pa
                                     Altitude={5:0.2f}m'''.format(temperature1, temperature2, humidity, light, pressure,
