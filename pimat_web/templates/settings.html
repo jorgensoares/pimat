@@ -89,7 +89,7 @@
         <div class="box-header with-border">
           <h3 class="box-title">Update Settings</h3>
         </div>
-        <div action="/settings" method="post">
+        <form action="/settings" method="post">
           <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
         <div class="box-body">
           <div class="row">
@@ -376,13 +376,13 @@
                     </table>
                   </div>
                   <div class="form-inline">
-                    <label class="sr-only" for="inlineFormInput">Name</label>
-                    <input type="text" class="form-control mb-2 mr-sm-2 mb-sm-0" id="inlineFormInput" placeholder="Jane Doe">
+                    <label class="sr-only" for="inlineFormInput">Add Client</label>
+                    <input type="text" class="form-control mb-2 mr-sm-2 mb-sm-0" id="inlineFormInput" placeholder="Hostname">
 
-                    <label class="sr-only" for="inlineFormInputGroup">Username</label>
+                    <label class="sr-only" for="inlineFormInputGroup">IP</label>
                     <div class="input-group mb-2 mr-sm-2 mb-sm-0">
                       <div class="input-group-addon">@</div>
-                      <input type="text" class="form-control" id="inlineFormInputGroup" placeholder="Username">
+                        <input type="text" class="form-control" id="inlineFormInputGroup" placeholder="IP">
                     </div>
                   </div>
                 </div>
