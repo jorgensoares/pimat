@@ -590,6 +590,7 @@ def settings():
             pimat_config.write(ini_file)
 
         app.config.from_object('config')
+        flash('Settings updated successfully! Some settings will take effect after you restart Pimat.', 'success')
 
     else:
         for field, errors in form.errors.items():
@@ -604,7 +605,6 @@ def main():
     app.run(host='0.0.0.0',
             port=80,
             threaded=True,
-            debug=True,
             )
 
 if __name__ == "__main__":
