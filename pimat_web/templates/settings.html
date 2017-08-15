@@ -357,9 +357,24 @@
                   <h3 class="box-title">Clients</h3>
                 </div>
                 <div class="box-body">
-                  {% for client in clients %}
-                  <p>{{ client }}   {{ clients[client] }}</p>
-                  {% endfor %}
+                  <div class="table-responsive">
+                    <table>
+                      <thead>
+                      <tr>
+                        <th>Hostname</th>
+                        <th>IP or FQDN</th>
+                      </tr>
+                      </thead>
+                      <tbody>
+                        <tr>
+                          {% for client in clients %}
+                            <td>{{ client }}</td>
+                            <td>{{ clients[client] }}}</td>
+                          {% endfor %}
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
                 </div>
                 <!-- /.box-body -->
               </div>
