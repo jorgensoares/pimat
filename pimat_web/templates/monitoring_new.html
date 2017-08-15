@@ -111,15 +111,15 @@
                   </div>
                   <div class="col-md-2 col-sm-3 col-xs-6">
                     <div class="chart" data-percent="{{ last_reading.ram_used_percent }}">{{ last_reading.ram_used_percent }} %</div>
-                    <div class="chart-bottom-heading"><span class="label label-info">Ram Used</span></div>
+                    <div class="chart-bottom-heading"><span class="label label-info">Memory Usage</span></div>
                   </div>
                   <div class="col-md-2 col-sm-3 col-xs-6">
-                    <div class="chart" data-percent="{{ last_reading.disk_used_percent }}">{{ last_reading.disk_used_percent }} %</div>
-                    <div class="chart-bottom-heading"><span class="label label-info">Disk Usage</span></div>
+                    <div class="chart" data-percent="{{ last_reading.swap_used_percent }}">{{ last_reading.swap_used_percent }} %</div>
+                    <div class="chart-bottom-heading"><span class="label label-info">Swap Usage</span></div>
                   </div>
                   <div class="col-md-2 col-sm-3 col-xs-6">
-                    <div class="chart" data-percent="{{ last_reading.total_proc }}" data-max="400">{{ last_reading.total_proc }}</div>
-                    <div class="chart-bottom-heading"><span class="label label-info">Processes Running</span></div>
+                    <div class="chart" data-percent="{{ last_reading.disk_used_percent }}">{{ last_reading.disk_used_percent }}</div>
+                    <div class="chart-bottom-heading"><span class="label label-info">Disk Usage / </span></div>
                   </div>
                 </div>
             </div>
