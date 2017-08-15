@@ -227,7 +227,7 @@ def relays():
     relay_log = RelayLogger.query.filter(RelayLogger.timestamp.between(get_previous_date(1), get_now())). \
         order_by(RelayLogger.timestamp.asc()).all()
 
-    return render_template('relays.html',
+    return render_template('index.html',
                            version=version,
                            status=relay_status,
                            schedules=Schedules.query.order_by(Schedules.relay.asc()).all(),
