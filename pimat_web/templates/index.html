@@ -562,7 +562,7 @@
 <!-- SlimScroll -->
 <script src="static/bower_components/jquery-slimscroll/jquery.slimscroll.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.6.0/Chart.js"></script>
-<script src="/static/dist/js/sensors.graph.js"></script>
+{% include "graph_sensors.html" %}
 <script>
     $('#confirm-switch-on').on('click', '.btn-ok', function(e) {
         var $modalDiv = $(e.delegateTarget);
