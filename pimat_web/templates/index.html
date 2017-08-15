@@ -45,8 +45,8 @@
             </span>
           </a>
           <ul class="treeview-menu">
-            <li><a href="/sensors"><i class="fa fa-circle-o"></i>Sensors</a></li>
-            <li><a href="/monitoring/statistics"><i class="fa fa-circle-o"></i>Monitoring</a></li>
+            <li><a href="/sensors"><i class="fa fa-thermometer-half"></i>Sensors</a></li>
+            <li><a href="/monitoring/statistics"><i class="fa fa-tachometer"></i>Monitoring</a></li>
           </ul>
         </li>
         <li class="treeview">
@@ -58,9 +58,9 @@
             </span>
           </a>
           <ul class="treeview-menu">
-            <li><a href="/monitoring"><i class="fa fa-circle-o"></i> pimat</a></li>
+            <li><a href="/monitoring"><i class="fa fa-linux"></i>pimat</a></li>
             {% for client in clients %}
-              <li><a href="/monitoring/{{ client }}"><i class="fa fa-circle-o"></i>{{ client }}</a></li>
+              <li><a href="/monitoring/{{ client }}"><i class="fa fa-linux"></i>{{ client }}</a></li>
             {% endfor %}
           </ul>
         </li>
