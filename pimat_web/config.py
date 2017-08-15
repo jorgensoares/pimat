@@ -53,6 +53,6 @@ if config['pimat']['debug'] == 'True':
 else:
     DEBUG = False
 
-
+SECRET_KEY = config['pimat']['secret_key']
 RECAPTCHA_PUBLIC_KEY = config['pimat']['recaptcha_public_key']
 RECAPTCHA_PRIVATE_KEY = config['pimat']['recaptcha_private_key']
