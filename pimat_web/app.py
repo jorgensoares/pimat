@@ -586,6 +586,7 @@ def settings():
         pimat_config.set('email', 'mail_password', form.mail_password.data)
         pimat_config.set('email', 'mail_use_ssl', form.mail_use_ssl.data)
         pimat_config.set('email', 'mail_use_tls', form.mail_use_tls.data)
+        pimat_config.set('clients', form.client_name.data, form.client_ip.data)
 
         with open(config_file, 'w') as ini_file:
             pimat_config.write(ini_file)

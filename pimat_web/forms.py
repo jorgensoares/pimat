@@ -78,5 +78,7 @@ class UpdateSettingsForm(FlaskForm):
     mail_password = PasswordField('mail_password')
     mail_use_ssl = StringField('mail_use_ssl')
     mail_use_tls = StringField('mail_use_tls')
+    client_name = StringField('client_name')
+    client_ip = StringField('client_ip')
 
 
