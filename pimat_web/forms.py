@@ -64,6 +64,7 @@ class UpdateSettingsForm(FlaskForm):
     recaptcha_private_key = PasswordField('recaptcha_private_key')
     secret_key = PasswordField('secret_key')
     debug = StringField('debug')
+    csrf_enabled = StringField('csrf_enabled')
     recaptcha = StringField('recaptcha')
     db_server = StringField('db_server', validators=[DataRequired()])
     db_port = StringField('db_port')
