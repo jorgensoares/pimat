@@ -141,6 +141,7 @@ def logout():
 @login_required
 def dashboard():
     clients = pimat_config['clients']
+
     relay_status = dict()
     try:
         response = requests.get('http://localhost:4001/api/relay/{0}'.format(relay_config['pins']['relay1']),
@@ -184,7 +185,8 @@ def dashboard():
                            schedules=Schedules.query.order_by(Schedules.relay.asc()).all(),
                            last_reading=Sensors.query.order_by(Sensors.timestamp.desc()).first(),
                            relay_log=relay_log,
-                           clients=clients
+                           clients=clients,
+                           config=pimat_config
                            )
 
 
