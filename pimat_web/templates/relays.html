@@ -419,7 +419,7 @@
               }
             }
         });
-        $.ajax({url: '/relays/on/' + id, type: 'POST', success: function(){window.location.href = "/"}})
+        $.ajax({url: '/relays/on/' + id, type: 'POST', success: function(){window.location.href = "/relays"}})
         // $.post({url: '/relays/on/' + id, success: function(){window.location.href = "/"}}).then()
         $modalDiv.addClass('loading');
         setTimeout(function() {
@@ -443,7 +443,7 @@
               }
             }
         });
-        $.ajax({url: '/relays/off/' + id, type: 'POST', success: function(){window.location.href = "/"}})
+        $.ajax({url: '/relays/off/' + id, type: 'POST', success: function(){window.location.href = "/relays"}})
         // $.post({url: '/relays/off/' + id }).then()
         $modalDiv.addClass('loading');
         setTimeout(function() {
@@ -492,7 +492,7 @@
               }
             }
         });
-        $.ajax({url: '/schedules/delete/' + id, type: 'POST', success: function(){window.location.href = "/"}})
+        $.ajax({url: '/schedules/delete/' + id, type: 'POST', success: function(){window.location.href = "/relays"}})
         // $.post({url: '/schedule/switch/' + id}).then()
         $modalDiv.addClass('loading');
         setTimeout(function() {
