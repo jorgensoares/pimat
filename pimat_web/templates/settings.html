@@ -367,15 +367,15 @@
                       </tr>
                       </thead>
                       <tbody>
+                      {% for client in clients %}
                         <tr>
-                          {% for client in clients %}
-                            <td>{{ client }}</td>
-                            <td>{{ clients[client] }}</td>
-                            <td><a href="#" data-record-id="{{ clients[client] }}" data-record-title="{{ client }}"
-                                   data-toggle="modal" data-target="#confirm-delete">Delete</a>
-                            </td>
-                          {% endfor %}
+                          <td>{{ client }}</td>
+                          <td>{{ clients[client] }}</td>
+                          <td><a href="#" data-record-id="{{ clients[client] }}" data-record-title="{{ client }}"
+                                 data-toggle="modal" data-target="#confirm-delete">Delete</a>
+                          </td>
                         </tr>
+                      {% endfor %}
                       </tbody>
                     </table>
                   </div>
