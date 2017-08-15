@@ -398,11 +398,11 @@ def upload_file():
     return redirect(url_for("profile"))
 
 
-@app.route("/monitoring", methods=['GET'])
+@app.route("/monitoring/<client>", methods=['GET'])
 @login_required
-def monitoring():
+def monitoring(client):
     clients = pimat_config['clients']
-    last_reading = Monitoring.query.order_by(Monitoring.timestamp.desc()).first()
+    last_reading = Monitoring.query.filter(Monitoring.source == client).order_by(Monitoring.timestamp.desc()).first()
     last_reading.disk_total = convert_bytes(int(last_reading.disk_total))
     last_reading.disk_used = convert_bytes(int(last_reading.disk_used))
     last_reading.disk_free = convert_bytes(int(last_reading.disk_free))
