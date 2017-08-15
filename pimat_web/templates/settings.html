@@ -654,13 +654,12 @@
       <div class="modal-content">
         <div class="modal-header">
           <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-          <h4 class="modal-title" id="myModalLabel1">Edit Client</h4>
+          <h4 class="modal-title" id="myModalLabel1">Edit Client - <i class="title"></i></h4>
         </div>
         <div class="modal-body">
-          <div class="form-group">
-            <label for="formGroupExampleInput">IP or FQDN</label>
-            <input type="text" class="form-control" id="formGroupExampleInput" value="" placeholder="IP or FQDN">
-          </div>
+          <label class="sr-only" for="inlineFormInput">Name</label>
+          <input type="text" class="form-control mb-3 mr-sm-3 mb-sm-0" id="inlineFormInput" placeholder="Jane Doe">
+
           <div class="form-check form-check-inline">
             <label class="form-check-label">
               <input class="form-check-input" type="checkbox" id="inlineCheckbox10" value="option1"> Sensors
@@ -673,7 +672,7 @@
           </div>
           <div class="form-check form-check-inline disabled">
             <label class="form-check-label">
-              <input class="form-check-input" type="checkbox" id="inlineCheckbox12" value="option3" disabled> Monitoring
+              <input class="form-check-input" type="checkbox" id="inlineCheckbox12" value="option3"> Monitoring
             </label>
           </div>
         </div>
