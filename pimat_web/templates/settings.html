@@ -539,7 +539,9 @@
                       <tr>
                         <th>Hostname</th>
                         <th>IP or FQDN</th>
-                        <th></th>
+                        <th>Sensors</th>
+                        <th>Relays</th>
+                        <th>Monitoring</th>
                         <th></th>
                       </tr>
                       </thead>
@@ -548,9 +550,9 @@
                         <tr data-record-id="{{ client }}">
                           <td>{{ client }}</td>
                           <td>{{ clients[client] }}</td>
-                          <td><a href="#" data-record-id="{{ client }}" data-record-title="{{ client }}"
-                                 data-toggle="modal" data-target="#edit-client">Edit</a>
-                          </td>
+                          <td>Yes</td>
+                          <td>yes</td>
+                          <td>yes</td>
                           <td><a href="#" data-record-id="{{ client }}" data-record-title="{{ client }}"
                                  data-toggle="modal" data-target="#confirm-delete">Delete</a>
                           </td>
@@ -563,7 +565,7 @@
                 <!-- /.box-body -->
                 <div class="box-footer clearfix">
                   <button type="button" data-record-title="NEw"
-                          data-toggle="modal" data-target="#edit-client"class="btn btn-primary">Add new</button>
+                          data-toggle="modal" data-target="#edit-client"class="btn btn-primary pull-right">Add new</button>
                 </div>
               </div>
               <div class="box">
