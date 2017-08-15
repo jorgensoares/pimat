@@ -558,6 +558,8 @@ def password_reset():
 @login_required
 def settings():
     form = UpdateSettingsForm()
+    clients = pimat_config['clients']
+
     if form.validate_on_submit():
 
         pimat_config.set('pimat', 'server_ip', form.server_ip.data)
@@ -585,7 +587,6 @@ def settings():
         pimat_config.set('email', 'mail_use_ssl', form.mail_use_ssl.data)
         pimat_config.set('email', 'mail_use_tls', form.mail_use_tls.data)
 
-
         with open(config_file, 'w') as ini_file:
             pimat_config.write(ini_file)
 
@@ -597,7 +598,7 @@ def settings():
             for error in errors:
                 flash(error, 'warning')
 
-    return render_template('settings.html', config=pimat_config, version=version, form=form)
+    return render_template('settings.html', config=pimat_config, clients=clients, version=version, form=form)
 
 
 def main():
