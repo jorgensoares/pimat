@@ -69,7 +69,8 @@ def unauthorized_handler():
 @app.errorhandler(404)
 @login_required
 def not_found(error):
-    return render_template('error.html', error=error, version=version)
+    clients = pimat_config['clients']
+    return render_template('error.html', error=error, clients=clients, version=version)
 
 
 @app.before_first_request
@@ -130,6 +131,7 @@ def logout():
 @app.route("/dashboard")
 @login_required
 def dashboard():
+    clients = pimat_config['clients']
     relay_status = dict()
     try:
         response = requests.get('http://localhost:4001/api/relay/{0}'.format(relay_config['pins']['relay1']),
@@ -172,13 +174,15 @@ def dashboard():
                            sensors_data=sensors_data,
                            schedules=Schedules.query.order_by(Schedules.relay.asc()).all(),
                            last_reading=Sensors.query.order_by(Sensors.timestamp.desc()).first(),
-                           relay_log=relay_log
+                           relay_log=relay_log,
+                           clients=clients
                            )
 
 
 @app.route("/schedule/<action>/<schedule_id>", methods=['POST', 'GET'])
 @login_required
 def add_new_schedule(action, schedule_id):
+    clients = pimat_config['clients']
     if request.method == 'POST' and action == 'add':
         relay = request.form.get("relay")
         start_time = request.form.get("start_time")
@@ -186,7 +190,7 @@ def add_new_schedule(action, schedule_id):
 
         if start_time >= stop_time:
             flash('The stop time cannot be equal or smaller than the start time, please try again!', 'warning')
-            return render_template('schedules.html', version=version, schedule=None)
+            return render_template('schedules.html', clients=clients, version=version, schedule=None)
 
         if relay == 'relay1':
             switch = 'Lights Switch'
@@ -214,7 +218,7 @@ def add_new_schedule(action, schedule_id):
         else:
             Schedules.query.filter(Schedules.id == last.id).delete()
             db.session.commit()
-            return render_template('error.html', error="something went wrong with the request")
+            return 404
 
     elif request.method == 'POST' and action == 'delete':
         response = requests.delete('http://localhost:4001/api/schedules/{}'.format(schedule_id), timeout=2)
@@ -261,7 +265,7 @@ def add_new_schedule(action, schedule_id):
 
         if request.form.get("start_time") >= request.form.get("stop_time"):
             flash('The stop time cannot be equal or smaller than the start time, please try again!', 'warning')
-            return render_template('schedules.html', version=version, schedule=None)
+            return render_template('schedules.html', clients=clients, version=version, schedule=None)
 
         json_data = dict()
         json_data['action'] = 'edit'
@@ -282,14 +286,15 @@ def add_new_schedule(action, schedule_id):
 
     elif request.method == 'GET' and action == 'edit':
         schedule = Schedules.query.filter(Schedules.id == schedule_id).first()
-        return render_template('schedules.html', version=version, schedule=schedule)
+        return render_template('schedules.html', clients=clients, version=version, schedule=schedule)
     else:
-        return render_template('schedules.html', version=version, schedule=None)
+        return render_template('schedules.html', clients=clients, version=version, schedule=None)
 
 
 @app.route("/relays/<action>/<relay>", methods=['POST'])
 @login_required
 def switch_relay(action, relay):
+    clients = pimat_config['clients']
     if action and relay:
         json_data = dict()
         json_data['action'] = action
@@ -304,12 +309,13 @@ def switch_relay(action, relay):
         else:
             return 404
     else:
-        return render_template('error.html', error="wrong request")
+        return render_template('error.html', clients=clients, version=version, error="wrong request")
 
 
 @app.route("/sensors", methods=['POST', 'GET'])
 @login_required
 def sensors():
+    clients = pimat_config['clients']
     if request.args.get('sensor') and request.args.get('dates'):
 
         sensor = request.args.get("sensor")
@@ -323,32 +329,42 @@ def sensors():
                                version=version,
                                result=result,
                                sensor=sensor,
-                               dates=request.args.get("dates"))
+                               dates=request.args.get("dates"),
+                               clients=clients,
+                               )
     else:
-        return render_template('sensors.html', version=version)
+        return render_template('sensors.html', clients=clients, version=version)
 
 
 @app.route("/camera", methods=['GET'])
 @login_required
 def camera():
-    return render_template('camera.html', version=version)
+    clients = pimat_config['clients']
+    return render_template('camera.html', clients=clients, version=version)
 
 
 @app.route("/logs", methods=['GET'])
 @login_required
 def logs():
+    clients = pimat_config['clients']
     with open("/var/log/pimat/pimat-server.log", "r") as f:
         pimat_server_log = f.read()
     with open("/var/log/pimat/pimat-web.log", "r") as f:
         pimat_web_log = f.read()
 
-    return render_template('logs.html', pimat_server_log=pimat_server_log, pimat_web_log=pimat_web_log, version=version)
+    return render_template('logs.html',
+                           pimat_server_log=pimat_server_log,
+                           pimat_web_log=pimat_web_log,
+                           clients=clients,
+                           version=version
+                           )
 
 
 @app.route("/profile", methods=['GET', 'POST'])
 @login_required
 def profile():
     form = UpdateProfileForm()
+    clients = pimat_config['clients']
 
     if form.validate_on_submit():
         user = User.query.filter(User.id == current_user.id).first_or_404()
@@ -361,7 +377,7 @@ def profile():
         db.session.commit()
         flash('Profile Updated successfully', 'success')
 
-    return render_template('profile.html', version=version, form=form)
+    return render_template('profile.html', clients=clients, version=version, form=form)
 
 
 @app.route('/profile/picture', methods=['POST'])
@@ -385,6 +401,7 @@ def upload_file():
 @app.route("/monitoring", methods=['GET'])
 @login_required
 def monitoring():
+    clients = pimat_config['clients']
     last_reading = Monitoring.query.order_by(Monitoring.timestamp.desc()).first()
     last_reading.disk_total = convert_bytes(int(last_reading.disk_total))
     last_reading.disk_used = convert_bytes(int(last_reading.disk_used))
@@ -406,7 +423,7 @@ def monitoring():
     last_reading.lo_sent = convert_bytes(int(last_reading.lo_sent))
     last_reading.boot_time = convert_timestamp(last_reading.boot_time)
 
-    return render_template('monitoring_new.html', last_reading=last_reading, version=version)
+    return render_template('monitoring_new.html', last_reading=last_reading, clients=clients, version=version)
 
 
 @app.route("/user/<action>/<user_id>", methods=['GET', 'POST'])
@@ -414,6 +431,8 @@ def monitoring():
 @login_required
 def edit_user(action, user_id):
     form = CreateUserForm()
+    clients = pimat_config['clients']
+
     if action == 'create' and form.validate_on_submit():
         role = form.role.data
         if role == '':
@@ -421,7 +440,7 @@ def edit_user(action, user_id):
 
         if User.query.filter(User.username == form.username.data).all():
             flash('User already exists!', 'danger')
-            return render_template('user_create.html', version=version)
+            return render_template('user_create.html', clients=clients, version=version)
 
         hashed_password = generate_password_hash(form.password.data)
         user = User(form.first_name.data, form.last_name.data, form.username.data, hashed_password, form.email.data,
@@ -439,19 +458,21 @@ def edit_user(action, user_id):
             for error in errors:
                 flash(error, 'warning')
 
-    return render_template('user_create.html', version=version, form=form)
+    return render_template('user_create.html', clients=clients, version=version, form=form)
 
 
 @app.route("/users", methods=['GET'])
 @admin_permission.require()
 @login_required
 def users():
-    return render_template('users.html', users=User.query.order_by(User.id.asc()).all(), version=version)
+    clients = pimat_config['clients']
+    return render_template('users.html', users=User.query.order_by(User.id.asc()).all(), clients=clients, version=version)
 
 
 @app.route("/password_change", methods=['GET', 'POST'])
 @login_required
 def password_change():
+    clients = pimat_config['clients']
     if request.method == 'POST':
         current_password = request.form.get("current_password")
         new_password = request.form.get("new_password")
@@ -476,15 +497,15 @@ def password_change():
                     return redirect(url_for("dashboard"))
                 else:
                     flash('Passwords dont Match!', 'danger')
-                    return render_template('password_change.html', version=version)
+                    return render_template('password_change.html', clients=clients, version=version)
             else:
                 flash('Wrong Current Password', 'danger')
-                return render_template('password_change.html', version=version)
+                return render_template('password_change.html', clients=clients, version=version)
         else:
             flash('All fields are mandatory!', 'danger')
-            return render_template('password_change.html', version=version)
+            return render_template('password_change.html', clients=clients, version=version)
 
-    return render_template('password_change.html', version=version)
+    return render_template('password_change.html', clients=clients, version=version)
 
 
 @app.route("/password_forgot", methods=['GET', 'POST'])
@@ -561,7 +582,6 @@ def settings():
     clients = pimat_config['clients']
 
     if form.validate_on_submit():
-
         pimat_config.set('pimat', 'server_ip', form.server_ip.data)
         pimat_config.set('pimat', 'relay_config', form.relay_config.data)
         pimat_config.set('pimat', 'log', form.log.data)
