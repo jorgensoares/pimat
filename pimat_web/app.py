@@ -423,7 +423,12 @@ def monitoring(client):
     last_reading.lo_sent = convert_bytes(int(last_reading.lo_sent))
     last_reading.boot_time = convert_timestamp(last_reading.boot_time)
 
-    return render_template('monitoring_new.html', last_reading=last_reading, clients=clients, version=version)
+    return render_template('monitoring_new.html',
+                           last_reading=last_reading,
+                           client=client,
+                           clients=clients,
+                           version=version
+                           )
 
 
 @app.route("/user/<action>/<user_id>", methods=['GET', 'POST'])
