@@ -571,26 +571,26 @@ def settings():
         pimat_config.set('pimat', 'secret_key', form.secret_key.data)
         pimat_config.set('pimat', 'debug', form.debug.data)
         pimat_config.set('pimat', 'recaptcha', form.recaptcha.data)
-        pimat_config.set('pimat', 'db_server', form.db_server.data)
-        pimat_config.set('pimat', 'db_port', form.db_port.data)
-        pimat_config.set('pimat', 'db_username', form.db_username.data)
-        pimat_config.set('pimat', 'db_password', form.db_password.data)
-        pimat_config.set('pimat', 'db_name', form.db_name.data)
-        pimat_config.set('pimat', 'db_type', form.db_type.data)
-        pimat_config.set('pimat', 'mail_server', form.mail_server.data)
-        pimat_config.set('pimat', 'mail_port', form.mail_port.data)
-        pimat_config.set('pimat', 'mail_username', form.mail_username.data)
-        pimat_config.set('pimat', 'mail_default_sender', form.mail_default_sender.data)
-        pimat_config.set('pimat', 'mail_password', form.mail_password.data)
-        pimat_config.set('pimat', 'mail_use_ssl', form.mail_use_ssl.data)
-        pimat_config.set('pimat', 'mail_use_tls', form.mail_use_tls.data)
+        pimat_config.set('database', 'db_server', form.db_server.data)
+        pimat_config.set('database', 'db_port', form.db_port.data)
+        pimat_config.set('database', 'db_username', form.db_username.data)
+        pimat_config.set('database', 'db_password', form.db_password.data)
+        pimat_config.set('database', 'db_name', form.db_name.data)
+        pimat_config.set('database', 'db_type', form.db_type.data)
+        pimat_config.set('email', 'mail_server', form.mail_server.data)
+        pimat_config.set('email', 'mail_port', form.mail_port.data)
+        pimat_config.set('email', 'mail_username', form.mail_username.data)
+        pimat_config.set('email', 'mail_default_sender', form.mail_default_sender.data)
+        pimat_config.set('email', 'mail_password', form.mail_password.data)
+        pimat_config.set('email', 'mail_use_ssl', form.mail_use_ssl.data)
+        pimat_config.set('email', 'mail_use_tls', form.mail_use_tls.data)
 
 
         with open(config_file, 'w') as ini_file:
             pimat_config.write(ini_file)
 
         app.config.from_object('config')
-        flash('Settings updated successfully! Some settings will take effect after you restart Pimat.', 'success')
+        flash('Settings updated successfully! Some settings will only take effect after you restart Pimat.', 'success')
 
     else:
         for field, errors in form.errors.items():

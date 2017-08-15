@@ -21,18 +21,18 @@ else:
     SQLALCHEMY_ECHO = False
 
 
-MAIL_SERVER = config['pimat']['mail_server']
-MAIL_PORT = int(config['pimat']['mail_port'])
-MAIL_USERNAME = config['pimat']['mail_username']
-MAIL_PASSWORD = config['pimat']['mail_password']
-MAIL_DEFAULT_SENDER = config['pimat']['mail_default_sender']
+MAIL_SERVER = config['email']['mail_server']
+MAIL_PORT = int(config['email']['mail_port'])
+MAIL_USERNAME = config['email']['mail_username']
+MAIL_PASSWORD = config['email']['mail_password']
+MAIL_DEFAULT_SENDER = config['email']['mail_default_sender']
 
-if config['pimat']['mail_use_tls'] == 'True':
+if config['email']['mail_use_tls'] == 'True':
     MAIL_USE_TLS = True
 else:
     MAIL_USE_TLS = False
 
-if config['pimat']['mail_use_ssl'] == 'True':
+if config['email']['mail_use_ssl'] == 'True':
     MAIL_USE_SSL = True
 else:
     MAIL_USE_SSL = False
