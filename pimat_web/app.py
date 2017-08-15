@@ -402,7 +402,7 @@ def upload_file():
 @login_required
 def monitoring(client):
     clients = pimat_config['clients']
-    last_reading = Monitoring.query.filter(Monitoring.source == client).order_by(Monitoring.timestamp.desc()).first_or_404('no data for the client')
+    last_reading = Monitoring.query.filter(Monitoring.source == client).order_by(Monitoring.timestamp.desc()).first_or_404()
     last_reading.disk_total = convert_bytes(int(last_reading.disk_total))
     last_reading.disk_used = convert_bytes(int(last_reading.disk_used))
     last_reading.disk_free = convert_bytes(int(last_reading.disk_free))
