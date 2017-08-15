@@ -331,6 +331,7 @@ def sensors():
                                sensor=sensor,
                                dates=request.args.get("dates"),
                                clients=clients,
+                               client=client
                                )
     else:
         return render_template('sensors.html', clients=clients, version=version)

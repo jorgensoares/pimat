@@ -99,13 +99,17 @@
         <!-- /.box-header -->
         <div class="box-body">
           <div class="row">
-            <form class="form-schedule" action="/sensors/pimat_server" method="get">
+            <form class="form-schedule" action="/sensors" method="get">
             <div class="col-md-3">
               <div class="form-group">
                 <label>Client:</label>
                 <select name="client" class="form-control select2" style="width: 100%;" required>
-                  {% for client in clients %}
-                    <option value="{{ client }}">{{ client }}</option>
+                  {% for client_name in clients %}
+                    {% if client_name == client %}
+                      <option value="{{ client_name }}" selected="selected">{{ client_name }}</option>
+                    {% else %}
+                      <option value="{{ client_name }}">{{ client_name }}</option>
+                    {% endif %}
                   {% endfor %}
                 </select>
               </div>
