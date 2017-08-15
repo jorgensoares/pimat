@@ -610,9 +610,16 @@ def settings():
         pimat_config.set('email', 'mail_password', form.mail_password.data)
         pimat_config.set('email', 'mail_use_ssl', form.mail_use_ssl.data)
         pimat_config.set('email', 'mail_use_tls', form.mail_use_tls.data)
+        pimat_config.set('dashboard', 'graph', form.dashboard_graph.data)
+        pimat_config.set('dashboard', 'relays', form.dashboard_relays.data)
+        pimat_config.set('dashboard', 'schedules', form.dashboard_schedules.data)
+        pimat_config.set('dashboard', 'sensors', form.dashboard_sensors.data)
+        pimat_config.set('dashboard', 'stats', form.dashboard_stats.data)
+        pimat_config.set('dashboard', 'client', form.dashboard_client.data)
         if form.client_name.data:
             pimat_config.set('clients', form.client_name.data, form.client_ip.data)
-
+        if form.camera_name.data:
+            pimat_config.set('clients', form.camera_name.data, form.camera_ip.data)
         with open(config_file, 'w') as ini_file:
             pimat_config.write(ini_file)
 

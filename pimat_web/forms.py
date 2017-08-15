@@ -80,5 +80,13 @@ class UpdateSettingsForm(FlaskForm):
     mail_use_tls = StringField('mail_use_tls')
     client_name = StringField('client_name')
     client_ip = StringField('client_ip')
+    camera_name = StringField('camera_name')
+    camera_ip = StringField('camera_ip')
+    dashboard_graph = StringField('dashboard_graph', validators=[DataRequired()])
+    dashboard_client = StringField('dashboard_client', validators=[DataRequired()])
+    dashboard_relays = StringField('dashboard_relays')
+    dashboard_schedules = StringField('dashboard_schedules')
+    dashboard_sensors = StringField('dashboard_sensors')
+    dashboard_stats = StringField('dashboard_stats')
 
 
