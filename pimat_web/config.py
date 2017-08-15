@@ -39,16 +39,20 @@ else:
 
 
 if config['pimat']['csrf_enabled'] == 'True':
-    CSRF_ENABLED = True
+    WTF_CSRF_ENABLED = True
 else:
-    CSRF_ENABLED = False
+    WTF_CSRF_ENABLED = False
 
 if config['pimat']['recaptcha'] == 'True':
     RECAPTCHA = True
 else:
     RECAPTCHA = False
 
+if config['pimat']['debug'] == 'True':
+    DEBUG = True
+else:
+    DEBUG = False
+
 
 RECAPTCHA_PUBLIC_KEY = config['pimat']['recaptcha_public_key']
 RECAPTCHA_PRIVATE_KEY = config['pimat']['recaptcha_private_key']
-SECRET_KEY = config['pimat']['secret_key']

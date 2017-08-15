@@ -559,6 +559,7 @@ def password_reset():
 def settings():
     form = UpdateSettingsForm()
     if form.validate_on_submit():
+
         pimat_config.set('pimat', 'server_ip', form.server_ip.data)
         pimat_config.set('pimat', 'relay_config', form.relay_config.data)
         pimat_config.set('pimat', 'log', form.log.data)
@@ -584,7 +585,6 @@ def settings():
         pimat_config.set('pimat', 'mail_use_ssl', form.mail_use_ssl.data)
         pimat_config.set('pimat', 'mail_use_tls', form.mail_use_tls.data)
 
-        print form.server_ip.data
 
         with open(config_file, 'w') as ini_file:
             pimat_config.write(ini_file)
@@ -605,7 +605,6 @@ def main():
             port=80,
             threaded=True,
             debug=True,
-            use_reloader=False
             )
 
 if __name__ == "__main__":

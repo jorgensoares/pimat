@@ -114,32 +114,7 @@
                              value="{{ config['pimat']['upload_folder'] }}" placeholder="Path to users avatar folder" required>
                     </div>
                   </div>
-                  <div class="form-group row">
-                    <label for="temp_sensor" class="col-sm-2 col-form-label">Temp. Sensor Pin</label>
-                    <div class="col-sm-10">
-                      <input type="number" class="form-control" id="temp_sensor" name="temp_sensor"
-                             value="{{ config['pins']['temp_sensor'] }}" placeholder="Pin">
-                    </div>
-                  </div>
-                  <div class="form-group row">
-                    <label for="ldr_sensor" class="col-sm-2 col-form-label">LDR Sensor Pin</label>
-                    <div class="col-sm-10">
-                      <input type="number" class="form-control" id="ldr_sensor" name="ldr_sensor"
-                             value="{{ config['pins']['ldr_sensor'] }}" placeholder="Pin">
-                    </div>
-                  </div>
-                  <div class="form-group row">
-                    <label for="rf433_rcpt_pin" class="col-sm-2 col-form-label">Rf433 Receptor Pin</label>
-                    <div class="col-sm-10">
-                      <input type="number" class="form-control" id="rf433_rcpt_pin" placeholder="Pin">
-                    </div>
-                  </div>
-                  <div class="form-group row">
-                    <label for="rf433_emit_pin" class="col-sm-2 col-form-label">Rf433 Emitter Pin</label>
-                    <div class="col-sm-10">
-                      <input type="number" class="form-control" id="rf433_emit_pin" placeholder="Pin">
-                    </div>
-                  </div>
+
                   <div class="form-group row">
                     <label for="recaptcha_public_key" class="col-sm-2 col-form-label">Recaptcha Pub. Key </label>
                     <div class="col-sm-10">
@@ -187,6 +162,40 @@
                           {% endif %}
                         </label>
                       </div>
+                    </div>
+                  </div>
+                </div>
+                <!-- /.box-body -->
+              </div>
+              <div class="box">
+                <div class="box-header with-border">
+                  <h3 class="box-title">Pins</h3>
+                </div>
+                <div class="box-body">
+                  <div class="form-group row">
+                    <label for="temp_sensor" class="col-sm-2 col-form-label">Temp. Sensor Pin</label>
+                    <div class="col-sm-10">
+                      <input type="number" class="form-control" id="temp_sensor" name="temp_sensor"
+                             value="{{ config['pins']['temp_sensor'] }}" placeholder="Pin">
+                    </div>
+                  </div>
+                  <div class="form-group row">
+                    <label for="ldr_sensor" class="col-sm-2 col-form-label">LDR Sensor Pin</label>
+                    <div class="col-sm-10">
+                      <input type="number" class="form-control" id="ldr_sensor" name="ldr_sensor"
+                             value="{{ config['pins']['ldr_sensor'] }}" placeholder="Pin">
+                    </div>
+                  </div>
+                  <div class="form-group row">
+                    <label for="rf433_rcpt_pin" class="col-sm-2 col-form-label">Rf433 Receptor Pin</label>
+                    <div class="col-sm-10">
+                      <input type="number" class="form-control" id="rf433_rcpt_pin" placeholder="Pin">
+                    </div>
+                  </div>
+                  <div class="form-group row">
+                    <label for="rf433_emit_pin" class="col-sm-2 col-form-label">Rf433 Emitter Pin</label>
+                    <div class="col-sm-10">
+                      <input type="number" class="form-control" id="rf433_emit_pin" placeholder="Pin">
                     </div>
                   </div>
                 </div>
