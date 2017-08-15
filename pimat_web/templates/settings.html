@@ -165,7 +165,7 @@
                   <div class="row">
                     <div class="col-sm-3">
                       <div class="form-group row">
-                        <label class="col-sm-2">Debug</label>
+                        <label class="col-sm-2">Enable Debug</label>
                         <div class="col-sm-10">
                           <div class="form-check">
                             <label class="form-check-label">
@@ -179,7 +179,7 @@
                         </div>
                       </div>
                       <div class="form-group row">
-                        <label class="col-sm-2">Recaptcha</label>
+                        <label class="col-sm-2">Enable Recaptcha</label>
                         <div class="col-sm-10">
                           <div class="form-check">
                             <label class="form-check-label">
@@ -195,7 +195,7 @@
                     </div>
                     <div class="col-sm-3">
                       <div class="form-group row">
-                        <label class="col-sm-2">Recaptcha</label>
+                        <label class="col-sm-2">Enable Sensors</label>
                         <div class="col-sm-10">
                           <div class="form-check">
                             <label class="form-check-label">
@@ -209,37 +209,7 @@
                         </div>
                       </div>
                       <div class="form-group row">
-                        <label class="col-sm-2">Recaptcha</label>
-                        <div class="col-sm-10">
-                          <div class="form-check">
-                            <label class="form-check-label">
-                               {% if config['pimat']['recaptcha'] == 'True' %}
-                                <input class="form-check-input" value="True" name="recaptcha" type="checkbox" checked>
-                              {% else %}
-                                <input class="form-check-input" value="True" name="recaptcha" type="checkbox">
-                              {% endif %}
-                            </label>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="col-sm-3">
-                      <div class="form-group row">
-                        <label class="col-sm-2">Recaptcha</label>
-                        <div class="col-sm-10">
-                          <div class="form-check">
-                            <label class="form-check-label">
-                               {% if config['pimat']['recaptcha'] == 'True' %}
-                                <input class="form-check-input" value="True" name="recaptcha" type="checkbox" checked>
-                              {% else %}
-                                <input class="form-check-input" value="True" name="recaptcha" type="checkbox">
-                              {% endif %}
-                            </label>
-                          </div>
-                        </div>
-                      </div>
-                      <div class="form-group row">
-                        <label class="col-sm-2">Recaptcha</label>
+                        <label class="col-sm-2">Enable Relays</label>
                         <div class="col-sm-10">
                           <div class="form-check">
                             <label class="form-check-label">
@@ -255,7 +225,7 @@
                     </div>
                     <div class="col-sm-3">
                       <div class="form-group row">
-                        <label class="col-sm-2">Recaptcha</label>
+                        <label class="col-sm-2">Enable Schedules</label>
                         <div class="col-sm-10">
                           <div class="form-check">
                             <label class="form-check-label">
@@ -269,7 +239,37 @@
                         </div>
                       </div>
                       <div class="form-group row">
-                        <label class="col-sm-2">Recaptcha</label>
+                        <label class="col-sm-2">Enable Relay Log</label>
+                        <div class="col-sm-10">
+                          <div class="form-check">
+                            <label class="form-check-label">
+                               {% if config['pimat']['recaptcha'] == 'True' %}
+                                <input class="form-check-input" value="True" name="recaptcha" type="checkbox" checked>
+                              {% else %}
+                                <input class="form-check-input" value="True" name="recaptcha" type="checkbox">
+                              {% endif %}
+                            </label>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-sm-3">
+                      <div class="form-group row">
+                        <label class="col-sm-2">Enable CSRF</label>
+                        <div class="col-sm-10">
+                          <div class="form-check">
+                            <label class="form-check-label">
+                               {% if config['pimat']['recaptcha'] == 'True' %}
+                                <input class="form-check-input" value="True" name="recaptcha" type="checkbox" checked>
+                              {% else %}
+                                <input class="form-check-input" value="True" name="recaptcha" type="checkbox">
+                              {% endif %}
+                            </label>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="form-group row">
+                        <label class="col-sm-2">Some other</label>
                         <div class="col-sm-10">
                           <div class="form-check">
                             <label class="form-check-label">
