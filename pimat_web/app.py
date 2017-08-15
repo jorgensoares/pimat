@@ -76,6 +76,15 @@ def not_found(error):
 @app.before_first_request
 def create_db():
     db.create_all()
+    if not User.query.filter(User.username == 'admin').first():
+        user = User('Pimat',
+                    'Web',
+                    'admin',
+                    'pbkdf2:sha256:50000$QZildwvb$ec2954dfe34d5a540d1aa9b64ce8628ab34b4f8d64a04208f15082a431bc5631',
+                    'change@me.com',
+                    'admin')
+        db.session.add(user)
+        db.session.commit()
 
 
 @app.route("/")
