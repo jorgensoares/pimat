@@ -225,7 +225,7 @@
                   <div class="form-group">
                     <label class="mr-sm-2" for="db_type">Database Type &nbsp;&nbsp;</label>
                     <select class="custom-select mb-2 mr-sm-2 mb-sm-0" id="db_type" name="db_type"  required>
-                      {% if config['pimat']['db_type'] == 'mysql' %}
+                      {% if config['database']['db_type'] == 'mysql' %}
                         <option value="mysql" selected>MySQL</option>
                       {% else %}
                          <option value="mysql">MySQL</option>
@@ -246,7 +246,7 @@
                     <label for="db_server" class="col-sm-2 col-form-label"> Server</label>
                     <div class="col-sm-10">
                       <input type="text" class="form-control" id="db_server" name="db_server"
-                             value="{{ config['pimat']['db_server'] }}"
+                             value="{{ config['database']['db_server'] }}"
                              placeholder="Server URL or IP for SQLite use path to db file" required>
                     </div>
                   </div>
@@ -254,28 +254,28 @@
                     <label for="db_port" class="col-sm-2 col-form-label"> Port</label>
                     <div class="col-sm-10">
                       <input type="number" class="form-control" id="db_port" name="db_port"
-                             value="{{ config['pimat']['db_port'] }}" placeholder="Server port">
+                             value="{{ config['database']['db_port'] }}" placeholder="Server port">
                     </div>
                   </div>
                   <div class="form-group row">
                     <label for="db_username" class="col-sm-2 col-form-label"> Username</label>
                     <div class="col-sm-10">
                       <input type="text" class="form-control" id="db_username" name="db_username"
-                             value="{{ config['pimat']['db_user'] }}" placeholder="Database user">
+                             value="{{ config['database']['db_user'] }}" placeholder="Database user">
                     </div>
                   </div>
                   <div class="form-group row">
                     <label for="db_password" class="col-sm-2 col-form-label"> Password</label>
                     <div class="col-sm-10">
                       <input type="password" class="form-control" id="db_password" name="db_password"
-                             value="{{ config['pimat']['db_password'] }}" placeholder="Password">
+                             value="{{ config['database']['db_password'] }}" placeholder="Password">
                     </div>
                   </div>
                   <div class="form-group row">
                     <label for="db_name" class="col-sm-2 col-form-label"> Database</label>
                     <div class="col-sm-10">
                       <input type="text" class="form-control" id="db_name" name="db_name"
-                             value="{{ config['pimat']['db_name'] }}" placeholder="Database name">
+                             value="{{ config['database']['db_name'] }}" placeholder="Database name">
                     </div>
                   </div>
                 </div>
@@ -290,35 +290,35 @@
                     <label for="mail_server" class="col-sm-2 col-form-label"> Server</label>
                     <div class="col-sm-10">
                       <input type="text" class="form-control" id="mail_server" name="mail_server"
-                             value="{{ config['pimat']['mail_server'] }}" placeholder="Email server">
+                             value="{{ config['email']['mail_server'] }}" placeholder="Email server">
                     </div>
                   </div>
                   <div class="form-group row">
                     <label for="mail_port" class="col-sm-2 col-form-label"> Port</label>
                     <div class="col-sm-10">
                       <input type="number" class="form-control" id="mail_port" name="mail_port"
-                             value="{{ config['pimat']['mail_port'] }}" placeholder="Server Port">
+                             value="{{ config['email']['mail_port'] }}" placeholder="Server Port">
                     </div>
                   </div>
                   <div class="form-group row">
                     <label for="mail_username" class="col-sm-2 col-form-label"> Username</label>
                     <div class="col-sm-10">
                       <input type="text" class="form-control" id="mail_username" name="mail_username"
-                             value="{{ config['pimat']['mail_username'] }}" placeholder="Email server username">
+                             value="{{ config['email']['mail_username'] }}" placeholder="Email server username">
                     </div>
                   </div>
                   <div class="form-group row">
                     <label for="mail_default_sender" class="col-sm-2 col-form-label"> Sender</label>
                     <div class="col-sm-10">
                       <input type="text" class="form-control" id="mail_default_sender" name="mail_default_sender"
-                             value="{{ config['pimat']['mail_default_sender'] }}" placeholder="Default mail sender ">
+                             value="{{ config['email']['mail_default_sender'] }}" placeholder="Default mail sender ">
                     </div>
                   </div>
                   <div class="form-group row">
                     <label for="mail_password" class="col-sm-2 col-form-label"> Password</label>
                     <div class="col-sm-10">
                       <input type="password" class="form-control" id="mail_password" name="mail_password"
-                             value="{{ config['pimat']['mail_password'] }}" placeholder="Password">
+                             value="{{ config['email']['mail_password'] }}" placeholder="Password">
                     </div>
                   </div>
                   <div class="form-group row">
@@ -326,7 +326,7 @@
                     <div class="col-sm-10">
                       <div class="form-check">
                         <label class="form-check-label">
-                          {% if config['pimat']['mail_use_ssl'] == 'True' %}
+                          {% if config['email']['mail_use_ssl'] == 'True' %}
                             <input class="form-check-input" value="True" name="mail_use_ssl" type="checkbox" checked>
                           {% else %}
                             <input class="form-check-input" value="True" name="mail_use_ssl" type="checkbox">
@@ -340,7 +340,7 @@
                     <div class="col-sm-10">
                       <div class="form-check">
                         <label class="form-check-label">
-                          {% if config['pimat']['mail_use_tls'] == 'True' %}
+                          {% if config['email']['mail_use_tls'] == 'True' %}
                             <input class="form-check-input" value="True" name="mail_use_tls" type="checkbox" checked>
                           {% else %}
                             <input class="form-check-input" value="True" name="mail_use_tls" type="checkbox">
@@ -376,10 +376,10 @@
                     </table>
                   </div>
                   <div class="form-inline">
-                    <input type="text" class="form-control mb-2 mr-sm-2 mb-sm-0" id="inlineFormInput" placeholder="Add Client">
+                    <input type="text" class="form-control mb-2 mr-sm-2 mb-sm-0" id="inlineFormInput" placeholder="Add Client - Hostname">
                     <div class="input-group mb-2 mr-sm-2 mb-sm-0">
-                      <div class="input-group-addon">IP or FQDN</div>
-                        <input type="text" class="form-control" id="inlineFormInputGroup">
+                      <div class="input-group-addon">IP</div>
+                        <input type="text" class="form-control" id="inlineFormInputGroup" placeholder="Client IP or FQDN">
                     </div>
                   </div>
                 </div>
