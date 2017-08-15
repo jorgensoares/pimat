@@ -591,6 +591,11 @@ def settings():
 
         app.config.from_object('config')
 
+    else:
+        for field, errors in form.errors.items():
+            for error in errors:
+                flash(error, 'warning')
+
     return render_template('settings.html', config=pimat_config, version=version, form=form)
 
 
